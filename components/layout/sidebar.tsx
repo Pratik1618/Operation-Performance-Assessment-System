@@ -93,8 +93,8 @@ export function Sidebar() {
               <Sparkles size={18} className="text-white" />
             </div>
             <div>
-              <p className="text-xs font-semibold text-white/60">OPERATIONS</p>
-              <h1 className="text-sm font-semibold text-white">ERP System</h1>
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-white/60">Operation Performance</p>
+              <h1 className="text-sm font-bold text-white">Assessment System</h1>
             </div>
           </div>
         </div>

@@ -215,7 +215,7 @@ export default function DashboardPage() {
         <div className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Compliance Trend</CardTitle>
+              <CardTitle>Monthly Performance Trajectory</CardTitle>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={280}>

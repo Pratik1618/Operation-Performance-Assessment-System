@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Operations ERP - Assessment System',
+  title: 'Operation Performance Assessment System',
   description: 'Enterprise Operations Performance Assessment System',
   generator: 'v0.app',
   icons: {
