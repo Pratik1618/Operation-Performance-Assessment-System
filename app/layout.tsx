@@ -2,8 +2,7 @@ import { Analytics } from '@vercel/analytics/next'
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { ClientProviders } from '@/components/layout/client-providers'
-import { Sidebar } from '@/components/layout/sidebar'
-import { Header } from '@/components/layout/header'
+import { LayoutWrapper } from '@/components/layout/layout-wrapper'
 import './globals.css'
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
@@ -13,8 +12,8 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Operation Performance Assessment System',
-  description: 'Enterprise Operations Performance Assessment System',
+  title: 'OPAS — Operation Performance Assessment System',
+  description: 'Enterprise facility management operation performance assessment platform',
   generator: 'v0.app',
   icons: {
     icon: [
@@ -44,17 +43,9 @@ export default function RootLayout({
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} bg-background`}>
       <body className="font-sans antialiased">
         <ClientProviders>
-          <div className="flex h-screen">
-            <Sidebar />
-            <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-              <Header />
-              <main className="flex-1 overflow-auto bg-background">
-                <div className="mx-auto w-full max-w-[1680px] px-4 py-6 sm:px-6 lg:px-8">
-                  {children}
-                </div>
-              </main>
-            </div>
-          </div>
+          <LayoutWrapper>
+            {children}
+          </LayoutWrapper>
           {process.env.NODE_ENV === 'production' && <Analytics />}
         </ClientProviders>
       </body>

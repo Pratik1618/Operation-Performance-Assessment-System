@@ -1,15 +1,19 @@
+
 'use client'
 
 import type { ReactNode } from 'react'
 import { TooltipProvider } from '@/components/ui/tooltip'
-import { AssessmentProvider } from '@/lib/context/assessment-context'
+import { OCRMSProvider } from '@/lib/context/ocrms-context'
+
+import { Toaster } from '@/components/ui/sonner'
 
 export function ClientProviders({ children }: { children: ReactNode }) {
   return (
     <TooltipProvider>
-      <AssessmentProvider>
+      <OCRMSProvider>
         {children}
-      </AssessmentProvider>
+        <Toaster position="bottom-right" />
+      </OCRMSProvider>
     </TooltipProvider>
   )
 }

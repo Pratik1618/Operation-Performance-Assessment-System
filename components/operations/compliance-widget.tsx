@@ -26,7 +26,7 @@ export function ComplianceWidget({ activities }: ComplianceWidgetProps) {
     { label: 'Completed', value: completedActivities, color: 'text-green-600' },
     { label: 'Pending', value: pendingActivities, color: 'text-orange-600' },
     { label: 'Overdue', value: overdueActivities, color: 'text-red-600' },
-    { label: 'Compliance %', value: `${compliancePercent}%`, color: 'text-indigo-600' },
+    { label: 'Performance %', value: `${compliancePercent}%`, color: 'text-indigo-600' },
     { label: 'Avg Score', value: avgScore, color: 'text-purple-600' },
   ];
 

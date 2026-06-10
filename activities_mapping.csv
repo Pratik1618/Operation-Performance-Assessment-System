@@ -1,0 +1,38 @@
+Code,Activity Name,Category,Frequency,Assigned Role,Approval Flow,Weightage
+ACT-ATT-01,Absent Report,Attendance Verification,Daily,,,4
+ACT-ATT-02,Reliever Report,Attendance Verification,Daily,,,4
+ACT-ATT-03,Non App Usage Count,Attendance Verification,Daily,,,4
+ACT-ATT-04,Attendance Submission,Attendance Verification,Monthly,,,4
+ACT-ATT-05,Leave Approval,Attendance Verification,Weekly,,,4
+ACT-ATT-06,Missing In-Out Time,Attendance Verification,Weekly,,,4
+ACT-ATT-07,Regularization,Attendance Verification,Weekly,,,4
+ACT-ATT-08,Non App Follow Up,Attendance Verification,Daily,,,4
+ACT-ATT-09,Weekoff Mapping,Attendance Verification,Daily,,,4
+ACT-OPS-01,Site Visit Report,Site Operations,Daily,,,4
+ACT-OPS-02,Next Month Visit Plan,Site Operations,Monthly,,,4
+ACT-OPS-03,Visit Calendar Upload,Site Operations,Monthly,,,4
+ACT-OPS-04,Site Mapping,Site Operations,Monthly,,,4
+ACT-TRN-01,Training Report,Training,Monthly,,,4
+ACT-TRN-02,Training Videos,Training,Monthly,,,4
+ACT-PRO-01,Material Delivery Status,Procurement & Logistics,Monthly,,,4
+ACT-PRO-02,Material Punch Performance,Procurement & Logistics,Monthly,,,4
+ACT-PRO-03,Uniform Request,Procurement & Logistics,One-Time,,,4
+ACT-PRO-04,Shoes Request,Procurement & Logistics,One-Time,,,4
+ACT-PRO-05,Sweater Request,Procurement & Logistics,One-Time,,,4
+ACT-PRO-06,Uniform Issuance,Procurement & Logistics,Monthly,,,4
+ACT-PRO-07,Shoes Issuance,Procurement & Logistics,Monthly,,,4
+ACT-EMP-01,Employee Grievance,Employee Relations,Daily,,,4
+ACT-EMP-02,Referral Marking,Employee Relations,Daily,,,4
+ACT-INC-01,Incident Report,Incident & Performance,Daily,,,4
+ACT-INC-02,Snaglist Report,Incident & Performance,Fortnightly,,,4
+ACT-INC-03,Deep Cleaning Report,Incident & Performance,Weekly,,,4
+ACT-INC-04,Pest Control Report,Incident & Performance,Monthly,,,4
+ACT-PLN-01,R&R Schedule,Planning & Recognition,Monthly,,,4
+ACT-PLN-02,R&R Completion,Planning & Recognition,Monthly,,,4
+ACT-REP-01,MOM Report,Reporting & Closure,Monthly,,,4
+ACT-REP-02,Closure Report,Reporting & Closure,Monthly,,,4
+ACT-REP-03,Daily Closure Report,Reporting & Closure,Daily,,,4
+ACT-QLY-01,Feedback,Quality & Feedback,Monthly,,,4
+ACT-QLY-02,Material Quality,Quality & Feedback,Monthly,,,4
+ACT-QLY-03,Customer Service Report,Quality & Feedback,Monthly,,,4
+ACT-QLY-04,Client Referral,Quality & Feedback,Monthly,,,4
