@@ -240,6 +240,8 @@ export default function ActivityMasterPage() {
                 <TableHead className="px-4 py-3 text-left text-xs font-bold text-slate-600">Activity Name</TableHead>
                 <TableHead className="px-4 py-3 text-left text-xs font-bold text-slate-600">Category</TableHead>
                 <TableHead className="px-4 py-3 text-left text-xs font-bold text-slate-600">Frequency</TableHead>
+                <TableHead className="px-4 py-3 text-left text-xs font-bold text-slate-600">Assigned Role(s)</TableHead>
+                <TableHead className="px-4 py-3 text-left text-xs font-bold text-slate-600">Approval Flow</TableHead>
                 <TableHead className="px-4 py-3 text-center text-xs font-bold text-slate-600">Weightage</TableHead>
                 <TableHead className="px-4 py-3 text-left text-xs font-bold text-slate-600">Required Evidence</TableHead>
                 <TableHead className="px-4 py-3 text-center text-xs font-bold text-slate-600">Status</TableHead>
@@ -259,6 +261,22 @@ export default function ActivityMasterPage() {
                   <TableCell className="px-4 py-3 text-xs font-semibold text-slate-700">{tpl.category}</TableCell>
                   <TableCell className="px-4 py-3">
                     <span className="text-xs uppercase font-bold text-slate-600 tracking-wide">{tpl.frequency}</span>
+                  </TableCell>
+                  <TableCell className="px-4 py-3">
+                    <div className="flex flex-wrap gap-1">
+                      {tpl.assignedRoles ? (
+                        tpl.assignedRoles.split(',').map(role => (
+                          <span key={role} className="text-[9px] font-extrabold uppercase bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded border border-slate-350 shadow-sm">
+                            {role.trim()}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="text-[10px] text-slate-400 font-medium">None</span>
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-xs font-medium text-slate-600 max-w-[200px] truncate" title={tpl.approvalFlowText}>
+                    {tpl.approvalFlowText || 'None'}
                   </TableCell>
                   <TableCell className="px-4 py-3 text-center">
                     <span className="text-xs font-extrabold text-indigo-700 bg-indigo-50 border border-indigo-150 px-2 py-0.5 rounded">
@@ -304,7 +322,7 @@ export default function ActivityMasterPage() {
               ))}
               {filteredTemplates.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={8} className="py-12 text-center text-slate-400 text-xs italic font-medium">
+                  <TableCell colSpan={10} className="py-12 text-center text-slate-400 text-xs italic font-medium">
                     No activity templates matched the filters.
                   </TableCell>
                 </TableRow>

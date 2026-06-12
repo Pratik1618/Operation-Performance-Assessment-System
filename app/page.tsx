@@ -15,6 +15,7 @@ import {
 import { Breadcrumb } from '@/components/layout/breadcrumb'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useOCRMS } from '@/lib/context/ocrms-context'
+import { sites } from '@/lib/data/ocrms-data'
 
 const COLORS = {
   blue: '#3b82f6', cyan: '#06b6d4', emerald: '#10b981', amber: '#f59e0b',
@@ -23,13 +24,45 @@ const COLORS = {
 
 export default function DashboardPage() {
   const router = useRouter()
-  const { tasks, currentRole, currentUser } = useOCRMS()
+  const { tasks, templates, currentRole, currentUser } = useOCRMS()
   const [hoveredKpi, setHoveredKpi] = useState<number | null>(null)
+
+  const roleTasks = useMemo(() => {
+    const isRoleMatch = (assignedRolesStr: string | undefined, role: string) => {
+      if (!assignedRolesStr) return false;
+      const roles = assignedRolesStr.toLowerCase().split(',').map(r => r.trim());
+      if (role === 'hr') {
+        return roles.includes('hr') || roles.includes('hrbp') || roles.includes('hr dr');
+      }
+      if (role === 'procurement') {
+        return roles.includes('procurement') || roles.includes('ph') || roles.includes('commerical') || roles.includes('commercial');
+      }
+      return roles.includes(role.toLowerCase());
+    };
+
+    return tasks.filter(t => {
+      // 1. Role match check on template
+      const tpl = templates.find(tpl => tpl.id === t.templateId);
+      if (!tpl) return false;
+      if (!isRoleMatch(tpl.assignedRoles, currentRole)) return false;
+
+      // 2. User assignment/site check
+      if (currentRole === 'oe') {
+        return t.assignedTo === currentUser?.userName;
+      }
+      const site = sites.find(s => s.id === t.siteId);
+      if (currentRole === 'rm') {
+        return site?.assignedRM === currentUser?.userName;
+      }
+      if (currentRole === 'avp') {
+        return site?.assignedAVP === currentUser?.userName;
+      }
+      return true;
+    });
+  }, [tasks, templates, currentRole, currentUser])
 
   // Compute live KPIs
   const liveKPIs = useMemo(() => {
-    // Filter tasks based on role
-    const roleTasks = currentRole === 'oe' ? tasks.filter(t => t.assignedTo === 'Ravi Shankar') : tasks
     const total = roleTasks.length
     const approved = roleTasks.filter(t => ['approved', 'bh_approved'].includes(t.status)).length
     const submitted = roleTasks.filter(t => ['oe_submitted', 'submitted', 'rm_approved', 'avp_approved'].includes(t.status)).length
@@ -64,7 +97,7 @@ export default function DashboardPage() {
       fortnightly: calcFreqCompliance('fortnightly'),
       monthly: calcFreqCompliance('monthly'),
     }
-  }, [tasks, currentRole])
+  }, [roleTasks])
 
   const kpiCards = [
     { label: 'Total Assigned', value: liveKPIs.total, icon: FileStack, color: 'from-blue-600 to-sky-500', bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200' },
@@ -96,7 +129,6 @@ export default function DashboardPage() {
 
   // Category completion list
   const categoryCompletionList = useMemo(() => {
-    const roleTasks = currentRole === 'oe' ? tasks.filter(t => t.assignedTo === 'Ravi Shankar') : tasks
     const map = new Map<string, { completed: number; total: number }>()
 
     roleTasks.forEach(t => {
@@ -113,29 +145,25 @@ export default function DashboardPage() {
       completed: val.completed,
       total: val.total
     })).sort((a, b) => b.total - a.total)
-  }, [tasks, currentRole])
+  }, [roleTasks])
 
   // Active Widgets Lists
   const todaysPendingTasks = useMemo(() => {
-    const list = currentRole === 'oe' ? tasks.filter(t => t.assignedTo === 'Ravi Shankar') : tasks
     // Simulate current date June 9, 2026
-    return list.filter(t => (t.status === 'pending' || t.status === 'in_progress') && t.dueDate === '2026-06-09').slice(0, 5)
-  }, [tasks, currentRole])
+    return roleTasks.filter(t => (t.status === 'pending' || t.status === 'in_progress') && t.dueDate === '2026-06-09').slice(0, 5)
+  }, [roleTasks])
 
   const overdueReports = useMemo(() => {
-    const list = currentRole === 'oe' ? tasks.filter(t => t.assignedTo === 'Ravi Shankar') : tasks
-    return list.filter(t => t.status === 'overdue').slice(0, 5)
-  }, [tasks, currentRole])
+    return roleTasks.filter(t => t.status === 'overdue').slice(0, 5)
+  }, [roleTasks])
 
   const openIncidentsList = useMemo(() => {
-    const list = currentRole === 'oe' ? tasks.filter(t => t.assignedTo === 'Ravi Shankar') : tasks
-    return list.filter(t => t.taskName === 'Incident Report' && t.status !== 'approved').slice(0, 5)
-  }, [tasks, currentRole])
+    return roleTasks.filter(t => t.taskName === 'Incident Report' && t.status !== 'approved').slice(0, 5)
+  }, [roleTasks])
 
   const openGrievances = useMemo(() => {
-    const list = currentRole === 'oe' ? tasks.filter(t => t.assignedTo === 'Ravi Shankar') : tasks
-    return list.filter(t => t.taskName === 'Employee Grievance' && t.status !== 'approved').slice(0, 5)
-  }, [tasks, currentRole])
+    return roleTasks.filter(t => t.taskName === 'Employee Grievance' && t.status !== 'approved').slice(0, 5)
+  }, [roleTasks])
 
   // Mock static charts trend (for rich graphics)
   const dailyComplianceTrend = [

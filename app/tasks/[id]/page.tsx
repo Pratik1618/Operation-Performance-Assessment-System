@@ -66,11 +66,11 @@ export default function TaskDetailPage() {
     if (!task || !template) return false
     
     if (currentRole === 'rm') {
-      return task.status === 'oe_submitted' && task.rmRating === undefined
+      return task.status === 'oe_submitted' && task.rmRating === undefined && template.approvalFlow?.includes('rm')
     }
     
     if (currentRole === 'avp') {
-      return task.status === 'rm_approved' && task.avpRating === undefined
+      return task.status === 'rm_approved' && task.avpRating === undefined && template.approvalFlow?.includes('avp')
     }
 
     if (currentRole === 'bh') {
@@ -119,16 +119,18 @@ export default function TaskDetailPage() {
       toast.success('Task Returned', { description: 'Task has been returned to the OE.' })
     } else {
       if (currentRole === 'rm') {
+        const hasAvp = template.approvalFlow?.includes('avp')
         updateTask(task.id, {
           rmRating: reviewRating,
           rmRemarks: reviewRemarks,
           rmReviewedDate: todayStr,
-          status: 'rm_approved',
+          status: hasAvp ? 'rm_approved' : 'approved',
           remarks: reviewRemarks
         })
-        toast.success('AE Review Complete', {
-          description: 'Task approved and advanced to AVP queue.'
-        })
+        toast.success(
+          hasAvp ? 'AE Review Complete' : 'Task Final Approved', 
+          { description: hasAvp ? 'Task approved and advanced to AVP queue.' : 'Task successfully approved and concluded.' }
+        )
       } else if (currentRole === 'avp') {
         updateTask(task.id, {
           avpRating: reviewRating,
@@ -314,6 +316,24 @@ export default function TaskDetailPage() {
           <div>
             <p className="text-[10px] font-bold text-slate-400 uppercase">Due Date</p>
             <p className="text-xs font-semibold text-slate-700 mt-0.5">{task.dueDate}</p>
+          </div>
+          <div className="col-span-2 border-t pt-3 mt-1">
+            <p className="text-[10px] font-bold text-slate-400 uppercase">Assigned Role(s)</p>
+            <div className="flex flex-wrap gap-1 mt-1">
+              {template?.assignedRoles ? (
+                template.assignedRoles.split(',').map(role => (
+                  <span key={role} className="text-[9px] font-extrabold uppercase bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded border border-slate-350 shadow-sm">
+                    {role.trim()}
+                  </span>
+                ))
+              ) : (
+                <span className="text-xs font-semibold text-slate-700">None</span>
+              )}
+            </div>
+          </div>
+          <div className="col-span-2 border-t pt-3 mt-1">
+            <p className="text-[10px] font-bold text-slate-400 uppercase">Approval Flow</p>
+            <p className="text-xs font-semibold text-slate-700 mt-1">{template?.approvalFlowText || 'None'}</p>
           </div>
           <div className="col-span-2 border-t pt-3 mt-1">
             <p className="text-[10px] font-bold text-slate-400 uppercase">Site Details</p>

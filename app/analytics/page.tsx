@@ -28,6 +28,7 @@ export default function AnalyticsPage() {
     // Average scores
     const approvedTasks = tasks.filter(t => ['approved', 'bh_approved', 'avp_approved', 'rm_approved'].includes(t.status))
     const totalMaxPoints = approvedTasks.reduce((sum, t) => sum + t.weightage, 0)
+    const totalMaxScorePoints = approvedTasks.reduce((sum, t) => sum + (t.weightage * t.weightage), 0)
     
     const oeSum = approvedTasks.reduce((sum, t) => sum + (t.oeRating || 0), 0)
     const rmSum = approvedTasks.reduce((sum, t) => sum + (t.rmRating || 0), 0)
@@ -45,7 +46,7 @@ export default function AnalyticsPage() {
       oeAvg: calcAvgPercent(oeSum),
       rmAvg: calcAvgPercent(rmSum),
       avpAvg: calcAvgPercent(avpSum),
-      finalAvg: calcAvgPercent(finalSum)
+      finalAvg: totalMaxScorePoints > 0 ? Math.round((finalSum / totalMaxScorePoints) * 100) : 0
     }
   }, [tasks])
 

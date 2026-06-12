@@ -685,26 +685,26 @@ export default function SiteOperationsPage() {
       {/* Unified KPI Metrics Bar */}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
         {[
-          { label: 'Mapped Sites', value: localSites.length, icon: Building2, color: 'from-blue-600 to-sky-500', bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200' },
-          { label: 'Planned Audits', value: metrics.total, icon: CalendarDays, color: 'from-cyan-600 to-cyan-500', bg: 'bg-cyan-50', text: 'text-cyan-700', border: 'border-cyan-200' },
-          { label: 'Audits Completed', value: metrics.completed, icon: CheckCircle2, color: 'from-emerald-600 to-green-500', bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
-          { label: 'Adherence Rate', value: `${metrics.compRate}%`, icon: ClipboardCheck, color: 'from-orange-600 to-amber-500', bg: 'bg-orange-50', text: 'text-orange-700', border: 'border-orange-200' },
-          { label: 'Roster Requests', value: kpis.pendingAssignments, icon: Users, color: 'from-indigo-600 to-violet-500', bg: 'bg-indigo-50', text: 'text-indigo-700', border: 'border-indigo-200' },
+          { label: 'Mapped Sites', value: localSites.length, icon: Building2, color: 'from-blue-600 to-sky-500', bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-slate-150' },
+          { label: 'Planned Audits', value: metrics.total, icon: CalendarDays, color: 'from-cyan-600 to-cyan-500', bg: 'bg-cyan-50', text: 'text-cyan-700', border: 'border-slate-150' },
+          { label: 'Audits Completed', value: metrics.completed, icon: CheckCircle2, color: 'from-emerald-600 to-green-500', bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-slate-150' },
+          { label: 'Adherence Rate', value: `${metrics.compRate}%`, icon: ClipboardCheck, color: 'from-orange-600 to-amber-500', bg: 'bg-orange-50', text: 'text-orange-700', border: 'border-slate-150' },
+          { label: 'Roster Requests', value: kpis.pendingAssignments, icon: Users, color: 'from-indigo-600 to-violet-500', bg: 'bg-indigo-50', text: 'text-indigo-700', border: 'border-slate-150' },
         ].map((kpi) => {
           const Icon = kpi.icon
           return (
             <Card
               key={kpi.label}
-              className={`relative overflow-hidden transition-all duration-300 border bg-white shadow-soft hover:shadow-lg hover:-translate-y-0.5 ${kpi.border}`}
+              className={`relative overflow-hidden transition-all duration-300 border bg-white shadow-soft rounded-2xl hover:shadow-medium hover:border-slate-350 hover:-translate-y-1 ${kpi.border}`}
             >
-              <CardContent className="p-4 flex flex-col justify-between h-full min-h-[90px]">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <p className="text-2xl font-extrabold text-slate-900 tracking-tight leading-none">{kpi.value}</p>
-                    <p className="text-[10px] font-bold text-slate-500 mt-2.5 leading-tight uppercase tracking-wider">{kpi.label}</p>
+              <CardContent className="p-5 flex flex-col justify-between h-full min-h-[90px]">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex-1">
+                    <p className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">{kpi.label}</p>
+                    <p className="mt-2 text-2xl font-extrabold text-slate-900 tracking-tight leading-none">{kpi.value}</p>
                   </div>
-                  <div className={`rounded-xl p-2 flex-shrink-0 flex items-center justify-center h-8.5 w-8.5 ${kpi.bg} ${kpi.text}`}>
-                    <Icon size={16} />
+                  <div className={`rounded-xl p-2.5 flex-shrink-0 flex items-center justify-center h-9 w-9 ${kpi.bg} ${kpi.text}`}>
+                    <Icon size={18} />
                   </div>
                 </div>
               </CardContent>
@@ -1331,19 +1331,33 @@ export default function SiteOperationsPage() {
           ) : (
             <div className="space-y-4">
               {/* Request Status summary */}
-              <div className="grid grid-cols-3 gap-3 max-w-xl">
-                <Card className="shadow-soft p-4 text-center">
-                  <p className="text-xl font-bold text-slate-700">{roleFilteredAssignments.length}</p>
-                  <p className="text-[9px] text-slate-400 uppercase font-bold mt-0.5">Total Requests</p>
-                </Card>
-                <Card className="shadow-soft border-l-4 border-l-amber-500 p-4 text-center">
-                  <p className="text-xl font-bold text-amber-700">{kpis.pendingAssignments}</p>
-                  <p className="text-[9px] text-slate-400 uppercase font-bold mt-0.5">Pending Approval</p>
-                </Card>
-                <Card className="shadow-soft border-l-4 border-l-emerald-500 p-4 text-center">
-                  <p className="text-xl font-bold text-emerald-700">{kpis.verifiedAssignments}</p>
-                  <p className="text-[9px] text-slate-400 uppercase font-bold mt-0.5">Approved Transfers</p>
-                </Card>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-2xl">
+                {[
+                  { label: 'Total Requests', value: roleFilteredAssignments.length, icon: FileText, color: 'from-blue-600 to-sky-500', bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-slate-150' },
+                  { label: 'Pending Approval', value: kpis.pendingAssignments, icon: AlertCircle, color: 'from-amber-600 to-orange-500', bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-slate-150' },
+                  { label: 'Approved Transfers', value: kpis.verifiedAssignments, icon: CheckCircle2, color: 'from-emerald-600 to-green-500', bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-slate-150' }
+                ].map((kpi) => {
+                  const Icon = kpi.icon
+                  return (
+                    <Card
+                      key={kpi.label}
+                      className={`relative overflow-hidden transition-all duration-300 border bg-white shadow-soft rounded-2xl hover:shadow-medium hover:border-slate-350 hover:-translate-y-1 ${kpi.border}`}
+                    >
+                      <CardContent className="p-5 flex flex-col justify-between h-full min-h-[90px]">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex-1">
+                            <p className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">{kpi.label}</p>
+                            <p className="mt-2 text-2xl font-extrabold text-slate-900 tracking-tight leading-none">{kpi.value}</p>
+                          </div>
+                          <div className={`rounded-xl p-2.5 flex-shrink-0 flex items-center justify-center h-9 w-9 ${kpi.bg} ${kpi.text}`}>
+                            <Icon size={18} />
+                          </div>
+                        </div>
+                      </CardContent>
+                      <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${kpi.color}`} />
+                    </Card>
+                  )
+                })}
               </div>
 
               <Card className="border border-border/80 shadow-soft overflow-hidden">

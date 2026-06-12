@@ -22,7 +22,7 @@ import {
   Settings,
   Shield,
   ShirtIcon,
-  Sparkles,
+  ClipboardCheck,
   Star,
   Users2,
   X,
@@ -105,13 +105,13 @@ export function Sidebar() {
               className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-600 to-teal-500 flex-shrink-0 hover:scale-105 active:scale-95 hover:shadow-[0_0_12px_rgba(16,185,129,0.5)] transition-all cursor-pointer border-0 outline-none p-0"
               title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
             >
-              <Sparkles size={16} className="text-white" />
+              <ClipboardCheck size={16} className="text-white" />
             </button>
             <div className={`transition-all duration-300 overflow-hidden ${
               sidebarCollapsed ? 'lg:max-w-0 lg:opacity-0 lg:ml-0' : 'max-w-[200px] opacity-100'
             }`}>
               <p className="text-[9px] font-bold uppercase tracking-widest text-white/50 whitespace-nowrap">Operations Performance</p>
-              <h1 className="text-xs font-bold text-white leading-tight">OPAS</h1>
+              <h1 className="text-lg font-black tracking-widest text-white leading-none mt-0.5">OPAS</h1>
             </div>
           </div>
         </div>

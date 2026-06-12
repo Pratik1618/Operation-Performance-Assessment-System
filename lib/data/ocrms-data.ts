@@ -49,7 +49,7 @@ export const activityTemplates: ActivityTemplate[] = [
     description: 'Verify and log employee absenteeism, reasons, and reliever deployment status.',
     category: 'Attendance Verification',
     frequency: 'daily',
-    weightage: 4,
+    weightage: 5,
     evidenceTypes: ['pdf', 'image'],
     formSchema: [
       { id: 'totalAbsent', label: 'Total Employees Absent', type: 'number', required: true, placeholder: 'Count of absent staff' },
@@ -59,7 +59,9 @@ export const activityTemplates: ActivityTemplate[] = [
       { id: 'relieverName', label: 'Reliever Name (if deployed)', type: 'text', required: false, placeholder: 'Full name' }
     ],
     approvalFlow: ['oe', 'rm', 'avp'],
-    active: true
+    active: true,
+    assignedRoles: 'OE,hrbp',
+    approvalFlowText: 'OE → RM → AVP → BH; HRBP → HR DR'
   },
   {
     id: 'TPL-ATT-002',
@@ -68,7 +70,7 @@ export const activityTemplates: ActivityTemplate[] = [
     description: 'Track reliever shifts, designations, and verify deployments against rosters.',
     category: 'Attendance Verification',
     frequency: 'daily',
-    weightage: 4,
+    weightage: 5,
     evidenceTypes: ['image'],
     formSchema: [
       { id: 'relieverCount', label: 'Total Relievers Positioned', type: 'number', required: true },
@@ -76,7 +78,9 @@ export const activityTemplates: ActivityTemplate[] = [
       { id: 'relieverDetails', label: 'Reliever Deployment Details & Roster Remarks', type: 'textarea', required: false }
     ],
     approvalFlow: ['oe', 'rm'],
-    active: true
+    active: true,
+    assignedRoles: 'OE,hrbp',
+    approvalFlowText: 'OE → RM → AVP → BH; HRBP → HR DR'
   },
   {
     id: 'TPL-ATT-003',
@@ -85,14 +89,16 @@ export const activityTemplates: ActivityTemplate[] = [
     description: 'Monitor count of guards or staff not checking in via the mobile application.',
     category: 'Attendance Verification',
     frequency: 'daily',
-    weightage: 3,
+    weightage: 5,
     evidenceTypes: ['excel'],
     formSchema: [
       { id: 'nonAppCount', label: 'Non-App Users Count', type: 'number', required: true },
       { id: 'reasonDescription', label: 'Reasons for Non-App Usage', type: 'textarea', required: true }
     ],
     approvalFlow: ['oe', 'rm'],
-    active: true
+    active: true,
+    assignedRoles: 'OE,hrbp',
+    approvalFlowText: 'OE → RM → AVP → BH; HRBP → HR DR'
   },
   {
     id: 'TPL-ATT-004',
@@ -108,7 +114,9 @@ export const activityTemplates: ActivityTemplate[] = [
       { id: 'reconciled', label: 'Reconciliation with client complete', type: 'checkbox', required: true }
     ],
     approvalFlow: ['oe', 'rm', 'avp'],
-    active: true
+    active: true,
+    assignedRoles: 'OE,hrbp',
+    approvalFlowText: 'OE → RM → AVP → BH; HRBP → HR DR'
   },
   {
     id: 'TPL-ATT-005',
@@ -117,14 +125,16 @@ export const activityTemplates: ActivityTemplate[] = [
     description: 'Review and log team leave applications and approvals for the week.',
     category: 'Attendance Verification',
     frequency: 'weekly',
-    weightage: 3,
+    weightage: 5,
     evidenceTypes: ['pdf'],
     formSchema: [
       { id: 'leavesApproved', label: 'Number of Leaves Approved', type: 'number', required: true },
       { id: 'backfillPlanned', label: 'Backfill Scheduled for all leaves', type: 'checkbox', required: true }
     ],
     approvalFlow: ['oe', 'rm'],
-    active: true
+    active: true,
+    assignedRoles: 'OE,hrbp',
+    approvalFlowText: 'OE → RM → AVP → BH; HRBP → HR DR'
   },
   {
     id: 'TPL-ATT-006',
@@ -133,14 +143,16 @@ export const activityTemplates: ActivityTemplate[] = [
     description: 'Trace and regularize records with incomplete clock-in/out timestamps.',
     category: 'Attendance Verification',
     frequency: 'weekly',
-    weightage: 3,
+    weightage: 5,
     evidenceTypes: ['signature'],
     formSchema: [
       { id: 'missingPunchesCount', label: 'Total Missing Punch Cases', type: 'number', required: true },
       { id: 'resolvedCount', label: 'Total Cases Resolved/Updated', type: 'number', required: true }
     ],
     approvalFlow: ['oe', 'rm'],
-    active: true
+    active: true,
+    assignedRoles: 'OE,hrbp,if back office hod',
+    approvalFlowText: 'OE → HOD → RM → AVP; HRBP → HR DR'
   },
   {
     id: 'TPL-ATT-007',
@@ -149,14 +161,16 @@ export const activityTemplates: ActivityTemplate[] = [
     description: 'Authorize and submit regularization requests with client-approved evidence.',
     category: 'Attendance Verification',
     frequency: 'weekly',
-    weightage: 4,
+    weightage: 5,
     evidenceTypes: ['image', 'pdf'],
     formSchema: [
       { id: 'regularizationDetails', label: 'Regularization Details', type: 'textarea', required: true },
       { id: 'clientApproved', label: 'Client Approved and Countersigned', type: 'checkbox', required: true }
     ],
     approvalFlow: ['oe', 'rm', 'avp'],
-    active: true
+    active: true,
+    assignedRoles: 'OE,hrbp,if back office hod',
+    approvalFlowText: 'OE → HOD → RM → AVP; HRBP → HR DR'
   },
   {
     id: 'TPL-ATT-008',
@@ -165,14 +179,16 @@ export const activityTemplates: ActivityTemplate[] = [
     description: 'Daily follow-up check to migrate non-app users into mobile punch usage.',
     category: 'Attendance Verification',
     frequency: 'daily',
-    weightage: 3,
+    weightage: 5,
     evidenceTypes: ['image'],
     formSchema: [
       { id: 'followUpCount', label: 'Followed Up Count', type: 'number', required: true },
       { id: 'devicesRegistered', label: 'Devices Newly Registered Today', type: 'number', required: true }
     ],
     approvalFlow: ['oe'],
-    active: true
+    active: true,
+    assignedRoles: 'oe,hrbp,hr dr',
+    approvalFlowText: 'OE → RM → AVP → BH; HRBP → HR DR'
   },
   {
     id: 'TPL-ATT-009',
@@ -181,13 +197,15 @@ export const activityTemplates: ActivityTemplate[] = [
     description: 'Ensure correct roster shift adjustments and mapped rest day slots.',
     category: 'Attendance Verification',
     frequency: 'daily',
-    weightage: 2,
+    weightage: 5,
     evidenceTypes: ['excel'],
     formSchema: [
       { id: 'weekoffRosterUpdated', label: 'Weekoff Roster Updated in System', type: 'checkbox', required: true }
     ],
     approvalFlow: ['oe'],
-    active: true
+    active: true,
+    assignedRoles: 'hrbp,oe',
+    approvalFlowText: 'OE → RM → AVP → BH; HRBP → HR DR'
   },
 
   // 2. Site Operations
@@ -206,7 +224,9 @@ export const activityTemplates: ActivityTemplate[] = [
       { id: 'clientFeedback', label: 'Client Feedback Notes', type: 'textarea', required: false }
     ],
     approvalFlow: ['oe', 'rm', 'avp'],
-    active: true
+    active: true,
+    assignedRoles: 'oe,rm,avp,bh,dr',
+    approvalFlowText: 'OE → RM → AVP → BH → DR'
   },
   {
     id: 'TPL-OPS-002',
@@ -215,14 +235,16 @@ export const activityTemplates: ActivityTemplate[] = [
     description: 'Prepare next month visit planner schedule for mapped sites.',
     category: 'Site Operations',
     frequency: 'monthly',
-    weightage: 4,
+    weightage: 5,
     evidenceTypes: ['pdf'],
     formSchema: [
       { id: 'plannedVisitsCount', label: 'Total Scheduled Site Visits', type: 'number', required: true },
       { id: 'submissionConfirm', label: 'Confirming before 26th cycle limit', type: 'checkbox', required: true }
     ],
     approvalFlow: ['oe', 'rm'],
-    active: true
+    active: true,
+    assignedRoles: 'oe,rm,avp,bh,dr',
+    approvalFlowText: 'OE → RM → AVP → BH → DR'
   },
   {
     id: 'TPL-OPS-003',
@@ -231,13 +253,15 @@ export const activityTemplates: ActivityTemplate[] = [
     description: 'Upload locked visit calendar schedule and route for regional manager approval.',
     category: 'Site Operations',
     frequency: 'monthly',
-    weightage: 4,
+    weightage: 5,
     evidenceTypes: ['excel'],
     formSchema: [
       { id: 'calendarUploaded', label: 'Calendar File Uploaded Correctly', type: 'checkbox', required: true }
     ],
     approvalFlow: ['oe', 'rm'],
-    active: true
+    active: true,
+    assignedRoles: 'oe,rm,avp,bh,dr',
+    approvalFlowText: 'OE → RM → AVP → BH → DR'
   },
   {
     id: 'TPL-OPS-004',
@@ -246,14 +270,16 @@ export const activityTemplates: ActivityTemplate[] = [
     description: 'Review and update employee-to-site assignments and client contact information.',
     category: 'Site Operations',
     frequency: 'monthly',
-    weightage: 3,
+    weightage: 5,
     evidenceTypes: ['excel'],
     formSchema: [
       { id: 'employeesMappedCount', label: 'Total Employees Mapped', type: 'number', required: true },
       { id: 'rosterLocked', label: ' Roster Mapped and Confirmed', type: 'checkbox', required: true }
     ],
     approvalFlow: ['oe', 'rm'],
-    active: true
+    active: true,
+    assignedRoles: 'oe,commerical',
+    approvalFlowText: 'OE → Commercial → AVP → BH'
   },
 
   // 3. Training
@@ -264,7 +290,7 @@ export const activityTemplates: ActivityTemplate[] = [
     description: 'Document classroom or field training sessions, topics, and list of participants.',
     category: 'Training',
     frequency: 'monthly',
-    weightage: 4,
+    weightage: 5,
     evidenceTypes: ['image', 'pdf'],
     formSchema: [
       { id: 'topic', label: 'Training Session Topic', type: 'text', required: true },
@@ -272,7 +298,9 @@ export const activityTemplates: ActivityTemplate[] = [
       { id: 'duration', label: 'Duration of Training (Hours)', type: 'number', required: true }
     ],
     approvalFlow: ['oe', 'rm'],
-    active: true
+    active: true,
+    assignedRoles: 'trainers,th,oe',
+    approvalFlowText: 'Trainers → TH → OE → AVP'
   },
   {
     id: 'TPL-TRN-002',
@@ -281,13 +309,15 @@ export const activityTemplates: ActivityTemplate[] = [
     description: 'Submit video clips of training events or drills as proof of performance.',
     category: 'Training',
     frequency: 'monthly',
-    weightage: 3,
+    weightage: 5,
     evidenceTypes: ['video'],
     formSchema: [
       { id: 'videoTopic', label: 'Video Topic Description', type: 'text', required: true }
     ],
     approvalFlow: ['oe', 'rm'],
-    active: true
+    active: true,
+    assignedRoles: 'trainers,th,oe',
+    approvalFlowText: 'Trainers → TH → OE → AVP'
   },
 
   // 4. Procurement & Logistics
@@ -298,14 +328,16 @@ export const activityTemplates: ActivityTemplate[] = [
     description: 'Verify logistics delivery status of chemicals, mops, or security tools.',
     category: 'Procurement & Logistics',
     frequency: 'monthly',
-    weightage: 4,
+    weightage: 5,
     evidenceTypes: ['pdf'],
     formSchema: [
       { id: 'challanNo', label: 'Delivery Challan Number', type: 'text', required: true },
       { id: 'receivedInFull', label: 'Received in Full and Undamaged', type: 'checkbox', required: true }
     ],
     approvalFlow: ['oe', 'rm'],
-    active: true
+    active: true,
+    assignedRoles: 'oe,ph',
+    approvalFlowText: 'OE → PH → AVP → BH'
   },
   {
     id: 'TPL-PRO-002',
@@ -314,13 +346,15 @@ export const activityTemplates: ActivityTemplate[] = [
     description: 'Audit material logbooks and register items matching purchase orders.',
     category: 'Procurement & Logistics',
     frequency: 'monthly',
-    weightage: 3,
+    weightage: 5,
     evidenceTypes: ['excel'],
     formSchema: [
       { id: 'registerMatch', label: 'Register entries match Challans', type: 'checkbox', required: true }
     ],
     approvalFlow: ['oe'],
-    active: true
+    active: true,
+    assignedRoles: 'oe,ph',
+    approvalFlowText: 'OE → PH → AVP → BH'
   },
   {
     id: 'TPL-PRO-003',
@@ -329,14 +363,16 @@ export const activityTemplates: ActivityTemplate[] = [
     description: 'Submit size configuration and counts for new guard or employee uniforms.',
     category: 'Procurement & Logistics',
     frequency: 'one-time',
-    weightage: 2,
+    weightage: 5,
     evidenceTypes: ['pdf'],
     formSchema: [
       { id: 'sizeNeeded', label: 'Uniform Sizes Required', type: 'select', required: true, options: ['S', 'M', 'L', 'XL', 'XXL'] },
       { id: 'qty', label: 'Quantity Requested', type: 'number', required: true }
     ],
     approvalFlow: ['oe', 'rm'],
-    active: true
+    active: true,
+    assignedRoles: 'oe,ph',
+    approvalFlowText: 'OE → PH → AVP → BH'
   },
   {
     id: 'TPL-PRO-004',
@@ -345,14 +381,16 @@ export const activityTemplates: ActivityTemplate[] = [
     description: 'Request boots/safety shoes size adjustments for onsite workers.',
     category: 'Procurement & Logistics',
     frequency: 'one-time',
-    weightage: 2,
+    weightage: 5,
     evidenceTypes: ['pdf'],
     formSchema: [
       { id: 'shoeSize', label: 'Shoe Sizes Required', type: 'select', required: true, options: ['6', '7', '8', '9', '10', '11'] },
       { id: 'qty', label: 'Quantity Requested', type: 'number', required: true }
     ],
     approvalFlow: ['oe', 'rm'],
-    active: true
+    active: true,
+    assignedRoles: 'oe,ph',
+    approvalFlowText: 'OE → PH → AVP → BH'
   },
   {
     id: 'TPL-PRO-005',
@@ -361,13 +399,15 @@ export const activityTemplates: ActivityTemplate[] = [
     description: 'Winter woolens requirement checklist for security guards.',
     category: 'Procurement & Logistics',
     frequency: 'one-time',
-    weightage: 2,
+    weightage: 5,
     evidenceTypes: ['pdf'],
     formSchema: [
       { id: 'qty', label: 'Quantity of Sweaters Needed', type: 'number', required: true }
     ],
     approvalFlow: ['oe'],
-    active: true
+    active: true,
+    assignedRoles: 'oe,ph',
+    approvalFlowText: 'OE → PH → AVP → BH'
   },
   {
     id: 'TPL-PRO-006',
@@ -376,14 +416,16 @@ export const activityTemplates: ActivityTemplate[] = [
     description: 'Submit proof of uniform distribution with signatures/handover records.',
     category: 'Procurement & Logistics',
     frequency: 'monthly',
-    weightage: 3,
+    weightage: 5,
     evidenceTypes: ['signature', 'image'],
     formSchema: [
       { id: 'issuedSets', label: 'Uniform Sets Distributed', type: 'number', required: true },
       { id: 'allEmployeesCovered', label: 'Handover complete for all candidates', type: 'checkbox', required: true }
     ],
     approvalFlow: ['oe', 'rm'],
-    active: true
+    active: true,
+    assignedRoles: 'oe,ph',
+    approvalFlowText: 'OE → PH → AVP → BH'
   },
   {
     id: 'TPL-PRO-007',
@@ -392,13 +434,15 @@ export const activityTemplates: ActivityTemplate[] = [
     description: 'Submit shoe distribution records and upload handover sheets.',
     category: 'Procurement & Logistics',
     frequency: 'monthly',
-    weightage: 3,
+    weightage: 5,
     evidenceTypes: ['signature', 'image'],
     formSchema: [
       { id: 'issuedBoots', label: 'Pairs of Boots Distributed', type: 'number', required: true }
     ],
     approvalFlow: ['oe', 'rm'],
-    active: true
+    active: true,
+    assignedRoles: 'oe,ph',
+    approvalFlowText: 'OE → PH → AVP → BH'
   },
 
   // 5. Employee Relations
@@ -409,7 +453,7 @@ export const activityTemplates: ActivityTemplate[] = [
     description: 'Log workforce grievances, voice/call recordings, and track resolutions.',
     category: 'Employee Relations',
     frequency: 'daily',
-    weightage: 4,
+    weightage: 5,
     evidenceTypes: ['audio', 'pdf'],
     formSchema: [
       { id: 'employeeName', label: 'Employee Name', type: 'text', required: true },
@@ -418,7 +462,9 @@ export const activityTemplates: ActivityTemplate[] = [
       { id: 'urgency', label: 'Urgency / Severity Level', type: 'select', required: true, options: ['Low', 'Medium', 'High'] }
     ],
     approvalFlow: ['oe', 'rm', 'avp'],
-    active: true
+    active: true,
+    assignedRoles: 'hrbp,hr dr',
+    approvalFlowText: 'HRBP → HR DR'
   },
   {
     id: 'TPL-EMP-002',
@@ -427,7 +473,7 @@ export const activityTemplates: ActivityTemplate[] = [
     description: 'Mark employee recruitment referral codes and confirm candidates completing 90-day cycle.',
     category: 'Employee Relations',
     frequency: 'daily',
-    weightage: 3,
+    weightage: 5,
     evidenceTypes: ['pdf'],
     formSchema: [
       { id: 'referrerCode', label: 'Referrer Employee ID', type: 'text', required: true },
@@ -435,7 +481,9 @@ export const activityTemplates: ActivityTemplate[] = [
       { id: 'joinedDate', label: 'Joining Date', type: 'date', required: true }
     ],
     approvalFlow: ['oe', 'rm'],
-    active: true
+    active: true,
+    assignedRoles: 'hrbp,oe',
+    approvalFlowText: 'OE → RM → AVP → BH; HRBP → HR DR'
   },
 
   // 6. Incident & Performance
@@ -455,7 +503,9 @@ export const activityTemplates: ActivityTemplate[] = [
       { id: 'actions', label: 'Immediate Corrective Action Details', type: 'textarea', required: true }
     ],
     approvalFlow: ['oe', 'rm', 'avp'],
-    active: true
+    active: true,
+    assignedRoles: 'hrbp,oe,hr dr',
+    approvalFlowText: 'OE → RM → AVP → BH; HRBP → HR DR'
   },
   {
     id: 'TPL-INC-002',
@@ -464,14 +514,16 @@ export const activityTemplates: ActivityTemplate[] = [
     description: 'Inspect facility issues, outline snags, and schedule fixes.',
     category: 'Incident & Performance',
     frequency: 'fortnightly',
-    weightage: 3,
+    weightage: 5,
     evidenceTypes: ['image'],
     formSchema: [
       { id: 'openSnags', label: 'Count of Open Snags Identified', type: 'number', required: true },
       { id: 'snagDetails', label: 'Location and Snag Details', type: 'textarea', required: true }
     ],
     approvalFlow: ['oe', 'rm'],
-    active: true
+    active: true,
+    assignedRoles: 'oe,hrbp',
+    approvalFlowText: 'OE → RM → AVP → BH; HRBP → HR DR'
   },
   {
     id: 'TPL-INC-003',
@@ -480,14 +532,16 @@ export const activityTemplates: ActivityTemplate[] = [
     description: 'Validate cleaning audits for specific critical chambers or machine floors.',
     category: 'Incident & Performance',
     frequency: 'weekly',
-    weightage: 4,
+    weightage: 5,
     evidenceTypes: ['image'],
     formSchema: [
       { id: 'cleaningScore', label: 'Cleanliness Rating (1-10)', type: 'number', required: true },
       { id: 'chemicalUsed', label: 'Chemical Cleaner Batch Verified', type: 'checkbox', required: true }
     ],
     approvalFlow: ['oe', 'rm'],
-    active: true
+    active: true,
+    assignedRoles: 'oe,hrbp',
+    approvalFlowText: 'OE → RM → AVP → BH; HRBP → HR DR'
   },
   {
     id: 'TPL-INC-004',
@@ -496,14 +550,16 @@ export const activityTemplates: ActivityTemplate[] = [
     description: 'Review pest control schedules, chemicals sprayed, and certifications.',
     category: 'Incident & Performance',
     frequency: 'monthly',
-    weightage: 3,
+    weightage: 5,
     evidenceTypes: ['pdf'],
     formSchema: [
       { id: 'sprayDone', label: 'Pest Control Spray Done', type: 'checkbox', required: true },
       { id: 'vendorCertificate', label: 'Vendor Service Certificate Attached', type: 'checkbox', required: true }
     ],
     approvalFlow: ['oe'],
-    active: true
+    active: true,
+    assignedRoles: 'oe,hrbp',
+    approvalFlowText: 'OE → RM → AVP → BH; HRBP → HR DR'
   },
 
   // 7. Planning & Recognition
@@ -514,14 +570,16 @@ export const activityTemplates: ActivityTemplate[] = [
     description: 'Plan rewards & recognition ceremonies and log dates.',
     category: 'Planning & Recognition',
     frequency: 'monthly',
-    weightage: 3,
+    weightage: 5,
     evidenceTypes: ['pdf'],
     formSchema: [
       { id: 'awardNomineesCount', label: 'Nominees Selected Count', type: 'number', required: true },
       { id: 'ceremonyDate', label: 'Proposed Ceremony Date', type: 'date', required: true }
     ],
     approvalFlow: ['oe', 'rm'],
-    active: true
+    active: true,
+    assignedRoles: 'hrbp,hr dr',
+    approvalFlowText: 'HRBP → HR DR'
   },
   {
     id: 'TPL-PLN-002',
@@ -530,13 +588,15 @@ export const activityTemplates: ActivityTemplate[] = [
     description: 'Confirm reward distribution and submit photos of recognition awards.',
     category: 'Planning & Recognition',
     frequency: 'monthly',
-    weightage: 3,
+    weightage: 5,
     evidenceTypes: ['image'],
     formSchema: [
       { id: 'winnersList', label: 'Award Winners Names', type: 'textarea', required: true }
     ],
     approvalFlow: ['oe', 'rm'],
-    active: true
+    active: true,
+    assignedRoles: 'hrbp,hr dr',
+    approvalFlowText: 'HRBP → HR DR'
   },
 
   // 8. Reporting & Closure
@@ -547,14 +607,16 @@ export const activityTemplates: ActivityTemplate[] = [
     description: 'Submit Minutes of Meeting (MOM) details of monthly reviews with client.',
     category: 'Reporting & Closure',
     frequency: 'monthly',
-    weightage: 4,
+    weightage: 5,
     evidenceTypes: ['pdf'],
     formSchema: [
       { id: 'clientRepsPresent', label: 'Client Representatives Present', type: 'text', required: true },
       { id: 'keyDecisions', label: 'Key Decisions & Action Points', type: 'textarea', required: true }
     ],
     approvalFlow: ['oe', 'rm', 'avp'],
-    active: true
+    active: true,
+    assignedRoles: 'oe,rm,avp,bh,dr',
+    approvalFlowText: 'OE → RM → AVP → BH → DR'
   },
   {
     id: 'TPL-REP-002',
@@ -563,14 +625,16 @@ export const activityTemplates: ActivityTemplate[] = [
     description: 'Audit snag resolutions and submit sign-offs for performance items.',
     category: 'Reporting & Closure',
     frequency: 'monthly',
-    weightage: 4,
+    weightage: 5,
     evidenceTypes: ['pdf'],
     formSchema: [
       { id: 'resolvedCount', label: 'Count of Closed Items', type: 'number', required: true },
       { id: 'signOffObtained', label: 'Client Sign-off Sheet Scanned', type: 'checkbox', required: true }
     ],
     approvalFlow: ['oe', 'rm'],
-    active: true
+    active: true,
+    assignedRoles: 'oe,rm,avp,bh,dr',
+    approvalFlowText: 'OE → RM → AVP → BH → DR'
   },
   {
     id: 'TPL-REP-003',
@@ -579,14 +643,16 @@ export const activityTemplates: ActivityTemplate[] = [
     description: 'Review daily manpower status, keys handover, and log shifts closure.',
     category: 'Reporting & Closure',
     frequency: 'daily',
-    weightage: 3,
+    weightage: 5,
     evidenceTypes: ['image'],
     formSchema: [
       { id: 'incidentFree', label: 'Shift was Incident Free', type: 'checkbox', required: true },
       { id: 'handoverComplete', label: 'Keys and Register Handovers Done', type: 'checkbox', required: true }
     ],
     approvalFlow: ['oe'],
-    active: true
+    active: true,
+    assignedRoles: 'oe,rm,',
+    approvalFlowText: 'OE → RM → AVP → BH'
   },
 
   // 9. Quality & Feedback
@@ -597,30 +663,34 @@ export const activityTemplates: ActivityTemplate[] = [
     description: 'Log monthly customer satisfaction survey score and comments.',
     category: 'Quality & Feedback',
     frequency: 'monthly',
-    weightage: 4,
+    weightage: 5,
     evidenceTypes: ['pdf'],
     formSchema: [
       { id: 'csatScore', label: 'CSAT Rating (0-100)', type: 'number', required: true },
       { id: 'remarks', label: 'Feedback & Improvement Remarks', type: 'textarea', required: true }
     ],
     approvalFlow: ['oe', 'rm', 'avp'],
-    active: true
+    active: true,
+    assignedRoles: 'oe,rm,avp,bh,dr',
+    approvalFlowText: 'OE → RM → AVP → BH → DR'
   },
   {
     id: 'TPL-QLY-002',
     code: 'ACT-QLY-02',
     name: 'Material Quality',
-    description: 'Perform batch quality audits on chemicals and housekeeping cleaning kits.',
+    description: 'Perform batch quality audits on housekeeping cleaning kits.',
     category: 'Quality & Feedback',
     frequency: 'monthly',
-    weightage: 3,
+    weightage: 5,
     evidenceTypes: ['image'],
     formSchema: [
       { id: 'dilutionVerified', label: 'Dilution batches verified', type: 'checkbox', required: true },
       { id: 'qualityRating', label: 'Housekeeping kit Quality rating (1-5)', type: 'number', required: true }
     ],
     approvalFlow: ['oe', 'rm'],
-    active: true
+    active: true,
+    assignedRoles: 'oe,ph',
+    approvalFlowText: 'OE → PH → AVP → BH'
   },
   {
     id: 'TPL-QLY-003',
@@ -629,13 +699,15 @@ export const activityTemplates: ActivityTemplate[] = [
     description: 'Draft monthly CSR summaries, SLA parameters met, and KPI averages.',
     category: 'Quality & Feedback',
     frequency: 'monthly',
-    weightage: 4,
+    weightage: 5,
     evidenceTypes: ['pdf'],
     formSchema: [
       { id: 'slaAdherence', label: 'SLA Adherence rate %', type: 'number', required: true }
     ],
     approvalFlow: ['oe', 'rm', 'avp'],
-    active: true
+    active: true,
+    assignedRoles: 'oe,rm,avp,bh,dr',
+    approvalFlowText: 'OE → RM → AVP → BH → DR'
   },
   {
     id: 'TPL-QLY-004',
@@ -644,31 +716,37 @@ export const activityTemplates: ActivityTemplate[] = [
     description: 'Log client requests, leads, and introductions for business expansions.',
     category: 'Quality & Feedback',
     frequency: 'monthly',
-    weightage: 3,
+    weightage: 5,
     evidenceTypes: ['pdf'],
     formSchema: [
       { id: 'contactName', label: 'Lead Representative Name', type: 'text', required: true },
       { id: 'notes', label: 'Lead & Contact Details', type: 'textarea', required: true }
     ],
     approvalFlow: ['oe', 'rm'],
-    active: true
+    active: true,
+    assignedRoles: 'oe,hrbp',
+    approvalFlowText: 'OE → RM → AVP → BH; HRBP → HR DR'
   }
 ];
 
 // Helper to calculate scoring based on a mock policy
-const calculateScore = (task: Partial<OperationalTask>, policy: string): number => {
+const calculateScore = (task: Partial<OperationalTask>, policy?: string): number => {
   const oe = task.oeRating || 0;
   const rm = task.rmRating || 0;
   const avp = task.avpRating || 0;
-  
-  if (policy === 'average') {
-    return Math.round((oe + rm + avp) / 3);
-  } else if (policy === 'weighted') {
-    return Math.round((0.15 * oe) + (0.35 * rm) + (0.5 * avp));
-  } else {
-    // default avp_only
-    return avp;
+  const bh = task.bhRating || 0;
+  const weightage = task.weightage || 5;
+
+  let activeRating = oe;
+  if (task.status === 'bh_approved' && task.bhRating !== undefined) {
+    activeRating = bh;
+  } else if (task.avpRating !== undefined) {
+    activeRating = avp;
+  } else if (task.rmRating !== undefined) {
+    activeRating = rm;
   }
+  
+  return activeRating * weightage;
 };
 
 // ── Generate Operational Task Records ──

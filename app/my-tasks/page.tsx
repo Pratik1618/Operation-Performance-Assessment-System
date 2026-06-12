@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useOCRMS } from '@/lib/context/ocrms-context'
 import type { TaskFrequency, TaskStatus, OperationalTask } from '@/lib/types'
+import { sites } from '@/lib/data/ocrms-data'
 import {
   Table,
   TableHeader,
@@ -47,7 +48,7 @@ const statusConfig: Record<TaskStatus, { label: string; bg: string; text: string
 
 export default function MyTasksPage() {
   const router = useRouter()
-  const { tasks, currentRole, scoringPolicy } = useOCRMS()
+  const { tasks, templates, currentUser, currentRole, scoringPolicy } = useOCRMS()
 
   // View settings
   const [activeTab, setActiveTab] = useState<TaskFrequency | 'all'>('all')
@@ -75,14 +76,43 @@ export default function MyTasksPage() {
     return Array.from(list.entries()).map(([id, name]) => ({ id, name }))
   }, [tasks])
 
+  const roleFilteredTasks = useMemo(() => {
+    const isRoleMatch = (assignedRolesStr: string | undefined, role: string) => {
+      if (!assignedRolesStr) return false;
+      const roles = assignedRolesStr.toLowerCase().split(',').map(r => r.trim());
+      if (role === 'hr') {
+        return roles.includes('hr') || roles.includes('hrbp') || roles.includes('hr dr');
+      }
+      if (role === 'procurement') {
+        return roles.includes('procurement') || roles.includes('ph') || roles.includes('commerical') || roles.includes('commercial');
+      }
+      return roles.includes(role.toLowerCase());
+    };
+
+    return tasks.filter(t => {
+      // 1. Role match check on template
+      const tpl = templates.find(tpl => tpl.id === t.templateId);
+      if (!tpl) return false;
+      if (!isRoleMatch(tpl.assignedRoles, currentRole)) return false;
+
+      // 2. User assignment/site check
+      if (currentRole === 'oe') {
+        return t.assignedTo === currentUser?.userName;
+      }
+      const site = sites.find(s => s.id === t.siteId);
+      if (currentRole === 'rm') {
+        return site?.assignedRM === currentUser?.userName;
+      }
+      if (currentRole === 'avp') {
+        return site?.assignedAVP === currentUser?.userName;
+      }
+      return true;
+    });
+  }, [tasks, templates, currentRole, currentUser])
+
   // Filter tasks based on role and inputs
   const filteredTasks = useMemo(() => {
-    let list = [...tasks]
-
-    // Role restrictions: OEs only see tasks assigned to them
-    if (currentRole === 'oe') {
-      list = list.filter(t => t.assignedTo === 'Ravi Shankar')
-    }
+    let list = [...roleFilteredTasks]
 
     // Frequency
     if (activeTab !== 'all') {
@@ -125,7 +155,7 @@ export default function MyTasksPage() {
     })
 
     return list
-  }, [tasks, currentRole, activeTab, searchTerm, statusFilter, categoryFilter, siteFilter, sortField, sortDir])
+  }, [roleFilteredTasks, activeTab, searchTerm, statusFilter, categoryFilter, siteFilter, sortField, sortDir])
 
   // Pagination
   const totalPages = Math.ceil(filteredTasks.length / pageSize)
@@ -135,7 +165,7 @@ export default function MyTasksPage() {
 
   // Summary statistics computed in real-time
   const summary = useMemo(() => {
-    const list = currentRole === 'oe' ? tasks.filter(t => t.assignedTo === 'Ravi Shankar') : tasks
+    const list = roleFilteredTasks
     const total = list.length
     const approved = list.filter(t => ['approved', 'bh_approved'].includes(t.status)).length
     const submitted = list.filter(t => ['oe_submitted', 'submitted', 'rm_approved', 'avp_approved'].includes(t.status)).length
@@ -150,7 +180,7 @@ export default function MyTasksPage() {
       overdue,
       compliance: total > 0 ? Math.round(((approved + submitted) / total) * 100) : 0,
     }
-  }, [tasks, currentRole])
+  }, [roleFilteredTasks])
 
   const handleSort = (field: typeof sortField) => {
     if (sortField === field) {
@@ -464,14 +494,14 @@ export default function MyTasksPage() {
                           {['approved', 'bh_approved', 'avp_approved', 'rm_approved'].includes(task.status) && task.finalScore !== undefined ? (
                             <div className="space-y-0.5">
                               <span className="text-emerald-700 bg-emerald-50 border border-emerald-150 px-2 py-0.5 rounded text-[11px] font-extrabold">
-                                {task.finalScore} / {task.weightage}
+                                {task.finalScore} / {task.weightage * task.weightage}
                               </span>
-                              {renderStars(task.finalScore, task.weightage)}
+                              {renderStars(task.finalScore / task.weightage, task.weightage)}
                             </div>
                           ) : ['oe_submitted', 'submitted'].includes(task.status) ? (
                             <span className="text-indigo-600 text-[10px] font-semibold bg-indigo-50 px-1.5 py-0.25 rounded">OE Self: {task.oeRating}</span>
                           ) : (
-                            <span className="text-[10px] text-slate-400 font-medium">Max: {task.weightage}</span>
+                            <span className="text-[10px] text-slate-400 font-medium">Max: {task.weightage * task.weightage}</span>
                           )}
                         </div>
                       </TableCell>

@@ -127,6 +127,8 @@ export interface ActivityTemplate {
   formSchema: FormFieldSchema[];
   approvalFlow: ('oe' | 'rm' | 'avp')[];
   active: boolean;
+  assignedRoles?: string;
+  approvalFlowText?: string;
 }
 
 export interface OperationalTask {

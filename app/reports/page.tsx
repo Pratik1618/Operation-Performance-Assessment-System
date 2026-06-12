@@ -58,9 +58,9 @@ export default function ReportsPage() {
   // Report statistics
   const stats = useMemo(() => {
     const approved = filteredTasks.filter(t => ['approved', 'bh_approved'].includes(t.status))
-    const totalWeight = approved.reduce((sum, t) => sum + t.weightage, 0)
+    const totalMaxScorePoints = approved.reduce((sum, t) => sum + (t.weightage * t.weightage), 0)
     const totalScore = approved.reduce((sum, t) => sum + (t.finalScore || 0), 0)
-    const averagePerformanceScore = totalWeight > 0 ? Math.round((totalScore / totalWeight) * 100) : 0
+    const averagePerformanceScore = totalMaxScorePoints > 0 ? Math.round((totalScore / totalMaxScorePoints) * 100) : 0
     
     return {
       totalCount: filteredTasks.length,
@@ -279,10 +279,10 @@ export default function ReportsPage() {
                   <TableCell className="px-4 py-3 text-center">
                     {['approved', 'bh_approved', 'avp_approved', 'rm_approved'].includes(task.status) && task.finalScore !== undefined ? (
                       <span className="text-xs font-extrabold text-emerald-800 bg-emerald-100 border border-emerald-200 px-2 py-0.5 rounded">
-                        {task.finalScore} / {task.weightage}
+                        {task.finalScore} / {task.weightage * task.weightage}
                       </span>
                     ) : (
-                      <span className="text-[10px] text-slate-400 font-semibold">Max: {task.weightage}</span>
+                      <span className="text-[10px] text-slate-400 font-semibold">Max: {task.weightage * task.weightage}</span>
                     )}
                   </TableCell>
                   <TableCell className="px-4 py-3">
