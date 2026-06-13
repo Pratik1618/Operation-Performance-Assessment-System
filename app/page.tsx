@@ -32,10 +32,19 @@ export default function DashboardPage() {
       if (!assignedRolesStr) return false;
       const roles = assignedRolesStr.toLowerCase().split(',').map(r => r.trim());
       if (role === 'hr') {
-        return roles.includes('hr') || roles.includes('hrbp') || roles.includes('hr dr');
+        return roles.includes('hr') || roles.includes('hrbp');
+      }
+      if (role === 'hr_dr') {
+        return roles.includes('hr dr') || roles.includes('hr_dr');
       }
       if (role === 'procurement') {
-        return roles.includes('procurement') || roles.includes('ph') || roles.includes('commerical') || roles.includes('commercial');
+        return roles.includes('procurement') || roles.includes('ph');
+      }
+      if (role === 'commerical') {
+        return roles.includes('commerical') || roles.includes('commercial');
+      }
+      if (role === 'hod') {
+        return roles.includes('hod') || roles.includes('back office hod') || roles.includes('if back office hod') || roles.some(r => r.includes('hod'));
       }
       return roles.includes(role.toLowerCase());
     };

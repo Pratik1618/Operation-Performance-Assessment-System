@@ -10,7 +10,7 @@ import type {
   MaterialQuality, UniformRecord, RREvent, ClosureReport,
   FeedbackScore, Approval, OCRMSDashboardKPI, Notification,
   AttendanceVerificationCase, ActivityTemplate, ActivityCategory,
-  FormFieldSchema,
+  FormFieldSchema, TrainingSession,
 } from '@/lib/types';
 
 // ── Clients ──
@@ -319,7 +319,6 @@ export const activityTemplates: ActivityTemplate[] = [
     assignedRoles: 'trainers,th,oe',
     approvalFlowText: 'Trainers → TH → OE → AVP'
   },
-
   // 4. Procurement & Logistics
   {
     id: 'TPL-PRO-001',
@@ -1201,5 +1200,13 @@ export const attendanceVerificationCases: AttendanceVerificationCase[] = [
     finalScore: 4,
     status: 'AVP Approved'
   }
+];
+
+// ── Mock Training Sessions for Training Planner ──
+export const initialTrainingSessions: TrainingSession[] = [
+  { id: 'TRN_SESS_001', siteId: 'SITE_001', siteName: 'Infosys Gurgaon Tower A', topic: 'Fire Safety Drill & Evacuation', trainerName: 'Geeta Joshi', dateStr: '2026-06-05', time: '10:00 AM', status: 'completed', targetEmployeesCount: 15, mode: 'offline' },
+  { id: 'TRN_SESS_002', siteId: 'SITE_004', siteName: 'DLF Cyber Hub Delhi', topic: 'Customer Service Excellence', trainerName: 'Geeta Joshi', dateStr: '2026-06-12', time: '02:00 PM', status: 'planned', targetEmployeesCount: 20, mode: 'online' },
+  { id: 'TRN_SESS_003', siteId: 'SITE_008', siteName: 'Infosys Noida SEZ', topic: 'First Aid Emergency Protocol', trainerName: 'Geeta Joshi', dateStr: '2026-06-18', time: '11:00 AM', status: 'planned', targetEmployeesCount: 12, mode: 'offline' },
+  { id: 'TRN_SESS_004', siteId: 'SITE_009', siteName: 'DLF Gateway Gurgaon', topic: 'Basic Grooming & Attendance App Usage', trainerName: 'Geeta Joshi', dateStr: '2026-06-25', time: '09:30 AM', status: 'planned', targetEmployeesCount: 18, mode: 'online' }
 ];
 

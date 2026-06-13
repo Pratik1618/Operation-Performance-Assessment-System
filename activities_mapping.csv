@@ -14,6 +14,7 @@ ACT-OPS-03,Visit Calendar Upload,Site Operations,Monthly,"oe,rm,avp,bh,dr",OE ? 
 ACT-OPS-04,Site Mapping,Site Operations,Monthly,"oe,commerical",OE ? Commercial ? AVP ? BH,5,,
 ACT-TRN-01,Training Report,Training,Monthly,"trainers,th,oe",Trainers ? TH ? OE ? AVP,5,,
 ACT-TRN-02,Training Videos,Training,Monthly,"trainers,th,oe",Trainers ? TH ? OE ? AVP,5,,
+ACT-TRN-03,Training Schedule Calendar,Training,Monthly,"trainers,th,oe",Trainers ? TH ? OE ? AVP,5,,
 ACT-PRO-01,Material Delivery Status,Procurement & Logistics,Monthly,"oe,ph",OE ? PH ? AVP ? BH,5,,
 ACT-PRO-02,Material Punch Performance,Procurement & Logistics,Monthly,"oe,ph",OE ? PH ? AVP ? BH,5,,
 ACT-PRO-03,Uniform Request,Procurement & Logistics,One-Time,"oe,ph",OE ? PH ? AVP ? BH,5,,

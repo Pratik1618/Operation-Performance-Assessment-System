@@ -59,6 +59,7 @@ export function Sidebar() {
       items: [
         { icon: ListChecks, label: 'My Tasks', href: '/my-tasks', highlight: true },
         { icon: Building2, label: 'Site Operations', href: '/site-operations' },
+        { icon: CalendarCheck, label: 'Training Planner', href: '/training-planner' },
       ],
     },
     {

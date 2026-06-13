@@ -4,7 +4,7 @@
 // ─────────────────────────────────────────────
 
 // ── Roles ──
-export type UserRole = 'oe' | 'rm' | 'avp' | 'bh' | 'hr' | 'procurement';
+export type UserRole = 'oe' | 'rm' | 'avp' | 'bh' | 'hr' | 'procurement' | 'dr' | 'th' | 'trainers' | 'commerical' | 'hod' | 'hr_dr';
 
 export interface User {
   id: string;
@@ -507,5 +507,19 @@ export interface AttendanceVerificationCase {
   avpRemarks?: string;
   finalScore?: number;
   status: string;
+}
+
+// ── Training Session Planner ──
+export interface TrainingSession {
+  id: string;
+  siteId: string;
+  siteName: string;
+  topic: string;
+  trainerName: string;
+  dateStr: string; // YYYY-MM-DD
+  time: string; // HH:MM AM/PM
+  status: 'planned' | 'completed';
+  targetEmployeesCount: number;
+  mode: 'online' | 'offline';
 }
 

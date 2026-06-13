@@ -20,6 +20,12 @@ export const roleConfigs: RoleConfig[] = [
   { role: 'bh', label: 'Business Head', userName: 'Priya Saxena', code: 'BH-001', designation: 'Business Head' },
   { role: 'hr', label: 'HR Team', userName: 'Neha Verma', code: 'HR-001', designation: 'HR Manager' },
   { role: 'procurement', label: 'Procurement Team', userName: 'Amit Sharma', code: 'PROC-001', designation: 'Procurement Head' },
+  { role: 'dr', label: 'Operation Director', userName: 'Rajesh Khanna', code: 'DR-001', designation: 'Operation Director' },
+  { role: 'th', label: 'Trainer Head', userName: 'Vikram Sen', code: 'TH-001', designation: 'Trainer Head' },
+  { role: 'trainers', label: 'Trainers', userName: 'Geeta Joshi', code: 'TRN-001', designation: 'Trainer' },
+  { role: 'commerical', label: 'Commercial Team', userName: 'Anil Mehta', code: 'COMM-001', designation: 'Commercial Team' },
+  { role: 'hod', label: 'Back Office HOD', userName: 'Sanjay Gupta', code: 'HOD-001', designation: 'Back Office HOD' },
+  { role: 'hr_dr', label: 'HR Director', userName: 'Meenakshi Sharma', code: 'HRDR-001', designation: 'HR Director' },
 ]
 
 export type ScoringPolicy = 'avp_only' | 'average' | 'weighted';

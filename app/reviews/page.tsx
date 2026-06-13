@@ -71,10 +71,19 @@ export default function ReviewsPage() {
       if (!assignedRolesStr) return false;
       const roles = assignedRolesStr.toLowerCase().split(',').map(r => r.trim());
       if (role === 'hr') {
-        return roles.includes('hr') || roles.includes('hrbp') || roles.includes('hr dr');
+        return roles.includes('hr') || roles.includes('hrbp');
+      }
+      if (role === 'hr_dr') {
+        return roles.includes('hr dr') || roles.includes('hr_dr');
       }
       if (role === 'procurement') {
-        return roles.includes('procurement') || roles.includes('ph') || roles.includes('commerical') || roles.includes('commercial');
+        return roles.includes('procurement') || roles.includes('ph');
+      }
+      if (role === 'commerical') {
+        return roles.includes('commerical') || roles.includes('commercial');
+      }
+      if (role === 'hod') {
+        return roles.includes('hod') || roles.includes('back office hod') || roles.includes('if back office hod') || roles.some(r => r.includes('hod'));
       }
       return roles.includes(role.toLowerCase());
     };
@@ -213,7 +222,7 @@ export default function ReviewsPage() {
 
       <div className="w-full">
         {/* TASK SUBMISSIONS & REVISIONS QUEUE CARD */}
-        {(currentRole === 'oe' || currentRole === 'hr' || currentRole === 'procurement') && (
+        {(currentRole !== 'rm' && currentRole !== 'avp' && currentRole !== 'bh') && (
           <Card className="shadow-soft border rounded-2xl bg-white overflow-hidden flex flex-col w-full">
             <CardHeader className="pb-3 border-b bg-slate-50/65">
               <div className="flex items-center justify-between">
@@ -608,7 +617,7 @@ export default function ReviewsPage() {
         )}
 
         {/* ACCESS RESTRICTED CARD FOR NON-APPROVER ROLES */}
-        {currentRole !== 'oe' && currentRole !== 'rm' && currentRole !== 'avp' && currentRole !== 'bh' && (
+        {!(currentRole === 'rm' || currentRole === 'avp' || currentRole === 'bh' || currentRole === 'oe' || currentRole === 'hr' || currentRole === 'procurement' || currentRole === 'dr' || currentRole === 'th' || currentRole === 'trainers' || currentRole === 'commerical' || currentRole === 'hod' || currentRole === 'hr_dr') && (
           <Card className="shadow-soft border border-indigo-150 bg-white rounded-2xl p-8 max-w-lg mx-auto text-center mt-6">
             <CardContent className="p-0 space-y-4">
               <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-600 shadow-sm">

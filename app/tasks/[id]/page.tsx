@@ -15,6 +15,27 @@ import { useOCRMS } from '@/lib/context/ocrms-context'
 import type { OperationalTask } from '@/lib/types'
 import { toast } from 'sonner'
 
+const isRoleMatch = (assignedRolesStr: string | undefined, role: string) => {
+  if (!assignedRolesStr) return false;
+  const roles = assignedRolesStr.toLowerCase().split(',').map(r => r.trim());
+  if (role === 'hr') {
+    return roles.includes('hr') || roles.includes('hrbp');
+  }
+  if (role === 'hr_dr') {
+    return roles.includes('hr dr') || roles.includes('hr_dr');
+  }
+  if (role === 'procurement') {
+    return roles.includes('procurement') || roles.includes('ph');
+  }
+  if (role === 'commerical') {
+    return roles.includes('commerical') || roles.includes('commercial');
+  }
+  if (role === 'hod') {
+    return roles.includes('hod') || roles.includes('back office hod') || roles.includes('if back office hod') || roles.some(r => r.includes('hod'));
+  }
+  return roles.includes(role.toLowerCase());
+};
+
 export default function TaskDetailPage() {
   const params = useParams()
   const router = useRouter()
@@ -52,8 +73,9 @@ export default function TaskDetailPage() {
       setSelfRating(task.oeRating || 0)
       setUploadedFiles(task.evidenceUrls || [])
       
-      // Editable only if user is OE and task status is pending/in_progress
-      setIsEditable(currentRole === 'oe' && (task.status === 'pending' || task.status === 'in_progress'))
+      // Editable only if user matches template assigned role and status is pending, in_progress, or rejected (for revision)
+      const userMatchesRole = isRoleMatch(template.assignedRoles, currentRole);
+      setIsEditable(userMatchesRole && (task.status === 'pending' || task.status === 'in_progress' || task.status === 'rejected'))
 
       // Default review rating to template weightage
       setReviewRating(template.weightage)

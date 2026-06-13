@@ -17,6 +17,12 @@ const roleUserMap: Record<UserRole, { name: string; designation: string; email: 
   bh: { name: 'Priya Saxena', designation: 'Business Head', email: 'priya.saxena@opas.com' },
   hr: { name: 'Neha Verma', designation: 'HR Manager', email: 'neha.verma@opas.com' },
   procurement: { name: 'Amit Sharma', designation: 'Procurement Head', email: 'amit.sharma@opas.com' },
+  dr: { name: 'Rajesh Khanna', designation: 'Operation Director', email: 'rajesh.khanna@opas.com' },
+  th: { name: 'Vikram Sen', designation: 'Trainer Head', email: 'vikram.sen@opas.com' },
+  trainers: { name: 'Geeta Joshi', designation: 'Trainer', email: 'geeta.joshi@opas.com' },
+  commerical: { name: 'Anil Mehta', designation: 'Commercial Team', email: 'anil.mehta@opas.com' },
+  hod: { name: 'Sanjay Gupta', designation: 'Back Office HOD', email: 'sanjay.gupta@opas.com' },
+  hr_dr: { name: 'Meenakshi Sharma', designation: 'HR Director', email: 'meenakshi.sharma@opas.com' },
 }
 
 const roleLabelMap: Record<UserRole, string> = {
@@ -26,6 +32,12 @@ const roleLabelMap: Record<UserRole, string> = {
   bh: 'BH: Business Head',
   hr: 'HR: HR Team',
   procurement: 'PROC: Procurement',
+  dr: 'DR: Operation Director',
+  th: 'TH: Trainer Head',
+  trainers: 'TRN: Trainers',
+  commerical: 'COMM: Commercial',
+  hod: 'HOD: Back Office HOD',
+  hr_dr: 'HRDR: HR Director',
 }
 
 export function Header() {
