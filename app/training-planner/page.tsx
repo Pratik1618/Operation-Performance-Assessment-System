@@ -17,6 +17,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogD
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'
 import { useOCRMS } from '@/lib/context/ocrms-context'
 import { sites, initialTrainingSessions } from '@/lib/data/ocrms-data'
+import { employees, currentUser as defaultOEUser } from '@/lib/data/users'
 import { TrainingSession } from '@/lib/types'
 import { toast } from 'sonner'
 
@@ -35,7 +36,11 @@ const statusColors: Record<string, { bg: string; text: string; border: string; d
 
 export default function TrainingPlannerPage() {
   const router = useRouter()
-  const { currentRole } = useOCRMS()
+  const { currentRole, currentUser } = useOCRMS()
+
+  const userProfile = useMemo(() => {
+    return [defaultOEUser, ...employees].find(u => u.code === currentUser.code)
+  }, [currentUser])
 
   // 1. Core State
   const [sessions, setSessions] = useState<TrainingSession[]>(initialTrainingSessions)
@@ -119,7 +124,7 @@ export default function TrainingPlannerPage() {
       }
       if (currentRole === 'rm' || currentRole === 'avp') {
         const siteObj = sites.find(site => site.id === s.siteId)
-        if (siteObj && currentUser.region !== 'All' && siteObj.region !== currentUser.region) {
+        if (siteObj && userProfile && userProfile.region !== 'All' && siteObj.region !== userProfile.region) {
           return false
         }
       }
@@ -130,7 +135,7 @@ export default function TrainingPlannerPage() {
       const matchesTrainer = selectedTrainer === 'all' || s.trainerName === selectedTrainer
       return matchesSite && matchesStatus && matchesTrainer
     })
-  }, [sessions, selectedSite, selectedStatus, selectedTrainer, currentRole, currentUser])
+  }, [sessions, selectedSite, selectedStatus, selectedTrainer, currentRole, currentUser, userProfile])
 
   // Unsubmitted past sessions checklist
   const pendingReports = useMemo(() => {
@@ -149,7 +154,7 @@ export default function TrainingPlannerPage() {
       }
       if (currentRole === 'rm' || currentRole === 'avp') {
         const siteObj = sites.find(site => site.id === s.siteId)
-        if (siteObj && currentUser.region !== 'All' && siteObj.region !== currentUser.region) {
+        if (siteObj && userProfile && userProfile.region !== 'All' && siteObj.region !== userProfile.region) {
           return false
         }
       }
@@ -158,7 +163,7 @@ export default function TrainingPlannerPage() {
       const matchesTrainer = selectedTrainer === 'all' || s.trainerName === selectedTrainer
       return matchesSite && matchesTrainer
     })
-  }, [sessions, selectedSite, selectedTrainer, currentRole, currentUser])
+  }, [sessions, selectedSite, selectedTrainer, currentRole, currentUser, userProfile])
 
   // 7. Dynamic Calendar Grid Generation
   const calendarDays = useMemo(() => {

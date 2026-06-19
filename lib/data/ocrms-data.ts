@@ -10,33 +10,27 @@ import type {
   MaterialQuality, UniformRecord, RREvent, ClosureReport,
   FeedbackScore, Approval, OCRMSDashboardKPI, Notification,
   AttendanceVerificationCase, ActivityTemplate, ActivityCategory,
-  FormFieldSchema, TrainingSession,
+  FormFieldSchema, TrainingSession, Employee,
 } from '@/lib/types';
 
 // ── Clients ──
 export const clients: Client[] = [
-  { id: 'CLT_001', name: 'Infosys BPO', code: 'INFO', industry: 'IT Services', contactPerson: 'Rajiv Menon', contactPhone: '9876543210', contactEmail: 'rajiv.m@infosys.com', sitesCount: 3, status: 'active' },
   { id: 'CLT_002', name: 'Wipro Technologies', code: 'WIPRO', industry: 'IT Services', contactPerson: 'Sunita Rao', contactPhone: '9876543211', contactEmail: 'sunita.r@wipro.com', sitesCount: 2, status: 'active' },
-  { id: 'CLT_003', name: 'DLF Cyber City', code: 'DLF', industry: 'Real Estate', contactPerson: 'Amit Khanna', contactPhone: '9876543212', contactEmail: 'amit.k@dlf.in', sitesCount: 2, status: 'active' },
-  { id: 'CLT_004', name: 'Reliance Jio', code: 'RJIO', industry: 'Telecom', contactPerson: 'Priya Sharma', contactPhone: '9876543213', contactEmail: 'priya.s@jio.com', sitesCount: 2, status: 'active' },
-  { id: 'CLT_005', name: 'HDFC Bank', code: 'HDFC', industry: 'Banking', contactPerson: 'Vikram Das', contactPhone: '9876543214', contactEmail: 'vikram.d@hdfc.com', sitesCount: 1, status: 'active' },
-  { id: 'CLT_006', name: 'Amazon India', code: 'AMZ', industry: 'E-Commerce', contactPerson: 'Neha Gupta', contactPhone: '9876543215', contactEmail: 'neha.g@amazon.in', sitesCount: 2, status: 'active' },
 ];
 
 // ── Sites ──
 export const sites: Site[] = [
-  { id: 'SITE_001', code: 'INFO-GGN-01', name: 'Infosys Gurgaon Tower A', client: 'Infosys BPO', clientId: 'CLT_001', region: 'North', state: 'Haryana', zone: 'NCR', assignedOE: 'Ravi Shankar', assignedRM: 'Suresh Kumar', assignedAVP: 'Venkat Raman', status: 'active', employeeCount: 45, address: 'Cyber City, Sector 21, Gurgaon' },
-  { id: 'SITE_002', code: 'INFO-BLR-01', name: 'Infosys Bangalore EC', client: 'Infosys BPO', clientId: 'CLT_001', region: 'South', state: 'Karnataka', zone: 'Bangalore', assignedOE: 'Anjali Desai', assignedRM: 'Manoj Pillai', assignedAVP: 'Venkat Raman', status: 'active', employeeCount: 62, address: 'Electronic City Phase 1, Bangalore' },
-  { id: 'SITE_003', code: 'WIPRO-PUN-01', name: 'Wipro Hinjewadi Campus', client: 'Wipro Technologies', clientId: 'CLT_002', region: 'West', state: 'Maharashtra', zone: 'Pune', assignedOE: 'Kiran Nair', assignedRM: 'Rajesh Kumar', assignedAVP: 'Deepa Menon', status: 'active', employeeCount: 38, address: 'Hinjewadi Phase 2, Pune' },
-  { id: 'SITE_004', code: 'DLF-DEL-01', name: 'DLF Cyber Hub Delhi', client: 'DLF Cyber City', clientId: 'CLT_003', region: 'North', state: 'Delhi', zone: 'NCR', assignedOE: 'Ravi Shankar', assignedRM: 'Suresh Kumar', assignedAVP: 'Venkat Raman', status: 'active', employeeCount: 55, address: 'Cyber Hub, DLF Phase 3, Delhi' },
-  { id: 'SITE_005', code: 'RJIO-MUM-01', name: 'Jio Centre Mumbai', client: 'Reliance Jio', clientId: 'CLT_004', region: 'West', state: 'Maharashtra', zone: 'Mumbai', assignedOE: 'Kiran Nair', assignedRM: 'Rajesh Kumar', assignedAVP: 'Deepa Menon', status: 'active', employeeCount: 72, address: 'BKC, Mumbai' },
-  { id: 'SITE_006', code: 'HDFC-CHN-01', name: 'HDFC Tower Chennai', client: 'HDFC Bank', clientId: 'CLT_005', region: 'South', state: 'Tamil Nadu', zone: 'Chennai', assignedOE: 'Anjali Desai', assignedRM: 'Manoj Pillai', assignedAVP: 'Venkat Raman', status: 'active', employeeCount: 30, address: 'SIPCOT IT Park, Chennai' },
-  { id: 'SITE_007', code: 'AMZ-HYD-01', name: 'Amazon Hyderabad FC', client: 'Amazon India', clientId: 'CLT_006', region: 'South', state: 'Telangana', zone: 'Hyderabad', assignedOE: 'Priya Sen', assignedRM: 'Manoj Pillai', assignedAVP: 'Venkat Raman', status: 'active', employeeCount: 95, address: 'Financial District, Hyderabad' },
-  { id: 'SITE_008', code: 'INFO-NOI-01', name: 'Infosys Noida SEZ', client: 'Infosys BPO', clientId: 'CLT_001', region: 'North', state: 'Uttar Pradesh', zone: 'NCR', assignedOE: 'Ravi Shankar', assignedRM: 'Suresh Kumar', assignedAVP: 'Venkat Raman', status: 'active', employeeCount: 50, address: 'Sector 135, Noida' },
-  { id: 'SITE_009', code: 'DLF-GGN-02', name: 'DLF Gateway Gurgaon', client: 'DLF Cyber City', clientId: 'CLT_003', region: 'North', state: 'Haryana', zone: 'NCR', assignedOE: 'Ravi Shankar', assignedRM: 'Suresh Kumar', assignedAVP: 'Venkat Raman', status: 'active', employeeCount: 42, address: 'DLF Gateway Tower, Gurgaon' },
-  { id: 'SITE_010', code: 'WIPRO-BLR-01', name: 'Wipro Sarjapur Road', client: 'Wipro Technologies', clientId: 'CLT_002', region: 'South', state: 'Karnataka', zone: 'Bangalore', assignedOE: 'Anjali Desai', assignedRM: 'Manoj Pillai', assignedAVP: 'Venkat Raman', status: 'active', employeeCount: 48, address: 'Sarjapur Road, Bangalore' },
-  { id: 'SITE_011', code: 'RJIO-DEL-01', name: 'Jio Plaza Delhi', client: 'Reliance Jio', clientId: 'CLT_004', region: 'North', state: 'Delhi', zone: 'NCR', assignedOE: 'Ravi Shankar', assignedRM: 'Suresh Kumar', assignedAVP: 'Venkat Raman', status: 'active', employeeCount: 35, address: 'Connaught Place, New Delhi' },
-  { id: 'SITE_012', code: 'AMZ-BLR-01', name: 'Amazon Bellandur Hub', client: 'Amazon India', clientId: 'CLT_006', region: 'South', state: 'Karnataka', zone: 'Bangalore', assignedOE: 'Anjali Desai', assignedRM: 'Manoj Pillai', assignedAVP: 'Venkat Raman', status: 'active', employeeCount: 80, address: 'Bellandur, Bangalore' },
+  { id: 'SITE_003', code: 'WIPRO-PUN-01', name: 'Wipro Hinjewadi Campus', client: 'Wipro Technologies', clientId: 'CLT_002', region: 'West', state: 'Maharashtra', zone: 'Pune', assignedOE: 'Ravi Shankar', assignedRM: 'Suresh Kumar', assignedZH: 'Nitin Gadkari', assignedAVP: 'Venkat Raman', status: 'active', employeeCount: 38, address: 'Hinjewadi Phase 2, Pune' },
+];
+
+// ── Employees ──
+export const employees: Employee[] = [
+  { id: 'EMP1001', name: 'Ramesh Yadav', code: 'EMP1001', siteId: 'SITE_003', designation: 'Security Guard', shift: 'First', joiningDate: '2023-01-15', status: 'active' },
+  { id: 'EMP1002', name: 'Suresh Babu', code: 'EMP1002', siteId: 'SITE_003', designation: 'Security Supervisor', shift: 'First', joiningDate: '2022-11-01', status: 'active' },
+  { id: 'EMP1003', name: 'Anita Desai', code: 'EMP1003', siteId: 'SITE_003', designation: 'Housekeeper', shift: 'Second', joiningDate: '2024-03-10', status: 'active' },
+  { id: 'EMP1004', name: 'Vikram Singh', code: 'EMP1004', siteId: 'SITE_003', designation: 'Security Guard', shift: 'Third', joiningDate: '2024-01-20', status: 'inactive' },
+  { id: 'EMP1005', name: 'Pooja Sharma', code: 'EMP1005', siteId: 'SITE_003', designation: 'Facility Manager', shift: 'General', joiningDate: '2021-06-05', status: 'active' },
+  { id: 'EMP1006', name: 'Karan Patel', code: 'EMP1006', siteId: 'SITE_003', designation: 'Housekeeper', shift: 'First', joiningDate: '2023-08-12', status: 'active' },
 ];
 
 // ── 36 Excel-mapped Activity Templates ──
@@ -85,15 +79,17 @@ export const activityTemplates: ActivityTemplate[] = [
   {
     id: 'TPL-ATT-003',
     code: 'ACT-ATT-03',
-    name: 'Non App Usage Count',
-    description: 'Monitor count of guards or staff not checking in via the mobile application.',
+    name: 'Non App Usage & Follow Up',
+    description: 'Monitor count of staff not checking in via the mobile application and track follow-ups to migrate them.',
     category: 'Attendance Verification',
     frequency: 'daily',
     weightage: 5,
-    evidenceTypes: ['excel'],
+    evidenceTypes: ['excel', 'image'],
     formSchema: [
       { id: 'nonAppCount', label: 'Non-App Users Count', type: 'number', required: true },
-      { id: 'reasonDescription', label: 'Reasons for Non-App Usage', type: 'textarea', required: true }
+      { id: 'reasonDescription', label: 'Reasons for Non-App Usage', type: 'textarea', required: true },
+      { id: 'followUpCount', label: 'Followed Up Count', type: 'number', required: true },
+      { id: 'devicesRegistered', label: 'Devices Newly Registered Today', type: 'number', required: true }
     ],
     approvalFlow: ['oe', 'rm'],
     active: true,
@@ -172,24 +168,7 @@ export const activityTemplates: ActivityTemplate[] = [
     assignedRoles: 'OE,hrbp,if back office hod',
     approvalFlowText: 'OE → HOD → RM → AVP; HRBP → HR DR'
   },
-  {
-    id: 'TPL-ATT-008',
-    code: 'ACT-ATT-08',
-    name: 'Non App Follow Up',
-    description: 'Daily follow-up check to migrate non-app users into mobile punch usage.',
-    category: 'Attendance Verification',
-    frequency: 'daily',
-    weightage: 5,
-    evidenceTypes: ['image'],
-    formSchema: [
-      { id: 'followUpCount', label: 'Followed Up Count', type: 'number', required: true },
-      { id: 'devicesRegistered', label: 'Devices Newly Registered Today', type: 'number', required: true }
-    ],
-    approvalFlow: ['oe'],
-    active: true,
-    assignedRoles: 'oe,hrbp,hr dr',
-    approvalFlowText: 'OE → RM → AVP → BH; HRBP → HR DR'
-  },
+
   {
     id: 'TPL-ATT-009',
     code: 'ACT-ATT-09',
@@ -213,59 +192,41 @@ export const activityTemplates: ActivityTemplate[] = [
     id: 'TPL-OPS-001',
     code: 'ACT-OPS-01',
     name: 'Site Visit Report',
-    description: 'Standard client visit verification containing grooming, registers, and checklists.',
+    description: 'Comprehensive 11-section site visit report covering quality audit, HK assessment, material & equipment status, training, client feedback, photo documentation, issues, corrective actions, and final site health scoring.',
     category: 'Site Operations',
     frequency: 'daily',
     weightage: 5,
     evidenceTypes: ['image', 'signature'],
     formSchema: [
-      { id: 'checklistScore', label: 'Checklist Adherence Score (out of 34)', type: 'number', required: true },
-      { id: 'observations', label: 'Critical Site Observations', type: 'textarea', required: true },
-      { id: 'clientFeedback', label: 'Client Feedback Notes', type: 'textarea', required: false }
+      { id: 'visitType', label: 'Visit Type', type: 'text', required: true },
+      { id: 'siteQualityScore', label: 'Site Quality Score (%)', type: 'number', required: true },
+      { id: 'overallSiteHealthScore', label: 'Overall Site Health Score (%)', type: 'number', required: true }
     ],
-    approvalFlow: ['oe', 'rm', 'avp'],
+    approvalFlow: ['oe', 'rm', 'zh', 'avp'],
     active: true,
-    assignedRoles: 'oe,rm,avp,bh,dr',
-    approvalFlowText: 'OE → RM → AVP → BH → DR'
-  },
-  {
-    id: 'TPL-OPS-002',
-    code: 'ACT-OPS-02',
-    name: 'Next Month Visit Plan',
-    description: 'Prepare next month visit planner schedule for mapped sites.',
-    category: 'Site Operations',
-    frequency: 'monthly',
-    weightage: 5,
-    evidenceTypes: ['pdf'],
-    formSchema: [
-      { id: 'plannedVisitsCount', label: 'Total Scheduled Site Visits', type: 'number', required: true },
-      { id: 'submissionConfirm', label: 'Confirming before 26th cycle limit', type: 'checkbox', required: true }
-    ],
-    approvalFlow: ['oe', 'rm'],
-    active: true,
-    assignedRoles: 'oe,rm,avp,bh,dr',
-    approvalFlowText: 'OE → RM → AVP → BH → DR'
+    assignedRoles: 'oe,rm,zh,avp,bh,dr',
+    approvalFlowText: 'OE → RM → ZH → AVP → BH → DR'
   },
   {
     id: 'TPL-OPS-003',
     code: 'ACT-OPS-03',
-    name: 'Visit Calendar Upload',
-    description: 'Upload locked visit calendar schedule and route for regional manager approval.',
+    name: 'Final closing report of the queries(sitewise)',
+    description: 'Final closing report of the queries sitewise after 7 days.',
     category: 'Site Operations',
-    frequency: 'monthly',
+    frequency: 'one-time',
     weightage: 5,
-    evidenceTypes: ['excel'],
+    evidenceTypes: ['pdf'],
     formSchema: [
-      { id: 'calendarUploaded', label: 'Calendar File Uploaded Correctly', type: 'checkbox', required: true }
+      { id: 'reportFile', label: 'Upload Closing Report', type: 'checkbox', required: true }
     ],
-    approvalFlow: ['oe', 'rm'],
+    approvalFlow: ['oe', 'rm', 'avp', 'bh', 'dr'],
     active: true,
-    assignedRoles: 'oe,rm,avp,bh,dr',
+    assignedRoles: 'oe',
     approvalFlowText: 'OE → RM → AVP → BH → DR'
   },
   {
-    id: 'TPL-OPS-004',
-    code: 'ACT-OPS-04',
+    id: 'TPL-OPS-005',
+    code: 'ACT-OPS-05',
     name: 'Site Mapping',
     description: 'Review and update employee-to-site assignments and client contact information.',
     category: 'Site Operations',
@@ -276,7 +237,7 @@ export const activityTemplates: ActivityTemplate[] = [
       { id: 'employeesMappedCount', label: 'Total Employees Mapped', type: 'number', required: true },
       { id: 'rosterLocked', label: ' Roster Mapped and Confirmed', type: 'checkbox', required: true }
     ],
-    approvalFlow: ['oe', 'rm'],
+    approvalFlow: ['oe', 'commerical', 'avp', 'bh'],
     active: true,
     assignedRoles: 'oe,commerical',
     approvalFlowText: 'OE → Commercial → AVP → BH'
@@ -315,6 +276,23 @@ export const activityTemplates: ActivityTemplate[] = [
       { id: 'videoTopic', label: 'Video Topic Description', type: 'text', required: true }
     ],
     approvalFlow: ['oe', 'rm'],
+    active: true,
+    assignedRoles: 'trainers,th,oe',
+    approvalFlowText: 'Trainers → TH → OE → AVP'
+  },
+  {
+    id: 'TPL-TRN-003',
+    code: 'ACT-TRN-03',
+    name: 'Training Schedule Calendar',
+    description: 'Submit the planned schedule for upcoming training sessions across sites.',
+    category: 'Training',
+    frequency: 'monthly',
+    weightage: 5,
+    evidenceTypes: ['excel'],
+    formSchema: [
+      { id: 'calendarUploaded', label: 'Training Calendar Uploaded', type: 'checkbox', required: true }
+    ],
+    approvalFlow: ['th', 'oe', 'avp'],
     active: true,
     assignedRoles: 'trainers,th,oe',
     approvalFlowText: 'Trainers → TH → OE → AVP'
@@ -392,23 +370,6 @@ export const activityTemplates: ActivityTemplate[] = [
     approvalFlowText: 'OE → PH → AVP → BH'
   },
   {
-    id: 'TPL-PRO-005',
-    code: 'ACT-PRO-05',
-    name: 'Sweater Request',
-    description: 'Winter woolens requirement checklist for security guards.',
-    category: 'Procurement & Logistics',
-    frequency: 'one-time',
-    weightage: 5,
-    evidenceTypes: ['pdf'],
-    formSchema: [
-      { id: 'qty', label: 'Quantity of Sweaters Needed', type: 'number', required: true }
-    ],
-    approvalFlow: ['oe'],
-    active: true,
-    assignedRoles: 'oe,ph',
-    approvalFlowText: 'OE → PH → AVP → BH'
-  },
-  {
     id: 'TPL-PRO-006',
     code: 'ACT-PRO-06',
     name: 'Uniform Issuance',
@@ -418,8 +379,9 @@ export const activityTemplates: ActivityTemplate[] = [
     weightage: 5,
     evidenceTypes: ['signature', 'image'],
     formSchema: [
-      { id: 'issuedSets', label: 'Uniform Sets Distributed', type: 'number', required: true },
-      { id: 'allEmployeesCovered', label: 'Handover complete for all candidates', type: 'checkbox', required: true }
+      { id: 'totalEmployees', label: 'Total Employees in Site', type: 'number', required: true },
+      { id: 'totalIssued', label: 'Total Uniform Issued', type: 'number', required: true },
+      { id: 'remaining', label: 'Remaining to Issue', type: 'number', required: true }
     ],
     approvalFlow: ['oe', 'rm'],
     active: true,
@@ -436,7 +398,9 @@ export const activityTemplates: ActivityTemplate[] = [
     weightage: 5,
     evidenceTypes: ['signature', 'image'],
     formSchema: [
-      { id: 'issuedBoots', label: 'Pairs of Boots Distributed', type: 'number', required: true }
+      { id: 'totalEmployees', label: 'Total Employees in Site', type: 'number', required: true },
+      { id: 'totalIssued', label: 'Total Shoes Issued', type: 'number', required: true },
+      { id: 'remaining', label: 'Remaining to Issue', type: 'number', required: true }
     ],
     approvalFlow: ['oe', 'rm'],
     active: true,
@@ -603,19 +567,20 @@ export const activityTemplates: ActivityTemplate[] = [
     id: 'TPL-REP-001',
     code: 'ACT-REP-01',
     name: 'MOM Report',
-    description: 'Submit Minutes of Meeting (MOM) details of monthly reviews with client.',
+    description: 'Comprehensive 10-section Minutes of Meeting report covering client interaction, sentiment, topics discussed, issues raised, action items, business opportunities, and follow-ups.',
     category: 'Reporting & Closure',
     frequency: 'monthly',
     weightage: 5,
     evidenceTypes: ['pdf'],
     formSchema: [
-      { id: 'clientRepsPresent', label: 'Client Representatives Present', type: 'text', required: true },
-      { id: 'keyDecisions', label: 'Key Decisions & Action Points', type: 'textarea', required: true }
+      { id: 'meetingDate', label: 'Meeting Date', type: 'date', required: true },
+      { id: 'clientRepName', label: 'Client Representative', type: 'text', required: true },
+      { id: 'outcome', label: 'Meeting Outcome', type: 'text', required: true }
     ],
-    approvalFlow: ['oe', 'rm', 'avp'],
+    approvalFlow: ['oe', 'rm', 'zh', 'avp'],
     active: true,
-    assignedRoles: 'oe,rm,avp,bh,dr',
-    approvalFlowText: 'OE → RM → AVP → BH → DR'
+    assignedRoles: 'oe,rm,zh,avp,bh,dr',
+    approvalFlowText: 'OE → RM → ZH → AVP → BH → DR'
   },
   {
     id: 'TPL-REP-002',
@@ -639,92 +604,16 @@ export const activityTemplates: ActivityTemplate[] = [
     id: 'TPL-REP-003',
     code: 'ACT-REP-03',
     name: 'Daily Closure Report',
-    description: 'Review daily manpower status, keys handover, and log shifts closure.',
+    description: 'Comprehensive 5-section daily shift closure report covering cleaned areas, frequencies, completion status, issues, and final handover status.',
     category: 'Reporting & Closure',
     frequency: 'daily',
     weightage: 5,
     evidenceTypes: ['image'],
-    formSchema: [
-      { id: 'incidentFree', label: 'Shift was Incident Free', type: 'checkbox', required: true },
-      { id: 'handoverComplete', label: 'Keys and Register Handovers Done', type: 'checkbox', required: true }
-    ],
-    approvalFlow: ['oe'],
+    formSchema: [],
+    approvalFlow: ['oe', 'rm', 'zh', 'avp', 'bh'],
     active: true,
-    assignedRoles: 'oe,rm,',
-    approvalFlowText: 'OE → RM → AVP → BH'
-  },
-
-  // 9. Quality & Feedback
-  {
-    id: 'TPL-QLY-001',
-    code: 'ACT-QLY-01',
-    name: 'Feedback',
-    description: 'Log monthly customer satisfaction survey score and comments.',
-    category: 'Quality & Feedback',
-    frequency: 'monthly',
-    weightage: 5,
-    evidenceTypes: ['pdf'],
-    formSchema: [
-      { id: 'csatScore', label: 'CSAT Rating (0-100)', type: 'number', required: true },
-      { id: 'remarks', label: 'Feedback & Improvement Remarks', type: 'textarea', required: true }
-    ],
-    approvalFlow: ['oe', 'rm', 'avp'],
-    active: true,
-    assignedRoles: 'oe,rm,avp,bh,dr',
-    approvalFlowText: 'OE → RM → AVP → BH → DR'
-  },
-  {
-    id: 'TPL-QLY-002',
-    code: 'ACT-QLY-02',
-    name: 'Material Quality',
-    description: 'Perform batch quality audits on housekeeping cleaning kits.',
-    category: 'Quality & Feedback',
-    frequency: 'monthly',
-    weightage: 5,
-    evidenceTypes: ['image'],
-    formSchema: [
-      { id: 'dilutionVerified', label: 'Dilution batches verified', type: 'checkbox', required: true },
-      { id: 'qualityRating', label: 'Housekeeping kit Quality rating (1-5)', type: 'number', required: true }
-    ],
-    approvalFlow: ['oe', 'rm'],
-    active: true,
-    assignedRoles: 'oe,ph',
-    approvalFlowText: 'OE → PH → AVP → BH'
-  },
-  {
-    id: 'TPL-QLY-003',
-    code: 'ACT-QLY-03',
-    name: 'Customer Service Report',
-    description: 'Draft monthly CSR summaries, SLA parameters met, and KPI averages.',
-    category: 'Quality & Feedback',
-    frequency: 'monthly',
-    weightage: 5,
-    evidenceTypes: ['pdf'],
-    formSchema: [
-      { id: 'slaAdherence', label: 'SLA Adherence rate %', type: 'number', required: true }
-    ],
-    approvalFlow: ['oe', 'rm', 'avp'],
-    active: true,
-    assignedRoles: 'oe,rm,avp,bh,dr',
-    approvalFlowText: 'OE → RM → AVP → BH → DR'
-  },
-  {
-    id: 'TPL-QLY-004',
-    code: 'ACT-QLY-04',
-    name: 'Client Referral',
-    description: 'Log client requests, leads, and introductions for business expansions.',
-    category: 'Quality & Feedback',
-    frequency: 'monthly',
-    weightage: 5,
-    evidenceTypes: ['pdf'],
-    formSchema: [
-      { id: 'contactName', label: 'Lead Representative Name', type: 'text', required: true },
-      { id: 'notes', label: 'Lead & Contact Details', type: 'textarea', required: true }
-    ],
-    approvalFlow: ['oe', 'rm'],
-    active: true,
-    assignedRoles: 'oe,hrbp',
-    approvalFlowText: 'OE → RM → AVP → BH; HRBP → HR DR'
+    assignedRoles: 'oe,rm,zh,avp,bh',
+    approvalFlowText: 'OE → RM → ZH → AVP → BH'
   }
 ];
 
@@ -732,15 +621,21 @@ export const activityTemplates: ActivityTemplate[] = [
 const calculateScore = (task: Partial<OperationalTask>, policy?: string): number => {
   const oe = task.oeRating || 0;
   const rm = task.rmRating || 0;
+  const zh = task.zhRating || 0;
   const avp = task.avpRating || 0;
   const bh = task.bhRating || 0;
+  const dr = task.drRating || 0;
   const weightage = task.weightage || 5;
 
   let activeRating = oe;
-  if (task.status === 'bh_approved' && task.bhRating !== undefined) {
+  if ((task.status === 'approved' || task.status === 'dr_approved') && task.drRating !== undefined) {
+    activeRating = dr;
+  } else if (task.status === 'bh_approved' && task.bhRating !== undefined) {
     activeRating = bh;
   } else if (task.avpRating !== undefined) {
     activeRating = avp;
+  } else if (task.zhRating !== undefined) {
+    activeRating = zh;
   } else if (task.rmRating !== undefined) {
     activeRating = rm;
   }
@@ -757,8 +652,13 @@ function generateTasks(policy: string = 'avp_only'): OperationalTask[] {
   for (const site of siteSubset) {
     for (const tpl of activityTemplates) {
       // Pick statuses round-robin
-      const statuses: OperationalTask['status'][] = ['pending', 'in_progress', 'oe_submitted', 'rm_approved', 'avp_approved', 'bh_approved', 'overdue'];
-      const status = statuses[id % statuses.length];
+      const statuses: OperationalTask['status'][] = ['pending', 'in_progress', 'oe_submitted', 'rm_approved', 'zh_approved', 'avp_approved', 'bh_approved', 'overdue'];
+      let status = statuses[id % statuses.length];
+      
+      // Force TPL-OPS-003 to be pending for testing
+      if (tpl.id === 'TPL-OPS-003') {
+        status = 'pending';
+      }
       
       const task: OperationalTask = {
         id: `TASK_${String(id).padStart(4, '0')}`,
@@ -772,11 +672,11 @@ function generateTasks(policy: string = 'avp_only'): OperationalTask[] {
         siteName: site.name,
         clientName: site.client,
         status,
-        evidenceCount: ['approved', 'bh_approved', 'avp_approved', 'rm_approved'].includes(status) ? 3 : ['oe_submitted', 'submitted'].includes(status) ? 2 : status === 'in_progress' ? 1 : 0,
-        evidenceUrls: ['approved', 'bh_approved', 'avp_approved', 'rm_approved'].includes(status) ? ['challan.pdf', 'site_pic.jpg'] : [],
-        remarks: ['approved', 'bh_approved', 'avp_approved', 'rm_approved'].includes(status) ? 'Verified and approved' : status === 'overdue' ? 'Pending submission' : '',
+        evidenceCount: ['approved', 'bh_approved', 'avp_approved', 'zh_approved', 'rm_approved'].includes(status) ? 3 : ['oe_submitted', 'submitted'].includes(status) ? 2 : status === 'in_progress' ? 1 : 0,
+        evidenceUrls: ['approved', 'bh_approved', 'avp_approved', 'zh_approved', 'rm_approved', 'oe_submitted', 'submitted'].includes(status) ? ['challan.pdf', 'site_pic.jpg'] : [],
+        remarks: ['approved', 'bh_approved', 'avp_approved', 'zh_approved', 'rm_approved'].includes(status) ? 'Verified and approved' : status === 'overdue' ? 'Pending submission' : '',
         assignedTo: site.assignedOE,
-        formData: ['approved', 'bh_approved', 'avp_approved', 'rm_approved', 'oe_submitted', 'submitted'].includes(status) ? {
+        formData: ['approved', 'bh_approved', 'avp_approved', 'zh_approved', 'rm_approved', 'oe_submitted', 'submitted'].includes(status) ? {
           totalAbsent: 2,
           absenceReason: 'Sick Leave',
           employeeLeftFilledDate: '2026-06-25',
@@ -786,34 +686,54 @@ function generateTasks(policy: string = 'avp_only'): OperationalTask[] {
       };
       
       // Assign ratings based on status
-      if (['approved', 'bh_approved', 'avp_approved', 'rm_approved'].includes(status)) {
+      if (['approved', 'bh_approved', 'avp_approved', 'zh_approved', 'rm_approved'].includes(status)) {
         task.oeRating = tpl.weightage;
         task.oeRemarks = 'Everything is compliant.';
         task.oeSubmittedDate = `2026-06-${String(Math.min((id % 28) + 1, 28)).padStart(2, '0')}`;
         
-        if (['rm_approved', 'avp_approved', 'bh_approved', 'approved'].includes(status)) {
+        if (['rm_approved', 'zh_approved', 'avp_approved', 'bh_approved', 'approved'].includes(status)) {
           task.rmRating = tpl.weightage;
-          task.rmRemarks = 'Audit verified.';
+          task.rmRemarks = 'Audit verified by RM.';
           task.rmReviewedDate = `2026-06-${String(Math.min((id % 28) + 1, 28)).padStart(2, '0')}`;
+        }
+        
+        if (['zh_approved', 'avp_approved', 'bh_approved', 'approved'].includes(status)) {
+          task.zhRating = tpl.weightage;
+          task.zhRemarks = 'Audit verified by ZH.';
+          task.zhReviewedDate = `2026-06-${String(Math.min((id % 28) + 1, 28)).padStart(2, '0')}`;
         }
         
         if (['avp_approved', 'bh_approved', 'approved'].includes(status)) {
           task.avpRating = tpl.weightage;
-          task.avpRemarks = 'Closed and rated.';
+          task.avpRemarks = 'Closed and rated by AVP.';
           task.avpApprovedDate = `2026-06-${String(Math.min((id % 28) + 1, 28)).padStart(2, '0')}`;
         }
         
-        if (status === 'bh_approved') {
+        if (['bh_approved', 'approved'].includes(status)) {
           task.bhRating = tpl.weightage;
           task.bhRemarks = 'BH final signoff.';
           task.bhApprovedDate = `2026-06-${String(Math.min((id % 28) + 1, 28)).padStart(2, '0')}`;
         }
 
+        if (status === 'approved') {
+          task.drRating = tpl.weightage;
+          task.drRemarks = 'DR final signoff.';
+          task.drApprovedDate = `2026-06-${String(Math.min((id % 28) + 1, 28)).padStart(2, '0')}`;
+        }
+        
         task.finalScore = calculateScore(task, policy);
       } else if (status === 'oe_submitted' || status === 'submitted') {
         task.oeRating = Math.max(1, tpl.weightage - 1);
         task.oeRemarks = 'Completed with minor issues.';
         task.oeSubmittedDate = `2026-06-${String(Math.min((id % 28) + 1, 28)).padStart(2, '0')}`;
+      }
+      if (tpl.id === 'TPL-OPS-003' && status === 'pending') {
+        task.formData = {
+          mockOpenQueries: [
+            { id: 'CA-01', issue: 'Washroom deep cleaning not completed.', assignedTo: 'HK Team A', status: 'open' },
+            { id: 'CA-02', issue: 'Security guard uniform non-compliance.', assignedTo: 'Security Agency', status: 'open' }
+          ]
+        };
       }
       
       tasks.push(task);
@@ -830,8 +750,10 @@ export function recomputeScores(tasksList: OperationalTask[], policy: string): O
   return tasksList.map(task => {
     if (
       task.status === 'approved' || 
+      task.status === 'dr_approved' ||
       task.status === 'bh_approved' || 
       task.status === 'avp_approved' || 
+      task.status === 'zh_approved' || 
       task.status === 'rm_approved'
     ) {
       return {
@@ -852,10 +774,10 @@ const randomStatus = (): OperationalTask['status'] => {
 // ── Dashboard KPIs ──
 export const dashboardKPI: OCRMSDashboardKPI = {
   totalAssigned: operationalTasks.length,
-  completed: operationalTasks.filter(t => ['approved', 'bh_approved'].includes(t.status)).length,
+  completed: operationalTasks.filter(t => ['approved', 'dr_approved', 'bh_approved'].includes(t.status)).length,
   pending: operationalTasks.filter(t => t.status === 'pending' || t.status === 'in_progress').length,
   overdue: operationalTasks.filter(t => t.status === 'overdue').length,
-  compliancePercent: Math.round((operationalTasks.filter(t => ['approved', 'bh_approved', 'avp_approved', 'rm_approved', 'oe_submitted', 'submitted'].includes(t.status)).length / operationalTasks.length) * 100),
+  compliancePercent: Math.round((operationalTasks.filter(t => ['approved', 'dr_approved', 'bh_approved', 'avp_approved', 'zh_approved', 'rm_approved', 'oe_submitted', 'submitted'].includes(t.status)).length / operationalTasks.length) * 100),
   siteVisitsCompleted: 18,
   pendingApprovals: operationalTasks.filter(t => ['oe_submitted', 'submitted'].includes(t.status)).length,
   openIncidents: 5,
@@ -902,42 +824,19 @@ export const categoryCompletion = [
 
 // ── Site Visits ──
 export const siteVisits: SiteVisit[] = [
-  { id: 'VIS_001', site: 'Infosys Gurgaon Tower A', siteId: 'SITE_001', client: 'Infosys BPO', visitDate: '2025-06-02', plannedTime: '10:00 AM', actualTime: '10:15 AM', status: 'completed', clientSignature: true, geoTagged: true, photos: 4, notes: 'All checkpoints verified. Minor cleaning issue in lobby.', checklistScore: 30, visitedBy: 'Ravi Shankar' },
-  { id: 'VIS_002', site: 'Infosys Bangalore EC', siteId: 'SITE_002', client: 'Infosys BPO', visitDate: '2025-06-03', plannedTime: '09:30 AM', actualTime: '09:45 AM', status: 'completed', clientSignature: true, geoTagged: true, photos: 3, notes: 'Fire extinguisher check completed. Staff grooming audit passed.', checklistScore: 32, visitedBy: 'Anjali Desai' },
-  { id: 'VIS_003', site: 'Wipro Hinjewadi Campus', siteId: 'SITE_003', client: 'Wipro Technologies', visitDate: '2025-06-05', plannedTime: '11:00 AM', status: 'planned', clientSignature: false, geoTagged: false, photos: 0, notes: '', visitedBy: 'Kiran Nair' },
-  { id: 'VIS_004', site: 'DLF Cyber Hub Delhi', siteId: 'SITE_004', client: 'DLF Cyber City', visitDate: '2025-06-04', plannedTime: '02:00 PM', actualTime: '02:30 PM', status: 'completed', clientSignature: true, geoTagged: true, photos: 5, notes: 'Snag list items addressed. Parking area inspection done.', checklistScore: 28, visitedBy: 'Ravi Shankar' },
-  { id: 'VIS_005', site: 'Jio Centre Mumbai', siteId: 'SITE_005', client: 'Reliance Jio', visitDate: '2025-06-01', plannedTime: '10:00 AM', status: 'missed', clientSignature: false, geoTagged: false, photos: 0, notes: 'OE was on leave. Rescheduled to next week.', visitedBy: 'Kiran Nair' },
-  { id: 'VIS_006', site: 'HDFC Tower Chennai', siteId: 'SITE_006', client: 'HDFC Bank', visitDate: '2025-06-06', plannedTime: '09:00 AM', status: 'planned', clientSignature: false, geoTagged: false, photos: 0, notes: '', visitedBy: 'Anjali Desai' },
-  { id: 'VIS_007', site: 'Amazon Hyderabad FC', siteId: 'SITE_007', client: 'Amazon India', visitDate: '2025-06-05', plannedTime: '10:30 AM', actualTime: '10:35 AM', status: 'completed', clientSignature: true, geoTagged: true, photos: 6, notes: 'Warehouse cleanliness excellent. New fire exit signage installed.', checklistScore: 33, visitedBy: 'Priya Sen' },
+  { id: 'VIS_003', site: 'Wipro Hinjewadi Campus', siteId: 'SITE_003', client: 'Wipro Technologies', visitDate: '2025-06-05', plannedTime: '11:00 AM', status: 'planned', clientSignature: false, geoTagged: false, photos: 0, notes: '', visitedBy: 'Ravi Shankar' },
 ];
 
 // ── Attendance Records ──
 export const attendanceRecords: AttendanceRecord[] = [
   // Absentees
-  { id: 'ATT_001', employeeName: 'Ramesh Yadav', employeeCode: 'EMP1001', client: 'Infosys BPO', site: 'Infosys Gurgaon Tower A', siteId: 'SITE_001', shift: 'First', date: '2026-06-09', issueType: 'absent', relieverAssigned: 'Sunil Verma', replacementRequired: true, status: 'Reliever Assigned', remarks: 'Reliever deployed successfully' },
-  { id: 'ATT_002', employeeName: 'Priya Sharma', employeeCode: 'EMP1012', client: 'Infosys BPO', site: 'Infosys Bangalore EC', siteId: 'SITE_002', shift: 'Second', date: '2026-06-09', issueType: 'absent', replacementRequired: true, status: 'Open', remarks: 'Unplanned absence reported' },
   { id: 'ATT_003', employeeName: 'Suresh Babu', employeeCode: 'EMP2003', client: 'Wipro Technologies', site: 'Wipro Hinjewadi Campus', siteId: 'SITE_003', shift: 'Third', date: '2026-06-09', issueType: 'absent', replacementRequired: true, status: 'Open', remarks: 'No-show for third shift' },
-  { id: 'ATT_004', employeeName: 'Lakshmi Nair', employeeCode: 'EMP2010', client: 'HDFC Bank', site: 'HDFC Tower Chennai', siteId: 'SITE_006', shift: 'First', date: '2026-06-09', issueType: 'absent', relieverAssigned: 'Gopal Raj', replacementRequired: true, status: 'Covered', remarks: 'Sick leave pre-approved' },
-  { id: 'ATT_005', employeeName: 'Ketan Patel', employeeCode: 'EMP3022', client: 'Reliance Jio', site: 'Jio Centre Mumbai', siteId: 'SITE_005', shift: 'Second', date: '2026-06-09', issueType: 'absent', replacementRequired: false, status: 'Open', remarks: 'Casual leave' },
-  { id: 'ATT_006', employeeName: 'Rajesh Kumar', employeeCode: 'EMP4005', client: 'DLF Cyber City', site: 'DLF Cyber Hub Delhi', siteId: 'SITE_004', shift: 'First', date: '2026-06-09', issueType: 'absent', replacementRequired: true, status: 'Escalated', remarks: 'No contact established. 3rd occurrence.' },
 
   // Missing Punches
-  { id: 'ATT_011', employeeName: 'Meera Devi', employeeCode: 'EMP1015', client: 'Infosys BPO', site: 'Infosys Gurgaon Tower A', siteId: 'SITE_001', shift: 'First', date: '2026-06-09', issueType: 'missing_in', status: 'Open', punchTime: 'Out: 06:00 PM', remarks: 'Out punch recorded. Missing In punch' },
   { id: 'ATT_012', employeeName: 'Arun Kumar', employeeCode: 'EMP3005', client: 'Wipro Technologies', site: 'Wipro Hinjewadi Campus', siteId: 'SITE_003', shift: 'First', date: '2026-06-09', issueType: 'missing_out', status: 'Pending Review', punchTime: 'In: 08:30 AM', remarks: 'In punch recorded. Missing Out punch' },
   { id: 'ATT_013', employeeName: 'Mohammad Ali', employeeCode: 'EMP3009', client: 'Wipro Technologies', site: 'Wipro Hinjewadi Campus', siteId: 'SITE_003', shift: 'Second', date: '2026-06-08', issueType: 'missing_in', status: 'Open', punchTime: 'Out: 10:00 PM', remarks: 'Second shift out recorded' },
-  { id: 'ATT_014', employeeName: 'Sita Ram', employeeCode: 'EMP1020', client: 'Infosys BPO', site: 'Infosys Gurgaon Tower A', siteId: 'SITE_001', shift: 'Third', date: '2026-06-08', issueType: 'missing_out', status: 'Regularized', punchTime: 'In: 09:30 PM', remarks: 'Approved. System failure during night storm' },
-  { id: 'ATT_015', employeeName: 'Karan Singh', employeeCode: 'EMP5011', client: 'Amazon India', site: 'Amazon Hyderabad FC', siteId: 'SITE_007', shift: 'Third', date: '2026-06-08', issueType: 'missing_in', status: 'Open', punchTime: 'Out: 06:00 AM', remarks: 'Clock-out logged, missing clock-in' },
-
-  // Regularizations
-  { id: 'ATT_021', employeeName: 'Fatima Bi', employeeCode: 'EMP4002', client: 'DLF Cyber City', site: 'DLF Cyber Hub Delhi', siteId: 'SITE_004', shift: 'First', date: '2026-06-08', issueType: 'regularization', status: 'Open', reason: 'Client Duty', submittedDate: '2026-06-08', remarks: 'Forgot to punch in due to emergency client audit support', evidenceUrl: 'client_letter.jpg' },
-  { id: 'ATT_022', employeeName: 'Dinesh Patel', employeeCode: 'EMP5008', client: 'Reliance Jio', site: 'Jio Centre Mumbai', siteId: 'SITE_005', shift: 'Second', date: '2026-06-07', issueType: 'regularization', status: 'Open', reason: 'Biometric Failure', submittedDate: '2026-06-08', remarks: 'Biometric fingerprint scanner would not accept entry', evidenceUrl: 'fingerprint_error.jpg' },
-  { id: 'ATT_023', employeeName: 'Anjali Desai', employeeCode: 'EMP2044', client: 'Infosys BPO', site: 'Infosys Bangalore EC', siteId: 'SITE_002', shift: 'First', date: '2026-06-06', issueType: 'regularization', status: 'Regularized', reason: 'Mobile App Issue', submittedDate: '2026-06-07', remarks: 'Mobile application crashed repeatedly at entry' },
-  { id: 'ATT_024', employeeName: 'Rohan Sharma', employeeCode: 'EMP1099', client: 'Infosys BPO', site: 'Infosys Noida SEZ', siteId: 'SITE_008', shift: 'Second', date: '2026-06-05', issueType: 'regularization', status: 'Open', reason: 'Site Emergency', submittedDate: '2026-06-06', remarks: 'Evacuating site due to power short circuit', evidenceUrl: 'fire_exit_log.png' },
 
   // Non-App Users
-  { id: 'ATT_031', employeeName: 'Babulal Prasad', employeeCode: 'EMP8001', client: 'Infosys BPO', site: 'Infosys Gurgaon Tower A', siteId: 'SITE_001', shift: 'First', date: '2026-06-09', issueType: 'non_app', status: 'Open', deviceType: 'Feature Phone', appStatus: 'Not Installed', lastAttendanceMethod: 'Manual Register', registrationStatus: 'Pending Registration', manualEntriesCount: 22 },
-  { id: 'ATT_032', employeeName: 'Gita Devi', employeeCode: 'EMP8005', client: 'DLF Cyber City', site: 'DLF Cyber Hub Delhi', siteId: 'SITE_004', shift: 'Second', date: '2026-06-09', issueType: 'non_app', status: 'Open', deviceType: 'Redmi 9 (No Data)', appStatus: 'Not Installed', lastAttendanceMethod: 'Manual Register', registrationStatus: 'Pending Registration', manualEntriesCount: 18 },
-  { id: 'ATT_033', employeeName: 'Sohan Singh', employeeCode: 'EMP8009', client: 'Reliance Jio', site: 'Jio Centre Mumbai', siteId: 'SITE_005', shift: 'Third', date: '2026-06-09', issueType: 'non_app', status: 'Open', deviceType: 'Vivo Y12', appStatus: 'Not Installed', lastAttendanceMethod: 'Manual Register', registrationStatus: 'Pending Registration', manualEntriesCount: 26 },
   { id: 'ATT_034', employeeName: 'Kiran Nair', employeeCode: 'EMP8014', client: 'Wipro Technologies', site: 'Wipro Hinjewadi Campus', siteId: 'SITE_003', shift: 'First', date: '2026-06-09', issueType: 'non_app', status: 'Regularized', deviceType: 'iPhone 11', appStatus: 'Installed', lastAttendanceMethod: 'Mobile Punch', registrationStatus: 'Registered Device', manualEntriesCount: 4 }
 ];
 

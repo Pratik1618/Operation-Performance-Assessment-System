@@ -16,6 +16,7 @@ export interface RoleConfig {
 export const roleConfigs: RoleConfig[] = [
   { role: 'oe', label: 'Operation Executive', userName: 'Ravi Shankar', code: 'OE-001', designation: 'Operation Executive' },
   { role: 'rm', label: 'Regional Manager', userName: 'Suresh Kumar', code: 'RM-001', designation: 'Regional Manager' },
+  { role: 'zh', label: 'Zonal Head', userName: 'Nitin Gadkari', code: 'ZH-001', designation: 'Zonal Head' },
   { role: 'avp', label: 'AVP Operations', userName: 'Venkat Raman', code: 'AVP-001', designation: 'AVP Operations' },
   { role: 'bh', label: 'Business Head', userName: 'Priya Saxena', code: 'BH-001', designation: 'Business Head' },
   { role: 'hr', label: 'HR Team', userName: 'Neha Verma', code: 'HR-001', designation: 'HR Manager' },
@@ -79,7 +80,10 @@ export function OCRMSProvider({ children }: { children: ReactNode }) {
         if (
           updatedFields.oeRating !== undefined || 
           updatedFields.rmRating !== undefined || 
+          updatedFields.zhRating !== undefined || 
           updatedFields.avpRating !== undefined || 
+          updatedFields.bhRating !== undefined || 
+          updatedFields.drRating !== undefined || 
           updatedFields.status === 'approved'
         ) {
           const recomputed = recomputeScores([updatedTask], scoringPolicy)

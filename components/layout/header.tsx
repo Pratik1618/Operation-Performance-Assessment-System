@@ -13,6 +13,7 @@ const quickChips = ['June 2025', 'North Region', '12 Sites Active']
 const roleUserMap: Record<UserRole, { name: string; designation: string; email: string }> = {
   oe: { name: 'Ravi Shankar', designation: 'Operation Executive', email: 'ravi.shankar@opas.com' },
   rm: { name: 'Suresh Kumar', designation: 'Regional Manager (North)', email: 'suresh.kumar@opas.com' },
+  zh: { name: 'Nitin Gadkari', designation: 'Zonal Head', email: 'nitin.gadkari@opas.com' },
   avp: { name: 'Venkat Raman', designation: 'AVP Operations', email: 'venkat.raman@opas.com' },
   bh: { name: 'Priya Saxena', designation: 'Business Head', email: 'priya.saxena@opas.com' },
   hr: { name: 'Neha Verma', designation: 'HR Manager', email: 'neha.verma@opas.com' },
@@ -28,6 +29,7 @@ const roleUserMap: Record<UserRole, { name: string; designation: string; email: 
 const roleLabelMap: Record<UserRole, string> = {
   oe: 'OE: Operation Executive',
   rm: 'RM: Regional Manager',
+  zh: 'ZH: Zonal Head',
   avp: 'AVP: Operations',
   bh: 'BH: Business Head',
   hr: 'HR: HR Team',

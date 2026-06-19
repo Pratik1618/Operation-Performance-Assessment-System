@@ -38,8 +38,7 @@ const categories: ActivityCategory[] = [
   'Employee Relations',
   'Incident & Performance',
   'Planning & Recognition',
-  'Reporting & Closure',
-  'Quality & Feedback'
+  'Reporting & Closure'
 ]
 
 const frequencies: TaskFrequency[] = ['daily', 'weekly', 'fortnightly', 'monthly', 'one-time']

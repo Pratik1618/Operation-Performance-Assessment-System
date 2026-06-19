@@ -4,7 +4,7 @@
 // ─────────────────────────────────────────────
 
 // ── Roles ──
-export type UserRole = 'oe' | 'rm' | 'avp' | 'bh' | 'hr' | 'procurement' | 'dr' | 'th' | 'trainers' | 'commerical' | 'hod' | 'hr_dr';
+export type UserRole = 'oe' | 'rm' | 'zh' | 'avp' | 'bh' | 'hr' | 'procurement' | 'dr' | 'th' | 'trainers' | 'commerical' | 'hod' | 'hr_dr';
 
 export interface User {
   id: string;
@@ -37,6 +37,7 @@ export interface Site {
   zone: string;
   assignedOE: string;
   assignedRM: string;
+  assignedZH?: string;
   assignedAVP: string;
   status: 'active' | 'inactive';
   employeeCount: number;
@@ -55,9 +56,22 @@ export interface Client {
   status: 'active' | 'inactive';
 }
 
+export type EmployeeDesignation = 'Security Guard' | 'Security Supervisor' | 'Housekeeper' | 'Facility Manager' | 'Janitor';
+
+export interface Employee {
+  id: string;
+  name: string;
+  code: string;
+  siteId: string;
+  designation: EmployeeDesignation;
+  shift: 'First' | 'Second' | 'Third' | 'General';
+  joiningDate: string;
+  status: 'active' | 'inactive';
+}
+
 // ── Operational Tasks & Activity Templates ──
 export type TaskFrequency = 'daily' | 'weekly' | 'fortnightly' | 'monthly' | 'one-time';
-export type TaskStatus = 'pending' | 'in_progress' | 'oe_submitted' | 'rm_approved' | 'avp_approved' | 'bh_approved' | 'rejected' | 'overdue' | 'submitted' | 'approved';
+export type TaskStatus = 'pending' | 'in_progress' | 'oe_submitted' | 'rm_approved' | 'zh_approved' | 'avp_approved' | 'bh_approved' | 'dr_approved' | 'rejected' | 'overdue' | 'submitted' | 'approved';
 
 export interface Activity {
   id: string;
@@ -112,8 +126,7 @@ export type ActivityCategory =
   | 'Employee Relations'
   | 'Incident & Performance'
   | 'Planning & Recognition'
-  | 'Reporting & Closure'
-  | 'Quality & Feedback';
+  | 'Reporting & Closure';
 
 export interface ActivityTemplate {
   id: string;
@@ -125,7 +138,7 @@ export interface ActivityTemplate {
   weightage: number;
   evidenceTypes: ('image' | 'pdf' | 'excel' | 'video' | 'audio' | 'signature')[];
   formSchema: FormFieldSchema[];
-  approvalFlow: ('oe' | 'rm' | 'avp')[];
+  approvalFlow: ('oe' | 'rm' | 'zh' | 'avp' | 'bh' | 'dr')[];
   active: boolean;
   assignedRoles?: string;
   approvalFlowText?: string;
@@ -165,6 +178,14 @@ export interface OperationalTask {
   bhRemarks?: string;
   bhApprovedDate?: string;
   
+  zhRating?: number;
+  zhRemarks?: string;
+  zhReviewedDate?: string;
+  
+  drRating?: number;
+  drRemarks?: string;
+  drApprovedDate?: string;
+  
   finalScore?: number;
   assignedTo: string;
 }
@@ -188,6 +209,159 @@ export interface SiteVisit {
   notes: string;
   checklistScore?: number; // out of 34
   visitedBy: string;
+  transportMode?: string;
+  reportData?: SiteVisitReportData;
+}
+
+// ── Enhanced Site Visit Report (11-Section Form) ──
+export type VisitType = 'routine' | 'surprise' | 'complaint' | 'followup' | 'new_site';
+
+export interface QualityRating {
+  overallCleanliness: number;
+  workstationCondition: number;
+  cabinCleanliness: number;
+  washroomCleanliness: number;
+  officeEntranceCondition: number;
+  glassCleaning: number;
+  furnitureChairCondition: number;
+  housekeepingStandards: number;
+}
+
+export type ObservationItem =
+  | 'cobwebs' | 'doormat_not_maintained' | 'broken_fittings'
+  | 'dust_accumulation' | 'stains_spillage' | 'none';
+
+export interface HKComplianceChecks {
+  wearingUniform: boolean;
+  hasTwoUniforms: boolean;
+  wearingSafetyShoes: boolean;
+  wearingIdCard: boolean;
+  groomingMaintained: boolean;
+}
+
+export interface HKKnowledgeRatings {
+  chemicalKnowledge: number;
+  dilutionRatioKnowledge: number;
+  washroomCleaningProcedure: number;
+  machineryUsageKnowledge: number;
+}
+
+export interface HKDisciplineChecks {
+  attendanceMarkedInApp: boolean;
+  leaveReportingUnderstood: boolean;
+  materialReceivedOnTime: boolean;
+}
+
+export interface HKAssessment {
+  associateMet: boolean;
+  compliance: HKComplianceChecks;
+  knowledge: HKKnowledgeRatings;
+  discipline: HKDisciplineChecks;
+}
+
+export type MaterialAvailability = 'fully_available' | 'low_stock' | 'critical_shortage';
+export type EquipmentStatusType = 'fully_functional' | 'minor_issue' | 'major_breakdown';
+
+export interface EquipmentIssue {
+  equipmentName: string;
+  issueDescription: string;
+  photoUrl?: string;
+}
+
+export type TrainingTopic =
+  | 'chemical_usage' | 'chemical_dilution' | 'washroom_cleaning'
+  | 'cabin_cleaning' | 'workstation_cleaning' | 'open_area_cleaning'
+  | 'lobby_cleaning' | 'machinery_usage' | 'mobile_app_usage'
+  | 'grooming_hygiene';
+
+export interface ClientFeedbackData {
+  clientMet: boolean;
+  staffAppearance: number;
+  behaviourEtiquette: number;
+  groomingStandards: number;
+  hygieneStandards: number;
+  materialQualityFeedback: 'excellent' | 'good' | 'average' | 'poor' | '';
+  serviceQualityFeedback: 'excellent' | 'good' | 'average' | 'poor' | '';
+  clientRemark: string;
+}
+
+export interface PhotoDoc {
+  id: string;
+  category: 'site_overview' | 'washroom' | 'hk_staff' | 'store_room'
+    | 'equipment' | 'issues' | 'before_after';
+  fileName: string;
+  isMandatory: boolean;
+}
+
+export type SiteIssue =
+  | 'staff_shortage' | 'material_shortage' | 'equipment_breakdown'
+  | 'attendance_issue' | 'uniform_noncompliance' | 'grooming_issue'
+  | 'client_complaint' | 'safety_concern' | 'cleaning_quality' | 'other';
+
+export interface CorrectiveAction {
+  id: string;
+  issue: string;
+  assignedTo: string;
+  priority: 'high' | 'medium' | 'low';
+  targetClosureDate: string;
+  status: 'open' | 'in_progress' | 'closed';
+}
+
+export type FinalSiteStatus = 'excellent' | 'good' | 'needs_improvement' | 'critical';
+
+export interface SiteVisitReportData {
+  // Section 1: Visit Details
+  visitType: VisitType;
+  gpsLocation: { lat: number; lng: number } | null;
+  // Section 2: Site Quality Audit
+  qualityRatings: QualityRating;
+  observations: ObservationItem[];
+  siteQualityScore: number;
+  // Section 3: HK Assessment
+  hkAssessment: HKAssessment;
+  // Section 4: Material & Equipment
+  materialAvailability: MaterialAvailability;
+  equipmentStatus: EquipmentStatusType;
+  equipmentIssue?: EquipmentIssue;
+  // Section 5: Training
+  trainingTopics: TrainingTopic[];
+  trainingConducted: boolean;
+  trainingRemarks: string;
+  // Section 6: Client Feedback
+  clientFeedback: ClientFeedbackData;
+  // Section 7: Photos
+  photos: PhotoDoc[];
+  // Section 8: Issues
+  issuesIdentified: SiteIssue[];
+  // Section 9: Corrective Actions
+  correctiveActions: CorrectiveAction[];
+  // Section 10: Positive Recognition
+  positiveRecognition: string;
+  // Section 11: Final Status
+  finalSiteStatus: FinalSiteStatus;
+  supervisorRemarks: string;
+  // Computed scores
+  complianceScore: number;
+  trainingCoverageScore: number;
+  overallSiteHealthScore: number;
+}
+
+// ── Final Closing Report (ACT-OPS-03) ──
+export interface QueryResolution {
+  actionId: string;
+  issue: string;
+  assignedTo: string;
+  resolutionStatus: 'resolved' | 'unresolved';
+  resolutionRemarks: string;
+  evidencePhotoId?: string;
+}
+
+export interface FinalClosingReportData {
+  originalSiteVisitTaskId: string;
+  visitDate: string;
+  queryResolutions: QueryResolution[];
+  overallStatus: 'fully_resolved' | 'partially_resolved' | 'unresolved';
+  closingRemarks: string;
 }
 
 // ── Visit Plan ──
@@ -505,6 +679,10 @@ export interface AttendanceVerificationCase {
   rmRemarks?: string;
   avpRating?: number;
   avpRemarks?: string;
+  zhRating?: number;
+  zhRemarks?: string;
+  drRating?: number;
+  drRemarks?: string;
   finalScore?: number;
   status: string;
 }
@@ -523,3 +701,92 @@ export interface TrainingSession {
   mode: 'online' | 'offline';
 }
 
+// ── MOM Report (10-Section Form) ──
+export type ClientSentiment = 'very_happy' | 'satisfied' | 'neutral' | 'concerned' | 'escalated';
+export type MOMDiscussionTopic = 'service_quality' | 'cleaning_standards' | 'manpower' | 'attendance' | 'material_availability' | 'equipment_issues' | 'complaint_followup' | 'additional_requirement' | 'contract_commercial' | 'other';
+export type MOMIssue = 'cleaning_quality' | 'attendance' | 'staff_behaviour' | 'material_shortage' | 'equipment_breakdown' | 'safety_concern' | 'service_delay' | 'other';
+export type MOMOpportunityType = 'additional_manpower' | 'deep_cleaning' | 'facade_cleaning' | 'pest_control' | 'landscaping' | 'pantry_services' | 'technical_services' | 'other';
+export type MOMOutcome = 'no_action' | 'action_plan_created' | 'escalation_required' | 'business_opportunity';
+
+export interface MOMActionItem {
+  id: string;
+  description: string;
+  assignedTo: string;
+  targetDate: string;
+  priority: 'high' | 'medium' | 'low';
+  status: 'open' | 'closed';
+}
+
+export interface MOMBusinessOpportunity {
+  types: MOMOpportunityType[];
+  value: 'low' | 'medium' | 'high' | '';
+}
+
+export interface MOMReportData {
+  // Section 1: Meeting Details
+  meetingDate: string;
+  clientRepName: string;
+  clientDesignation: string;
+  
+  // Section 2: Client Interaction
+  clientMet: boolean;
+  
+  // Section 3: Client Sentiment
+  sentiment: ClientSentiment | '';
+  
+  // Section 4: Discussion Topics
+  topics: MOMDiscussionTopic[];
+  
+  // Section 5: Issues Raised
+  issuesRaised: boolean;
+  issues: MOMIssue[];
+  
+  // Section 6: Action Required
+  actionRequired: boolean;
+  actionItems: MOMActionItem[];
+  
+  // Section 7: Business Opportunity
+  opportunityDiscussed: boolean;
+  opportunity: MOMBusinessOpportunity;
+  
+  // Section 8: Meeting Summary
+  summary: string;
+  
+  // Section 9: Follow-up
+  followupRequired: boolean;
+  followupDate: string;
+  
+  // Section 10: Meeting Outcome
+  outcome: MOMOutcome | '';
+}
+
+// ── Daily Closure Report ──
+export type CleanedArea = 'washrooms' | 'common_areas' | 'office_floors' | 'pantry' | 'staircase' | 'parking' | 'outdoor' | 'other';
+export type CleaningFrequency = '2_times' | '4_times' | '6_times' | 'more_than_6';
+export type WorkCompletionStatus = 'fully_completed' | 'partially_completed' | 'not_completed';
+export type IncompletionReason = 'staff_shortage' | 'material_shortage' | 'area_inaccessible' | 'extra_work' | 'other';
+export type DailyIssue = 'no_issues' | 'washroom_issue' | 'electrical_issue' | 'plumbing_issue' | 'material_shortage' | 'safety_hazard' | 'customer_complaint' | 'other';
+export type FinalShiftStatus = 'all_clean' | 'cleaning_in_progress' | 'issue_pending' | 'supervisor_informed';
+
+export interface DailyClosureReportData {
+  // Section 1
+  cleanedAreas: CleanedArea[];
+  cleanedAreasOther: string;
+  
+  // Section 2
+  cleaningFrequency: CleaningFrequency | '';
+  
+  // Section 3
+  completionStatus: WorkCompletionStatus | '';
+  incompletionReasons: IncompletionReason[];
+  incompletionReasonsOther: string;
+  
+  // Section 4
+  issuesNoticed: DailyIssue[];
+  issuesOther: string;
+  issuePhotos: PhotoDoc[];
+  
+  // Section 5
+  finalStatus: FinalShiftStatus | '';
+  additionalComments: string;
+}

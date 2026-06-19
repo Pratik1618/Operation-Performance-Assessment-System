@@ -13,6 +13,7 @@ export const currentUser = {
 }
 
 export const employees = [
+  { id: 'USR_ZH1', name: 'Nitin Gadkari', code: 'ZH-001', designation: 'Zonal Head', role: 'zh' as const, region: 'North', state: 'Delhi', zone: 'NCR', email: 'nitin.gadkari@opas.com', phone: '+91 9876543222' },
   { id: 'USR_RM1', name: 'Suresh Kumar', code: 'RM-001', designation: 'Regional Manager', role: 'rm' as const, region: 'North', state: 'Delhi', zone: 'NCR', email: 'suresh.kumar@opas.com', phone: '+91 9876543211' },
   { id: 'USR_AVP1', name: 'Venkat Raman', code: 'AVP-001', designation: 'AVP Operations', role: 'avp' as const, region: 'North', state: 'Delhi', zone: 'NCR', email: 'venkat.raman@opas.com', phone: '+91 9876543212' },
   { id: 'USR_BH1', name: 'Priya Saxena', code: 'BH-001', designation: 'Business Head', role: 'bh' as const, region: 'All', state: 'All', zone: 'All', email: 'priya.saxena@opas.com', phone: '+91 9876543213' },

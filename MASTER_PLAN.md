@@ -203,12 +203,12 @@ Activities:
 
 * Absent Report
 * Reliever Report
-* Non App Usage Count
+* Non App Usage & Follow Up
 * Attendance Submission
 * Leave Approval
 * Missing In-Out Time
 * Regularization
-* Non App Follow Up
+
 * Weekoff Mapping
 
 ---
@@ -218,8 +218,7 @@ Activities:
 Activities:
 
 * Site Visit Report
-* Next Month Visit Plan
-* Visit Calendar Upload
+* Final closing report of the queries(sitewise)
 * Site Mapping
 
 ---
@@ -241,7 +240,7 @@ Activities:
 * Material Punch Compliance
 * Uniform Request
 * Shoes Request
-* Sweater Request
+
 * Uniform Issuance
 * Shoes Issuance
 
@@ -283,17 +282,6 @@ Activities:
 * MOM Report
 * Closure Report
 * Daily Closure Report
-
----
-
-## Quality & Feedback
-
-Activities:
-
-* Feedback
-* Material Quality
-* Customer Service Report
-* Client Referral
 
 ---
 

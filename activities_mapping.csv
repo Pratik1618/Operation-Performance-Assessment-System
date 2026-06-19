@@ -3,15 +3,16 @@ ACT-ATT-01,Absent Report,Attendance Verification,Daily,"OE,hrbp",OE ? RM ? AVP ?
 ACT-ATT-02,Reliever Report,Attendance Verification,Daily,"OE,hrbp",OE ? RM ? AVP ? BH; HRBP ? HR DR,5,,hr dr = hr directore
 ACT-ATT-03,Non App Usage Count,Attendance Verification,Daily,"OE,hrbp",OE ? RM ? AVP ? BH; HRBP ? HR DR,5,,hrbp= human resource business
 ACT-ATT-04,Attendance Submission,Attendance Verification,Monthly,"OE,hrbp",OE ? RM ? AVP ? BH; HRBP ? HR DR,5,,th=  trainer head
-ACT-ATT-05,Leave Approval,Attendance Verification,Weekly,"OE,hrbp",OE ? RM ? AVP ? BH; HRBP ? HR DR,5,,
+ACT-ATT-05,Leave Approval,Attendance Verification,Weekly,"OE,hrbp",OE ? RM ? AVP ? BH; HRBP ? HR DR,5,,ph = procurement head
 ACT-ATT-06,Missing In-Out Time,Attendance Verification,Weekly,"OE,hrbp,if back office hod ",OE ? HOD ? RM ? AVP; HRBP ? HR DR,5,,
 ACT-ATT-07,Regularization,Attendance Verification,Weekly,"OE,hrbp,if back office hod ",OE ? HOD ? RM ? AVP; HRBP ? HR DR,5,,
 ACT-ATT-08,Non App Follow Up,Attendance Verification,Daily,"oe,hrbp,hr dr",OE ? RM ? AVP ? BH; HRBP ? HR DR,5,,
 ACT-ATT-09,Weekoff Mapping,Attendance Verification,Daily,"hrbp,oe",OE ? RM ? AVP ? BH; HRBP ? HR DR,5,,
 ACT-OPS-01,Site Visit Report,Site Operations,Daily,"oe,rm,avp,bh,dr",OE ? RM ? AVP ? BH ? DR,5,,
 ACT-OPS-02,Next Month Visit Plan,Site Operations,Monthly,"oe,rm,avp,bh,dr",OE ? RM ? AVP ? BH ? DR,5,,
-ACT-OPS-03,Visit Calendar Upload,Site Operations,Monthly,"oe,rm,avp,bh,dr",OE ? RM ? AVP ? BH ? DR,5,,
-ACT-OPS-04,Site Mapping,Site Operations,Monthly,"oe,commerical",OE ? Commercial ? AVP ? BH,5,,
+ACT-OPS-03,Final closing report of the queries(sitewise),Site Operations,after 7 days of site report,oe,OE ? RM ? AVP ? BH ? DR,5,,
+ACT-OPS-04,Visit Calendar Upload,Site Operations,Monthly,"oe,rm,avp,bh,dr",OE ? RM ? AVP ? BH ? DR,5,,
+ACT-OPS-05,Site Mapping,Site Operations,Monthly,"oe,commerical",OE ? Commercial ? AVP ? BH,5,,
 ACT-TRN-01,Training Report,Training,Monthly,"trainers,th,oe",Trainers ? TH ? OE ? AVP,5,,
 ACT-TRN-02,Training Videos,Training,Monthly,"trainers,th,oe",Trainers ? TH ? OE ? AVP,5,,
 ACT-TRN-03,Training Schedule Calendar,Training,Monthly,"trainers,th,oe",Trainers ? TH ? OE ? AVP,5,,
