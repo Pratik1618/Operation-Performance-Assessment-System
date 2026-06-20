@@ -106,7 +106,7 @@ export const activityTemplates: ActivityTemplate[] = [
     weightage: 5,
     evidenceTypes: ['pdf', 'excel'],
     formSchema: [
-      { id: 'billingDays', label: 'Total Billing Days Calculated', type: 'number', required: true },
+      { id: 'salaryMonth', label: 'Salary Month (Resolved)', type: 'text', required: true, placeholder: 'Resolved month' },
       { id: 'reconciled', label: 'Reconciliation with client complete', type: 'checkbox', required: true }
     ],
     approvalFlow: ['oe', 'rm', 'avp'],
@@ -124,8 +124,7 @@ export const activityTemplates: ActivityTemplate[] = [
     weightage: 5,
     evidenceTypes: ['pdf'],
     formSchema: [
-      { id: 'leavesApproved', label: 'Number of Leaves Approved', type: 'number', required: true },
-      { id: 'backfillPlanned', label: 'Backfill Scheduled for all leaves', type: 'checkbox', required: true }
+      { id: 'rosterReconciled', label: 'Roster Reconciled for Leaves', type: 'checkbox', required: true }
     ],
     approvalFlow: ['oe', 'rm'],
     active: true,
@@ -142,8 +141,8 @@ export const activityTemplates: ActivityTemplate[] = [
     weightage: 5,
     evidenceTypes: ['signature'],
     formSchema: [
-      { id: 'missingPunchesCount', label: 'Total Missing Punch Cases', type: 'number', required: true },
-      { id: 'resolvedCount', label: 'Total Cases Resolved/Updated', type: 'number', required: true }
+      { id: 'missingRecordsCount', label: 'Number of Incomplete Records (Auto-resolved)', type: 'number', required: true },
+      { id: 'regularized', label: 'All incomplete records regularized', type: 'checkbox', required: true }
     ],
     approvalFlow: ['oe', 'rm'],
     active: true,
@@ -160,7 +159,6 @@ export const activityTemplates: ActivityTemplate[] = [
     weightage: 5,
     evidenceTypes: ['image', 'pdf'],
     formSchema: [
-      { id: 'regularizationDetails', label: 'Regularization Details', type: 'textarea', required: true },
       { id: 'clientApproved', label: 'Client Approved and Countersigned', type: 'checkbox', required: true }
     ],
     approvalFlow: ['oe', 'rm', 'avp'],
@@ -311,10 +309,10 @@ export const activityTemplates: ActivityTemplate[] = [
       { id: 'challanNo', label: 'Delivery Challan Number', type: 'text', required: true },
       { id: 'receivedInFull', label: 'Received in Full and Undamaged', type: 'checkbox', required: true }
     ],
-    approvalFlow: ['oe', 'rm'],
+    approvalFlow: ['oe', 'ph', 'avp', 'bh', 'dr'],
     active: true,
     assignedRoles: 'oe,ph',
-    approvalFlowText: 'OE → PH → AVP → BH'
+    approvalFlowText: 'OE → PH → AVP → BH → DR'
   },
   {
     id: 'TPL-PRO-002',
@@ -328,10 +326,10 @@ export const activityTemplates: ActivityTemplate[] = [
     formSchema: [
       { id: 'registerMatch', label: 'Register entries match Challans', type: 'checkbox', required: true }
     ],
-    approvalFlow: ['oe'],
+    approvalFlow: ['oe', 'ph', 'avp', 'bh', 'dr'],
     active: true,
     assignedRoles: 'oe,ph',
-    approvalFlowText: 'OE → PH → AVP → BH'
+    approvalFlowText: 'OE → PH → AVP → BH → DR'
   },
   {
     id: 'TPL-PRO-003',
@@ -346,10 +344,10 @@ export const activityTemplates: ActivityTemplate[] = [
       { id: 'sizeNeeded', label: 'Uniform Sizes Required', type: 'select', required: true, options: ['S', 'M', 'L', 'XL', 'XXL'] },
       { id: 'qty', label: 'Quantity Requested', type: 'number', required: true }
     ],
-    approvalFlow: ['oe', 'rm'],
+    approvalFlow: ['oe', 'ph', 'avp', 'bh', 'dr'],
     active: true,
     assignedRoles: 'oe,ph',
-    approvalFlowText: 'OE → PH → AVP → BH'
+    approvalFlowText: 'OE → PH → AVP → BH → DR'
   },
   {
     id: 'TPL-PRO-004',
@@ -364,10 +362,10 @@ export const activityTemplates: ActivityTemplate[] = [
       { id: 'shoeSize', label: 'Shoe Sizes Required', type: 'select', required: true, options: ['6', '7', '8', '9', '10', '11'] },
       { id: 'qty', label: 'Quantity Requested', type: 'number', required: true }
     ],
-    approvalFlow: ['oe', 'rm'],
+    approvalFlow: ['oe', 'ph', 'avp', 'bh', 'dr'],
     active: true,
     assignedRoles: 'oe,ph',
-    approvalFlowText: 'OE → PH → AVP → BH'
+    approvalFlowText: 'OE → PH → AVP → BH → DR'
   },
   {
     id: 'TPL-PRO-006',
@@ -383,10 +381,10 @@ export const activityTemplates: ActivityTemplate[] = [
       { id: 'totalIssued', label: 'Total Uniform Issued', type: 'number', required: true },
       { id: 'remaining', label: 'Remaining to Issue', type: 'number', required: true }
     ],
-    approvalFlow: ['oe', 'rm'],
+    approvalFlow: ['oe', 'ph', 'avp', 'bh', 'dr'],
     active: true,
     assignedRoles: 'oe,ph',
-    approvalFlowText: 'OE → PH → AVP → BH'
+    approvalFlowText: 'OE → PH → AVP → BH → DR'
   },
   {
     id: 'TPL-PRO-007',
@@ -402,10 +400,10 @@ export const activityTemplates: ActivityTemplate[] = [
       { id: 'totalIssued', label: 'Total Shoes Issued', type: 'number', required: true },
       { id: 'remaining', label: 'Remaining to Issue', type: 'number', required: true }
     ],
-    approvalFlow: ['oe', 'rm'],
+    approvalFlow: ['oe', 'ph', 'avp', 'bh', 'dr'],
     active: true,
     assignedRoles: 'oe,ph',
-    approvalFlowText: 'OE → PH → AVP → BH'
+    approvalFlowText: 'OE → PH → AVP → BH → DR'
   },
 
   // 5. Employee Relations
@@ -638,8 +636,10 @@ const calculateScore = (task: Partial<OperationalTask>, policy?: string): number
     activeRating = zh;
   } else if (task.rmRating !== undefined) {
     activeRating = rm;
+  } else if (task.phRating !== undefined) {
+    activeRating = task.phRating;
   }
-  
+
   return activeRating * weightage;
 };
 
@@ -648,18 +648,37 @@ function generateTasks(policy: string = 'avp_only'): OperationalTask[] {
   const tasks: OperationalTask[] = [];
   let id = 1;
   const siteSubset = sites.slice(0, 6);
-  
+
   for (const site of siteSubset) {
     for (const tpl of activityTemplates) {
-      // Pick statuses round-robin
-      const statuses: OperationalTask['status'][] = ['pending', 'in_progress', 'oe_submitted', 'rm_approved', 'zh_approved', 'avp_approved', 'bh_approved', 'overdue'];
+      const statuses: OperationalTask['status'][] = ['pending', 'in_progress', 'oe_submitted', 'ph_approved', 'rm_approved', 'zh_approved', 'avp_approved', 'bh_approved', 'overdue'];
       let status = statuses[id % statuses.length];
-      
+
       // Force TPL-OPS-003 to be pending for testing
       if (tpl.id === 'TPL-OPS-003') {
         status = 'pending';
       }
-      
+
+      // Force TPL-REP-001 (MOM Report) to be pending for testing
+      if (tpl.id === 'TPL-REP-001') {
+        status = 'pending';
+      }
+
+      // Force TPL-ATT-004 (Attendance Submission) to be pending for testing
+      if (tpl.id === 'TPL-ATT-004') {
+        status = 'pending';
+      }
+
+      // Force TPL-ATT-006 (Missing In-Out Time) to be pending for testing
+      if (tpl.id === 'TPL-ATT-006') {
+        status = 'pending';
+      }
+
+      // Force TPL-ATT-007 (Regularization) to be pending for testing
+      if (tpl.id === 'TPL-ATT-007') {
+        status = 'pending';
+      }
+
       const task: OperationalTask = {
         id: `TASK_${String(id).padStart(4, '0')}`,
         templateId: tpl.id,
@@ -667,7 +686,7 @@ function generateTasks(policy: string = 'avp_only'): OperationalTask[] {
         category: tpl.category,
         frequency: tpl.frequency,
         weightage: tpl.weightage,
-        dueDate: `2026-06-${String((id % 28) + 1).padStart(2, '0')}`,
+        dueDate: ['TPL-ATT-006', 'TPL-ATT-007'].includes(tpl.id) ? '2026-06-12' : `2026-06-${String((id % 28) + 1).padStart(2, '0')}`,
         siteId: site.id,
         siteName: site.name,
         clientName: site.client,
@@ -676,39 +695,72 @@ function generateTasks(policy: string = 'avp_only'): OperationalTask[] {
         evidenceUrls: ['approved', 'bh_approved', 'avp_approved', 'zh_approved', 'rm_approved', 'oe_submitted', 'submitted'].includes(status) ? ['challan.pdf', 'site_pic.jpg'] : [],
         remarks: ['approved', 'bh_approved', 'avp_approved', 'zh_approved', 'rm_approved'].includes(status) ? 'Verified and approved' : status === 'overdue' ? 'Pending submission' : '',
         assignedTo: site.assignedOE,
-        formData: ['approved', 'bh_approved', 'avp_approved', 'zh_approved', 'rm_approved', 'oe_submitted', 'submitted'].includes(status) ? {
-          totalAbsent: 2,
-          absenceReason: 'Sick Leave',
-          employeeLeftFilledDate: '2026-06-25',
-          relieverDeployed: 'Yes',
-          relieverName: 'Sunil Verma'
-        } : undefined
+        formData: ['approved', 'bh_approved', 'avp_approved', 'zh_approved', 'rm_approved'].includes(status) ? (
+          tpl.id === 'TPL-ATT-004' ? {
+            salaryMonth: 'June 2026',
+            reconciled: true
+          } : tpl.id === 'TPL-ATT-006' ? {
+            missingRecordsCount: 2,
+            regularizations: {
+              'ATT_012': { approvedTime: '05:30 PM' },
+              'ATT_013': { approvedTime: '09:00 AM' }
+            },
+            regularized: true
+          } : tpl.id === 'TPL-ATT-007' ? {
+            regularizationsList: [
+              { employeeId: 'EMP1001', date: '2026-06-10', remarks: 'Card punch failure resolved', evidenceUrl: 'ss_emp1001.png' }
+            ],
+            clientApproved: true
+          } : tpl.id === 'TPL-ATT-005' ? {
+            leavesList: [
+              { employeeId: 'EMP1001', reason: 'Sick Leave', date: '2026-06-12' },
+              { employeeId: 'EMP1003', reason: 'Casual Leave', date: '2026-06-14' }
+            ],
+            rosterReconciled: true
+          } : tpl.id === 'TPL-ATT-002' ? {
+            relieverCount: 3,
+            rosterMatch: true,
+            relieverDetails: 'Roster matches planned reliever guards.'
+          } : {
+            totalAbsent: 2,
+            absenceReason: 'Sick Leave',
+            employeeLeftFilledDate: '2026-06-25',
+            relieverDeployed: 'Yes',
+            relieverName: 'Sunil Verma'
+          }
+        ) : undefined
       };
-      
+
       // Assign ratings based on status
-      if (['approved', 'bh_approved', 'avp_approved', 'zh_approved', 'rm_approved'].includes(status)) {
+      if (['approved', 'bh_approved', 'avp_approved', 'zh_approved', 'rm_approved', 'ph_approved'].includes(status)) {
         task.oeRating = tpl.weightage;
         task.oeRemarks = 'Everything is compliant.';
         task.oeSubmittedDate = `2026-06-${String(Math.min((id % 28) + 1, 28)).padStart(2, '0')}`;
-        
+
+        if (tpl.approvalFlow?.includes('ph') && ['ph_approved', 'avp_approved', 'bh_approved', 'approved'].includes(status)) {
+          task.phRating = tpl.weightage;
+          task.phRemarks = 'Audit verified by PH.';
+          task.phReviewedDate = `2026-06-${String(Math.min((id % 28) + 1, 28)).padStart(2, '0')}`;
+        }
+
         if (['rm_approved', 'zh_approved', 'avp_approved', 'bh_approved', 'approved'].includes(status)) {
           task.rmRating = tpl.weightage;
           task.rmRemarks = 'Audit verified by RM.';
           task.rmReviewedDate = `2026-06-${String(Math.min((id % 28) + 1, 28)).padStart(2, '0')}`;
         }
-        
+
         if (['zh_approved', 'avp_approved', 'bh_approved', 'approved'].includes(status)) {
           task.zhRating = tpl.weightage;
           task.zhRemarks = 'Audit verified by ZH.';
           task.zhReviewedDate = `2026-06-${String(Math.min((id % 28) + 1, 28)).padStart(2, '0')}`;
         }
-        
+
         if (['avp_approved', 'bh_approved', 'approved'].includes(status)) {
           task.avpRating = tpl.weightage;
           task.avpRemarks = 'Closed and rated by AVP.';
           task.avpApprovedDate = `2026-06-${String(Math.min((id % 28) + 1, 28)).padStart(2, '0')}`;
         }
-        
+
         if (['bh_approved', 'approved'].includes(status)) {
           task.bhRating = tpl.weightage;
           task.bhRemarks = 'BH final signoff.';
@@ -720,7 +772,7 @@ function generateTasks(policy: string = 'avp_only'): OperationalTask[] {
           task.drRemarks = 'DR final signoff.';
           task.drApprovedDate = `2026-06-${String(Math.min((id % 28) + 1, 28)).padStart(2, '0')}`;
         }
-        
+
         task.finalScore = calculateScore(task, policy);
       } else if (status === 'oe_submitted' || status === 'submitted') {
         task.oeRating = Math.max(1, tpl.weightage - 1);
@@ -735,7 +787,7 @@ function generateTasks(policy: string = 'avp_only'): OperationalTask[] {
           ]
         };
       }
-      
+
       tasks.push(task);
       id++;
     }
@@ -749,12 +801,13 @@ export const operationalTasks: OperationalTask[] = generateTasks();
 export function recomputeScores(tasksList: OperationalTask[], policy: string): OperationalTask[] {
   return tasksList.map(task => {
     if (
-      task.status === 'approved' || 
+      task.status === 'approved' ||
       task.status === 'dr_approved' ||
-      task.status === 'bh_approved' || 
-      task.status === 'avp_approved' || 
-      task.status === 'zh_approved' || 
-      task.status === 'rm_approved'
+      task.status === 'bh_approved' ||
+      task.status === 'avp_approved' ||
+      task.status === 'zh_approved' ||
+      task.status === 'rm_approved' ||
+      task.status === 'ph_approved'
     ) {
       return {
         ...task,
@@ -837,7 +890,11 @@ export const attendanceRecords: AttendanceRecord[] = [
   { id: 'ATT_013', employeeName: 'Mohammad Ali', employeeCode: 'EMP3009', client: 'Wipro Technologies', site: 'Wipro Hinjewadi Campus', siteId: 'SITE_003', shift: 'Second', date: '2026-06-08', issueType: 'missing_in', status: 'Open', punchTime: 'Out: 10:00 PM', remarks: 'Second shift out recorded' },
 
   // Non-App Users
-  { id: 'ATT_034', employeeName: 'Kiran Nair', employeeCode: 'EMP8014', client: 'Wipro Technologies', site: 'Wipro Hinjewadi Campus', siteId: 'SITE_003', shift: 'First', date: '2026-06-09', issueType: 'non_app', status: 'Regularized', deviceType: 'iPhone 11', appStatus: 'Installed', lastAttendanceMethod: 'Mobile Punch', registrationStatus: 'Registered Device', manualEntriesCount: 4 }
+  { id: 'ATT_034', employeeName: 'Kiran Nair', employeeCode: 'EMP8014', client: 'Wipro Technologies', site: 'Wipro Hinjewadi Campus', siteId: 'SITE_003', shift: 'First', date: '2026-06-09', issueType: 'non_app', status: 'Regularized', deviceType: 'iPhone 11', appStatus: 'Installed', lastAttendanceMethod: 'Mobile Punch', registrationStatus: 'Registered Device', manualEntriesCount: 4 },
+
+  // Regularization requests to be auto-picked
+  { id: 'ATT_041', employeeName: 'Suresh Babu', employeeCode: 'EMP1002', client: 'Wipro Technologies', site: 'Wipro Hinjewadi Campus', siteId: 'SITE_003', shift: 'First', date: '2026-06-10', issueType: 'regularization', status: 'Open', remarks: 'Card machine not read finger print' },
+  { id: 'ATT_042', employeeName: 'Anita Desai', employeeCode: 'EMP1003', client: 'Wipro Technologies', site: 'Wipro Hinjewadi Campus', siteId: 'SITE_003', shift: 'Second', date: '2026-06-11', issueType: 'regularization', status: 'Open', remarks: 'Client requested extension of duty' }
 ];
 
 // ── Grievances ──
@@ -920,13 +977,13 @@ export const materialQuality: MaterialQuality[] = [
 
 // ── Uniform & Shoes ──
 export const uniformRecords: UniformRecord[] = [
-  { id: 'UNI_001', employeeName: 'Ramesh Yadav', employeeCode: 'EMP1001', site: 'Infosys Gurgaon Tower A', siteId: 'SITE_001', type: 'uniform', size: 'L', gender: 'male', designation: 'Security Guard', requestDate: '2025-05-15', issueDate: '2025-05-20', status: 'issued' },
-  { id: 'UNI_002', employeeName: 'Meera Devi', employeeCode: 'EMP1015', site: 'Infosys Gurgaon Tower A', siteId: 'SITE_001', type: 'uniform', size: 'M', gender: 'female', designation: 'Housekeeping', requestDate: '2025-05-18', status: 'pending' },
-  { id: 'UNI_003', employeeName: 'Suresh Babu', employeeCode: 'EMP2003', site: 'Infosys Bangalore EC', siteId: 'SITE_002', type: 'shoes', size: '9', gender: 'male', designation: 'Security Guard', requestDate: '2025-05-20', issueDate: '2025-05-28', status: 'issued' },
-  { id: 'UNI_004', employeeName: 'Lakshmi K', employeeCode: 'EMP2010', site: 'Infosys Bangalore EC', siteId: 'SITE_002', type: 'uniform', size: 'S', gender: 'female', designation: 'Receptionist', requestDate: '2025-06-01', status: 'requested' },
-  { id: 'UNI_005', employeeName: 'Arun Kumar', employeeCode: 'EMP3005', site: 'Wipro Hinjewadi Campus', siteId: 'SITE_003', type: 'sweater', size: 'XL', gender: 'male', designation: 'Security Supervisor', requestDate: '2025-05-10', issueDate: '2025-05-15', status: 'issued' },
-  { id: 'UNI_006', employeeName: 'Fatima Bi', employeeCode: 'EMP4002', site: 'DLF Cyber Hub Delhi', siteId: 'SITE_004', type: 'shoes', size: '6', gender: 'female', designation: 'Housekeeping', requestDate: '2025-06-02', status: 'pending' },
-  { id: 'UNI_007', employeeName: 'Dinesh Patel', employeeCode: 'EMP5008', site: 'Jio Centre Mumbai', siteId: 'SITE_005', type: 'uniform', size: 'L', gender: 'male', designation: 'Security Guard', requestDate: '2025-05-25', status: 'rejected' },
+  { id: 'UNI_001', employeeName: 'Ramesh Yadav', employeeCode: 'EMP1001', site: 'Infosys Gurgaon Tower A', siteId: 'SITE_001', type: 'uniform', size: 'L', gender: 'male', designation: 'Security Guard', requestDate: '2025-05-15', issueDate: '2025-05-20', status: 'issued', withinTAT: true },
+  { id: 'UNI_002', employeeName: 'Meera Devi', employeeCode: 'EMP1015', site: 'Infosys Gurgaon Tower A', siteId: 'SITE_001', type: 'uniform', size: 'M', gender: 'female', designation: 'Housekeeping', requestDate: '2025-05-18', status: 'pending', withinTAT: false },
+  { id: 'UNI_003', employeeName: 'Suresh Babu', employeeCode: 'EMP2003', site: 'Infosys Bangalore EC', siteId: 'SITE_002', type: 'shoes', size: '9', gender: 'male', designation: 'Security Guard', requestDate: '2025-05-20', issueDate: '2025-05-28', status: 'issued', withinTAT: true },
+  { id: 'UNI_004', employeeName: 'Lakshmi K', employeeCode: 'EMP2010', site: 'Infosys Bangalore EC', siteId: 'SITE_002', type: 'uniform', size: 'S', gender: 'female', designation: 'Receptionist', requestDate: '2025-06-01', status: 'requested', withinTAT: true },
+  { id: 'UNI_005', employeeName: 'Arun Kumar', employeeCode: 'EMP3005', site: 'Wipro Hinjewadi Campus', siteId: 'SITE_003', type: 'sweater', size: 'XL', gender: 'male', designation: 'Security Supervisor', requestDate: '2025-05-10', issueDate: '2025-05-15', status: 'issued', withinTAT: true },
+  { id: 'UNI_006', employeeName: 'Fatima Bi', employeeCode: 'EMP4002', site: 'DLF Cyber Hub Delhi', siteId: 'SITE_004', type: 'shoes', size: '6', gender: 'female', designation: 'Housekeeping', requestDate: '2025-06-02', status: 'pending', withinTAT: false },
+  { id: 'UNI_007', employeeName: 'Dinesh Patel', employeeCode: 'EMP5008', site: 'Jio Centre Mumbai', siteId: 'SITE_005', type: 'uniform', size: 'L', gender: 'male', designation: 'Security Guard', requestDate: '2025-05-25', status: 'rejected', withinTAT: false },
 ];
 
 // ── R&R Events ──

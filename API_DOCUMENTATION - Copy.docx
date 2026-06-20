@@ -1,0 +1,83 @@
+# Operations Performance Assessment System (OPAS / OCRMS)
+## API Specifications & Schema Documentation
+
+---
+
+# Introduction
+
+The **Operations Performance Assessment System (OPAS)** (also referred to as the **Operations Compliance & Reporting Management System, OCRMS**) is an enterprise application designed to streamline, track, and audit operational compliance and field team performance for facility management and security operations.
+
+This application replaces unstructured manual tracking (such as email chains, WhatsApp updates, and spreadsheet logs) with a standardized, hierarchical, and auditable digital workflow spanning portfolios of Clients, Sites, Compliance Tasks, and Roster Anomalies.
+
+## Key Functionalities:
+
+1. **Dynamic Compliance & Activity Engine (OCRMS)**: A flexible scheduler that generates daily, weekly, fortnightly, or monthly operational tasks for portfolio managers (Operations Executives) based on active master templates. Tasks support dynamic forms, file attachments, and mandatory evidence upload.
+2. **Attendance Resolution Pipeline**: Real-time tracking and resolution of roster anomalies (absentees, missing punches, and non-app usage). Features reliever deployment, automated vacancy posting, and client-approved regularization submissions.
+3. **Site Visit Planner & MOM Suite**: Interactive calendar for planning field visits, bulk importing schedules via Excel, and generating 11-section Site Quality/Health Reports and 10-section Minutes of Meeting (MOM) documents on visit completion.
+4. **Hierarchical Multi-Tier Review Queues**: Systematized routing of task audits through validation stages (e.g., `OE → RM → ZH → AVP → BH → DR`). Reviewers can rate and comment, triggering custom scoring policies (e.g., Weighted, Average, or AVP-Only).
+5. **Support Operations Tracking**: Fully integrated ticket lifecycles for uniform/shoe issuance, procurement supply chains, physical safety incidents, and employee grievances.
+
+---
+
+## 1. API Specification: User Authentication (Login)
+
+This API is called when a user submits credentials on the login screen. It authenticates the user and returns an access token along with their user profile (including their role within the system hierarchy).
+
+### 1. Endpoint: `POST /api/auth/login`
+
+### 2. Authorization:
+* Public endpoint. No credentials required in headers.
+
+### 3. Request Body: A JSON object with the following structure:
+
+| Field Name | Data Type | Required | Notes/Validation |
+| :--- | :--- | :--- | :--- |
+| email | String | Yes | Must be a valid email format. |
+| password | String | Yes | Minimum 6 characters. |
+
+### 4. Example JSON Payload:
+```json
+{
+  "email": "ravi.shankar@company.com",
+  "password": "securepassword123"
+}
+```
+
+### 5. Response Structure: A JSON object with the following structure on success:
+
+| Field Name | Data Type | Description |
+| :--- | :--- | :--- |
+| token | String | JWT access token to be passed in subsequent request headers. |
+| user | Object | The authenticated user's profile info. |
+| user.id | String | Unique user ID. |
+| user.name | String | User's full name (e.g., "Ravi Shankar"). |
+| user.code | String | Custom employee/role code (e.g., "OE-001"). |
+| user.designation | String | Professional designation title. |
+| user.role | String | Hierarchical user role (e.g., 'oe', 'rm', 'zh', 'avp', 'bh', 'dr', 'hr', 'th', 'trainers', 'commerical', 'hod', 'hr_dr'). |
+| user.email | String | Contact email address. |
+| user.phone | String | Contact phone number. |
+
+### 6. Example JSON Response (Success):
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ik1PQ0tfT0VfMDAxIiwicm9sZSI6Im9lIn0...",
+  "user": {
+    "id": "USR_OE1",
+    "name": "Ravi Shankar",
+    "code": "OE-001",
+    "designation": "Operation Executive",
+    "role": "oe",
+    "email": "ravi.shankar@company.com",
+    "phone": "9876543210"
+  }
+}
+```
+
+### 7. Example JSON Response (Error - 401 Unauthorized):
+```json
+{
+  "error": "Authentication Failed",
+  "message": "Invalid email address or password configuration."
+}
+```
+

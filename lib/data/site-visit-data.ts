@@ -22,7 +22,7 @@ export const defaultQualityRatings: QualityRating = {
 
 export const defaultHKAssessment: HKAssessment = {
   associateMet: false,
-  compliance: {
+  standards: {
     wearingUniform: false,
     hasTwoUniforms: false,
     wearingSafetyShoes: false,
@@ -73,7 +73,7 @@ export function createEmptySiteVisitReport(): SiteVisitReportData {
     positiveRecognition: '',
     finalSiteStatus: 'good',
     supervisorRemarks: '',
-    complianceScore: 0,
+    hkAssessmentScore: 0,
     trainingCoverageScore: 0,
     overallSiteHealthScore: 0,
   }
@@ -88,11 +88,11 @@ export function calculateSiteQualityScore(ratings: QualityRating): number {
   return Math.round((avg / 5) * 100)
 }
 
-export function calculateComplianceScore(hk: HKAssessment): number {
+export function calculateHKAssessmentScore(hk: HKAssessment): number {
   if (!hk.associateMet) return 0
-  const complianceChecks = Object.values(hk.compliance)
+  const standardsChecks = Object.values(hk.standards)
   const disciplineChecks = Object.values(hk.discipline)
-  const allChecks = [...complianceChecks, ...disciplineChecks]
+  const allChecks = [...standardsChecks, ...disciplineChecks]
   const passed = allChecks.filter(Boolean).length
   return Math.round((passed / allChecks.length) * 100)
 }
@@ -105,11 +105,11 @@ export function calculateTrainingCoverageScore(topics: TrainingTopic[], conducte
 
 export function calculateOverallSiteHealthScore(
   qualityScore: number,
-  complianceScore: number,
+  hkAssessmentScore: number,
   trainingScore: number
 ): number {
-  // Weighted: Quality 50%, Compliance 30%, Training 20%
-  return Math.round(qualityScore * 0.5 + complianceScore * 0.3 + trainingScore * 0.2)
+  // Weighted: Quality 50%, HK Assessment 30%, Training 20%
+  return Math.round(qualityScore * 0.5 + hkAssessmentScore * 0.3 + trainingScore * 0.2)
 }
 
 // ── Display Labels ──
@@ -159,7 +159,7 @@ export const issueLabels: Record<SiteIssue, string> = {
   material_shortage: 'Material Shortage',
   equipment_breakdown: 'Equipment Breakdown',
   attendance_issue: 'Attendance Issue',
-  uniform_noncompliance: 'Uniform Non-Compliance',
+  uniform_noncompliance: 'Uniform Standards Violation',
   grooming_issue: 'Grooming Issue',
   client_complaint: 'Client Complaint',
   safety_concern: 'Safety Concern',
@@ -186,7 +186,7 @@ export const finalStatusLabels: Record<string, string> = {
   critical: 'Critical',
 }
 
-export const complianceCheckLabels: Record<string, string> = {
+export const standardsCheckLabels: Record<string, string> = {
   wearingUniform: 'Wearing Uniform',
   hasTwoUniforms: 'Has 2 Sets of Uniform',
   wearingSafetyShoes: 'Wearing Safety Shoes',

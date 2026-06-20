@@ -40,16 +40,31 @@ export default function UniformShoesPage() {
   const [statusFilter, setStatusFilter] = useState('all')
   const [localRecords, setLocalRecords] = useState<UniformRecord[]>(uniformRecords)
   const [selectedRecord, setSelectedRecord] = useState<UniformRecord | null>(null)
+  const [isCreateOpen, setIsCreateOpen] = useState(false)
+  const [newRequest, setNewRequest] = useState({
+    employeeName: '',
+    employeeCode: '',
+    siteId: '',
+    designation: 'Security Guard',
+    type: 'uniform' as ApparelType,
+    size: 'L',
+    gender: 'male' as const,
+    withinTAT: true
+  })
 
   // Dispatch details state
   const [dispatchDate, setDispatchDate] = useState('')
 
   const metrics = useMemo(() => {
+    const total = localRecords.length
+    const withinTat = localRecords.filter(r => r.withinTAT).length
     return {
-      total: localRecords.length,
+      total,
       issued: localRecords.filter(r => r.status === 'issued').length,
       pending: localRecords.filter(r => r.status === 'pending' || r.status === 'requested').length,
       rejected: localRecords.filter(r => r.status === 'rejected').length,
+      withinTAT: withinTat,
+      complianceRate: total ? Math.round((withinTat / total) * 100) : 0
     }
   }, [localRecords])
 
@@ -79,6 +94,38 @@ export default function UniformShoesPage() {
     setSelectedRecord(null)
   }
 
+  const handleCreateRequest = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!newRequest.siteId) return
+    const siteObj = sites.find(s => s.id === newRequest.siteId)
+    const newRecord: UniformRecord = {
+      id: `UNI_${String(localRecords.length + 1).padStart(3, '0')}`,
+      employeeName: newRequest.employeeName,
+      employeeCode: newRequest.employeeCode,
+      site: siteObj ? siteObj.name : 'Unknown Site',
+      siteId: newRequest.siteId,
+      type: newRequest.type,
+      size: newRequest.size,
+      gender: newRequest.gender,
+      designation: newRequest.designation,
+      requestDate: new Date().toISOString().split('T')[0],
+      status: 'requested',
+      withinTAT: newRequest.withinTAT
+    }
+    setLocalRecords(prev => [newRecord, ...prev])
+    setIsCreateOpen(false)
+    setNewRequest({
+      employeeName: '',
+      employeeCode: '',
+      siteId: '',
+      designation: 'Security Guard',
+      type: 'uniform',
+      size: 'L',
+      gender: 'male',
+      withinTAT: true
+    })
+  }
+
   return (
     <div className="space-y-6">
       <Breadcrumb items={[{ label: 'Uniform & Shoes' }]} />
@@ -96,13 +143,16 @@ export default function UniformShoesPage() {
             </p>
           </div>
         </div>
-        <Button className="bg-gradient-to-r from-fuchsia-600 to-pink-500 hover:from-fuchsia-700 hover:to-pink-600 text-white font-semibold shadow-md gap-1.5 rounded-xl h-9 text-xs">
+        <Button 
+          onClick={() => setIsCreateOpen(true)}
+          className="bg-gradient-to-r from-fuchsia-600 to-pink-500 hover:from-fuchsia-700 hover:to-pink-600 text-white font-semibold shadow-md gap-1.5 rounded-xl h-9 text-xs"
+        >
           <Plus size={14} /> New Apparel Request
         </Button>
       </div>
 
       {/* Stats Summary Strip */}
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
         <Card className="shadow-soft">
           <CardContent className="p-4 text-center">
             <p className="text-xl font-bold text-slate-700">{metrics.total}</p>
@@ -127,6 +177,12 @@ export default function UniformShoesPage() {
             <p className="text-[10px] font-semibold text-muted-foreground uppercase mt-0.5">Rejected Orders</p>
           </CardContent>
         </Card>
+        <Card className="shadow-soft border-l-4 border-l-fuchsia-500">
+          <CardContent className="p-4 text-center">
+            <p className="text-xl font-bold text-fuchsia-700">{metrics.complianceRate}%</p>
+            <p className="text-[10px] font-semibold text-muted-foreground uppercase mt-0.5">MIS TAT Compliance</p>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Search & Filters */}
@@ -149,6 +205,7 @@ export default function UniformShoesPage() {
           <option value="issued">Issued</option>
           <option value="pending">Pending</option>
           <option value="requested">Requested</option>
+          <option value="rejected">Rejected</option>
         </select>
       </div>
 
@@ -164,6 +221,7 @@ export default function UniformShoesPage() {
               <TableHead className="px-4 py-3 text-center text-xs font-semibold text-muted-foreground">Gender</TableHead>
               <TableHead className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">Requested On</TableHead>
               <TableHead className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground">Disbursed On</TableHead>
+              <TableHead className="px-4 py-3 text-center text-xs font-semibold text-muted-foreground">Procurement TAT</TableHead>
               <TableHead className="px-4 py-3 text-center text-xs font-semibold text-muted-foreground">Status</TableHead>
               <TableHead className="px-4 py-3 text-center text-xs font-semibold text-muted-foreground">Action</TableHead>
             </TableRow>
@@ -202,6 +260,17 @@ export default function UniformShoesPage() {
                     )}
                   </TableCell>
                   <TableCell className="px-4 py-3.5 text-center">
+                    {rec.withinTAT ? (
+                      <span className="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded text-[10px] font-bold border border-emerald-100">
+                        🟢 Within TAT
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 bg-rose-50 text-rose-700 px-2 py-0.5 rounded text-[10px] font-bold border border-rose-100 animate-pulse">
+                        🔴 Outside TAT
+                      </span>
+                    )}
+                  </TableCell>
+                  <TableCell className="px-4 py-3.5 text-center">
                     <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider ${stat.bg} ${stat.text}`}>
                       {stat.label}
                     </span>
@@ -224,7 +293,7 @@ export default function UniformShoesPage() {
             })}
             {filteredRecords.length === 0 && (
               <TableRow>
-                <TableCell colSpan={9} className="py-12 text-center text-xs text-muted-foreground">
+                <TableCell colSpan={10} className="py-12 text-center text-xs text-muted-foreground">
                   No uniform/shoes requests found matching filters.
                 </TableCell>
               </TableRow>
@@ -232,6 +301,144 @@ export default function UniformShoesPage() {
           </TableBody>
         </Table>
       </Card>
+
+      {/* New Request Modal */}
+      <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+        <DialogContent className="sm:max-w-md bg-white border border-border rounded-2xl p-5 shadow-2xl">
+          <DialogHeader className="border-b pb-3">
+            <DialogTitle className="text-sm font-bold text-slate-800">New Apparel Requisition</DialogTitle>
+            <DialogDescription className="text-[10px] text-muted-foreground mt-0.5">
+              Submit size configurations and employee details for tracking.
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={handleCreateRequest} className="space-y-4 py-2 text-xs">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label className="text-[10px] font-bold text-slate-600 uppercase">Employee Name</Label>
+                <Input
+                  required
+                  placeholder="e.g. Rajesh Kumar"
+                  value={newRequest.employeeName}
+                  onChange={(e) => setNewRequest(prev => ({ ...prev, employeeName: e.target.value }))}
+                  className="h-8.5 text-xs rounded-lg"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label className="text-[10px] font-bold text-slate-600 uppercase">Employee Code</Label>
+                <Input
+                  required
+                  placeholder="e.g. EMP1024"
+                  value={newRequest.employeeCode}
+                  onChange={(e) => setNewRequest(prev => ({ ...prev, employeeCode: e.target.value }))}
+                  className="h-8.5 text-xs rounded-lg"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <Label className="text-[10px] font-bold text-slate-600 uppercase">Site</Label>
+                <select
+                  required
+                  value={newRequest.siteId}
+                  onChange={(e) => setNewRequest(prev => ({ ...prev, siteId: e.target.value }))}
+                  className="w-full border border-border rounded-lg h-8.5 px-2 text-xs focus:outline-none bg-white cursor-pointer"
+                >
+                  <option value="">Select a Site</option>
+                  {sites.map(s => (
+                    <option key={s.id} value={s.id}>{s.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-[10px] font-bold text-slate-600 uppercase">Designation</Label>
+                <Input
+                  required
+                  placeholder="e.g. Security Guard"
+                  value={newRequest.designation}
+                  onChange={(e) => setNewRequest(prev => ({ ...prev, designation: e.target.value }))}
+                  className="h-8.5 text-xs rounded-lg"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-3 gap-2">
+              <div className="space-y-1">
+                <Label className="text-[10px] font-bold text-slate-600 uppercase">Apparel Type</Label>
+                <select
+                  value={newRequest.type}
+                  onChange={(e) => {
+                    const t = e.target.value as ApparelType
+                    setNewRequest(prev => ({
+                      ...prev,
+                      type: t,
+                      size: t === 'shoes' ? '9' : 'L'
+                    }))
+                  }}
+                  className="w-full border border-border rounded-lg h-8.5 px-2 text-xs focus:outline-none bg-white cursor-pointer"
+                >
+                  <option value="uniform">Uniform</option>
+                  <option value="shoes">Shoes</option>
+                  <option value="sweater">Sweater</option>
+                </select>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-[10px] font-bold text-slate-600 uppercase">Size</Label>
+                <select
+                  value={newRequest.size}
+                  onChange={(e) => setNewRequest(prev => ({ ...prev, size: e.target.value }))}
+                  className="w-full border border-border rounded-lg h-8.5 px-2 text-xs focus:outline-none bg-white cursor-pointer"
+                >
+                  {newRequest.type === 'shoes' ? (
+                    ['6', '7', '8', '9', '10', '11'].map(s => <option key={s} value={s}>{s}</option>)
+                  ) : (
+                    ['S', 'M', 'L', 'XL', 'XXL'].map(s => <option key={s} value={s}>{s}</option>)
+                  )}
+                </select>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-[10px] font-bold text-slate-600 uppercase">Gender</Label>
+                <select
+                  value={newRequest.gender}
+                  onChange={(e) => setNewRequest(prev => ({ ...prev, gender: e.target.value as any }))}
+                  className="w-full border border-border rounded-lg h-8.5 px-2 text-xs focus:outline-none bg-white cursor-pointer"
+                >
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="border-t pt-3 space-y-2">
+              <Label className="text-[10px] font-bold text-slate-600 uppercase">Procurement SLA TAT Tracking (MIS)</Label>
+              <div className="flex items-center gap-2 p-2 border rounded-lg bg-slate-50">
+                <input
+                  type="checkbox"
+                  id="withinTAT"
+                  checked={newRequest.withinTAT}
+                  onChange={(e) => setNewRequest(prev => ({ ...prev, withinTAT: e.target.checked }))}
+                  className="h-4 w-4 text-fuchsia-600 rounded border-gray-300 focus:ring-fuchsia-500 cursor-pointer"
+                />
+                <label htmlFor="withinTAT" className="text-[11px] font-semibold text-slate-700 cursor-pointer select-none">
+                  {newRequest.withinTAT ? (
+                    <span className="text-emerald-700 font-bold">🟢 Submitted within TAT SLA</span>
+                  ) : (
+                    <span className="text-rose-700 font-bold">🔴 Submitted outside TAT SLA</span>
+                  )}
+                </label>
+              </div>
+              <p className="text-[10px] text-muted-foreground">
+                Check this if the data was submitted on-time according to procurement SLA guidelines.
+              </p>
+            </div>
+
+            <Button type="submit" className="w-full bg-gradient-to-r from-fuchsia-600 to-pink-500 hover:from-fuchsia-700 hover:to-pink-600 text-white font-semibold rounded-lg h-9 text-xs">
+              Create Requisition
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
 
       {/* Dispatch Modal */}
       <Dialog open={!!selectedRecord} onOpenChange={(open) => { if (!open) setSelectedRecord(null); }}>
@@ -251,6 +458,14 @@ export default function UniformShoesPage() {
                   <p className="text-slate-800 font-bold">{selectedRecord.employeeName} ({selectedRecord.employeeCode})</p>
                   <p className="text-slate-600 font-medium">Site: {selectedRecord.site}</p>
                   <p className="text-slate-600">Requisition details: {selectedRecord.designation} · {selectedRecord.type.toUpperCase()} (Size: {selectedRecord.size})</p>
+                  <div className="mt-1 pt-1 border-t border-slate-200">
+                    <span className="font-semibold text-slate-500">Procurement TAT: </span>
+                    {selectedRecord.withinTAT ? (
+                      <span className="text-emerald-700 font-bold">🟢 Within TAT</span>
+                    ) : (
+                      <span className="text-rose-700 font-bold">🔴 Outside TAT</span>
+                    )}
+                  </div>
                 </div>
               </div>
 

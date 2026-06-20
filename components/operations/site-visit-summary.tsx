@@ -9,10 +9,10 @@ import { Card, CardContent } from '@/components/ui/card'
 import type { SiteVisitReportData, QualityRating } from '@/lib/types'
 import {
   visitTypeLabels, qualityRatingLabels, observationLabels,
-  trainingTopicLabels, issueLabels, complianceCheckLabels,
+  trainingTopicLabels, issueLabels, standardsCheckLabels,
   knowledgeRatingLabels, disciplineCheckLabels,
   materialAvailabilityLabels, equipmentStatusLabels, finalStatusLabels,
-  calculateSiteQualityScore, calculateComplianceScore,
+  calculateSiteQualityScore, calculateHKAssessmentScore,
   calculateTrainingCoverageScore, calculateOverallSiteHealthScore,
 } from '@/lib/data/site-visit-data'
 
@@ -76,9 +76,9 @@ function CheckBadge({ value }: { value: boolean }) {
 
 export default function SiteVisitSummary({ data, siteName, clientName, supervisorName, visitDate }: SiteVisitSummaryProps) {
   const qualityScore = calculateSiteQualityScore(data.qualityRatings)
-  const complianceScore = calculateComplianceScore(data.hkAssessment)
+  const hkAssessmentScore = calculateHKAssessmentScore(data.hkAssessment)
   const trainingScore = calculateTrainingCoverageScore(data.trainingTopics, data.trainingConducted)
-  const overallScore = calculateOverallSiteHealthScore(qualityScore, complianceScore, trainingScore)
+  const overallScore = calculateOverallSiteHealthScore(qualityScore, hkAssessmentScore, trainingScore)
 
   return (
     <div className="space-y-4 max-h-[75vh] overflow-y-auto pr-1">
@@ -105,7 +105,7 @@ export default function SiteVisitSummary({ data, siteName, clientName, superviso
       <div className="grid grid-cols-4 gap-2">
         {[
           { label: 'Quality', score: qualityScore, color: qualityScore >= 75 ? 'text-emerald-700 bg-emerald-50 border-emerald-100' : 'text-rose-700 bg-rose-50 border-rose-100' },
-          { label: 'Compliance', score: complianceScore, color: complianceScore >= 75 ? 'text-emerald-700 bg-emerald-50 border-emerald-100' : 'text-amber-700 bg-amber-50 border-amber-100' },
+          { label: 'HK Assessment', score: hkAssessmentScore, color: hkAssessmentScore >= 75 ? 'text-emerald-700 bg-emerald-50 border-emerald-100' : 'text-amber-700 bg-amber-50 border-amber-100' },
           { label: 'Training', score: trainingScore, color: trainingScore >= 50 ? 'text-violet-700 bg-violet-50 border-violet-100' : 'text-amber-700 bg-amber-50 border-amber-100' },
           { label: 'Overall', score: overallScore, color: overallScore >= 70 ? 'text-indigo-700 bg-indigo-50 border-indigo-100' : 'text-rose-700 bg-rose-50 border-rose-100' },
         ].map(s => (
@@ -170,12 +170,12 @@ export default function SiteVisitSummary({ data, siteName, clientName, superviso
           </div>
           <CardContent className="p-3 space-y-2 text-xs">
             <div>
-              <p className="text-[9px] font-bold text-slate-400 uppercase mb-1">Compliance</p>
+              <p className="text-[9px] font-bold text-slate-400 uppercase mb-1">Staff Standards</p>
               <div className="space-y-1">
-                {(Object.entries(complianceCheckLabels) as [string, string][]).map(([key, label]) => (
+                {(Object.entries(standardsCheckLabels) as [string, string][]).map(([key, label]) => (
                   <div key={key} className="flex items-center justify-between">
                     <span className="text-slate-600">{label}</span>
-                    <CheckBadge value={(data.hkAssessment.compliance as any)[key]} />
+                    <CheckBadge value={(data.hkAssessment.standards as any)[key]} />
                   </div>
                 ))}
               </div>

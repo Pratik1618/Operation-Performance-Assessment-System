@@ -20,10 +20,10 @@ import type {
 } from '@/lib/types'
 import {
   createEmptySiteVisitReport,
-  calculateSiteQualityScore, calculateComplianceScore,
+  calculateSiteQualityScore, calculateHKAssessmentScore,
   calculateTrainingCoverageScore, calculateOverallSiteHealthScore,
   visitTypeLabels, qualityRatingLabels, observationLabels,
-  trainingTopicLabels, issueLabels, complianceCheckLabels,
+  trainingTopicLabels, issueLabels, standardsCheckLabels,
   knowledgeRatingLabels, disciplineCheckLabels,
   materialAvailabilityLabels, equipmentStatusLabels, finalStatusLabels,
 } from '@/lib/data/site-visit-data'
@@ -65,13 +65,12 @@ export default function SiteVisitReportForm({
     const empty = createEmptySiteVisitReport()
     return initialData ? { ...empty, ...initialData } : empty
   })
-  const [gpsFetching, setGpsFetching] = useState(false)
 
   // ── Score calculations ──
   const siteQualityScore = useMemo(() => calculateSiteQualityScore(data.qualityRatings), [data.qualityRatings])
-  const complianceScore = useMemo(() => calculateComplianceScore(data.hkAssessment), [data.hkAssessment])
+  const hkAssessmentScore = useMemo(() => calculateHKAssessmentScore(data.hkAssessment), [data.hkAssessment])
   const trainingScore = useMemo(() => calculateTrainingCoverageScore(data.trainingTopics, data.trainingConducted), [data.trainingTopics, data.trainingConducted])
-  const overallScore = useMemo(() => calculateOverallSiteHealthScore(siteQualityScore, complianceScore, trainingScore), [siteQualityScore, complianceScore, trainingScore])
+  const overallScore = useMemo(() => calculateOverallSiteHealthScore(siteQualityScore, hkAssessmentScore, trainingScore), [siteQualityScore, hkAssessmentScore, trainingScore])
 
   // ── Updaters ──
   const updateField = useCallback(<K extends keyof SiteVisitReportData>(key: K, value: SiteVisitReportData[K]) => {
@@ -146,15 +145,6 @@ export default function SiteVisitReportForm({
     setData(prev => ({ ...prev, photos: prev.photos.filter(p => p.id !== id) }))
   }, [])
 
-  const fetchGPS = useCallback(() => {
-    setGpsFetching(true)
-    setTimeout(() => {
-      setData(prev => ({ ...prev, gpsLocation: { lat: 28.4595 + Math.random() * 0.01, lng: 77.0266 + Math.random() * 0.01 } }))
-      setGpsFetching(false)
-      toast.success('GPS Verified', { description: 'Location captured within 50m radius.' })
-    }, 1500)
-  }, [])
-
   // ── Navigation ──
   const canNext = step < TOTAL_STEPS - 1
   const canPrev = step > 0
@@ -186,7 +176,7 @@ export default function SiteVisitReportForm({
     const finalData: SiteVisitReportData = {
       ...data,
       siteQualityScore,
-      complianceScore,
+      hkAssessmentScore,
       trainingCoverageScore: trainingScore,
       overallSiteHealthScore: overallScore,
     }
@@ -197,7 +187,7 @@ export default function SiteVisitReportForm({
     const finalData: SiteVisitReportData = {
       ...data,
       siteQualityScore,
-      complianceScore,
+      hkAssessmentScore,
       trainingCoverageScore: trainingScore,
       overallSiteHealthScore: overallScore,
     }
@@ -262,7 +252,7 @@ export default function SiteVisitReportForm({
       <div className="grid grid-cols-4 gap-2">
         {[
           { label: 'Quality', score: siteQualityScore, color: 'text-blue-700 bg-blue-50' },
-          { label: 'Compliance', score: complianceScore, color: 'text-emerald-700 bg-emerald-50' },
+          { label: 'HK Assessment', score: hkAssessmentScore, color: 'text-emerald-700 bg-emerald-50' },
           { label: 'Training', score: trainingScore, color: 'text-violet-700 bg-violet-50' },
           { label: 'Overall', score: overallScore, color: 'text-indigo-700 bg-indigo-50' },
         ].map(s => (
@@ -305,22 +295,17 @@ export default function SiteVisitReportForm({
               </div>
 
               {/* GPS */}
-              <div className="space-y-2 p-3 bg-blue-50/30 rounded-xl border border-blue-100">
-                <Label className="text-xs font-bold text-slate-700">GPS Location Verification</Label>
-                {!data.gpsLocation ? (
-                  <Button
-                    type="button"
-                    onClick={fetchGPS}
-                    disabled={gpsFetching || disabled}
-                    className="w-full bg-blue-100 hover:bg-blue-200 text-blue-700 border-0 text-xs h-9 rounded-lg gap-2"
-                  >
-                    {gpsFetching ? <Loader2 size={14} className="animate-spin" /> : <MapPin size={14} />}
-                    {gpsFetching ? 'Fetching Location...' : 'Fetch GPS Location'}
-                  </Button>
-                ) : (
+              <div className="space-y-2 p-3 bg-indigo-50/30 rounded-xl border border-indigo-105">
+                <Label className="text-xs font-bold text-slate-700">Captured Geofence Coordinates</Label>
+                {data.gpsLocation ? (
                   <div className="w-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold p-2.5 rounded-lg flex items-center gap-2">
-                    <CheckCircle2 size={16} />
-                    Location Verified — {data.gpsLocation.lat.toFixed(4)}°N, {data.gpsLocation.lng.toFixed(4)}°E
+                    <CheckCircle2 size={16} className="text-emerald-600" />
+                    Location Verified — Latitude: {data.gpsLocation.lat.toFixed(6)}° · Longitude: {data.gpsLocation.lng.toFixed(6)}°
+                  </div>
+                ) : (
+                  <div className="w-full bg-amber-50 border border-amber-200 text-amber-700 text-xs font-semibold p-2.5 rounded-lg flex items-center gap-2">
+                    <AlertTriangle size={16} className="text-amber-500" />
+                    Coordinates not captured.
                   </div>
                 )}
               </div>
@@ -429,18 +414,18 @@ export default function SiteVisitReportForm({
 
               {data.hkAssessment.associateMet && (
                 <>
-                  {/* Compliance Verification */}
+                  {/* Staff Standards Verification */}
                   <div className="space-y-2 border-t pt-4">
-                    <h5 className="text-[10px] font-bold text-slate-600 uppercase tracking-wider">Compliance Verification</h5>
+                    <h5 className="text-[10px] font-bold text-slate-600 uppercase tracking-wider">Staff Standards Verification</h5>
                     <div className="space-y-1.5">
-                      {(Object.entries(complianceCheckLabels) as [string, string][]).map(([key, label]) => (
+                      {(Object.entries(standardsCheckLabels) as [string, string][]).map(([key, label]) => (
                         <label key={key} className="flex items-center gap-2.5 px-3 py-2 rounded-xl border bg-white hover:bg-slate-50 cursor-pointer transition-colors">
                           <input
                             type="checkbox"
-                            checked={(data.hkAssessment.compliance as any)[key] || false}
+                            checked={(data.hkAssessment.standards as any)[key] || false}
                             onChange={(e) => !disabled && setData(prev => ({
                               ...prev,
-                              hkAssessment: { ...prev.hkAssessment, compliance: { ...prev.hkAssessment.compliance, [key]: e.target.checked } }
+                              hkAssessment: { ...prev.hkAssessment, standards: { ...prev.hkAssessment.standards, [key]: e.target.checked } }
                             }))}
                             disabled={disabled}
                             className="h-4 w-4 rounded border-slate-300 accent-emerald-600"
@@ -1057,13 +1042,13 @@ export default function SiteVisitReportForm({
               <div className="grid grid-cols-2 gap-2 border-t pt-4">
                 {[
                   { label: 'Site Quality Score', score: siteQualityScore, color: siteQualityScore >= 75 ? 'text-emerald-700 bg-emerald-50' : 'text-rose-700 bg-rose-50' },
-                  { label: 'Compliance Score', score: complianceScore, color: complianceScore >= 75 ? 'text-emerald-700 bg-emerald-50' : 'text-amber-700 bg-amber-50' },
+                  { label: 'HK Assessment Score', score: hkAssessmentScore, color: hkAssessmentScore >= 75 ? 'text-emerald-700 bg-emerald-50' : 'text-amber-700 bg-amber-50' },
                   { label: 'Training Coverage', score: trainingScore, color: trainingScore >= 50 ? 'text-violet-700 bg-violet-50' : 'text-amber-700 bg-amber-50' },
                   { label: 'Overall Site Health', score: overallScore, color: overallScore >= 70 ? 'text-indigo-700 bg-indigo-50' : 'text-rose-700 bg-rose-50' },
                 ].map(s => (
                   <div key={s.label} className={`rounded-xl border p-3 text-center ${s.color}`}>
-                    <p className="text-xl font-extrabold">{s.score}%</p>
-                    <p className="text-[9px] font-bold uppercase tracking-wider mt-0.5">{s.label}</p>
+                     <p className="text-xl font-extrabold">{s.score}%</p>
+                     <p className="text-[9px] font-bold uppercase tracking-wider mt-0.5">{s.label}</p>
                   </div>
                 ))}
               </div>

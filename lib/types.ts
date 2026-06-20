@@ -165,7 +165,11 @@ export interface OperationalTask {
   oeRating?: number;
   oeRemarks?: string;
   oeSubmittedDate?: string;
-  
+
+  phRating?: number;
+  phRemarks?: string;
+  phReviewedDate?: string;
+
   rmRating?: number;
   rmRemarks?: string;
   rmReviewedDate?: string;
@@ -231,7 +235,7 @@ export type ObservationItem =
   | 'cobwebs' | 'doormat_not_maintained' | 'broken_fittings'
   | 'dust_accumulation' | 'stains_spillage' | 'none';
 
-export interface HKComplianceChecks {
+export interface HKStandardsChecks {
   wearingUniform: boolean;
   hasTwoUniforms: boolean;
   wearingSafetyShoes: boolean;
@@ -254,7 +258,7 @@ export interface HKDisciplineChecks {
 
 export interface HKAssessment {
   associateMet: boolean;
-  compliance: HKComplianceChecks;
+  standards: HKStandardsChecks;
   knowledge: HKKnowledgeRatings;
   discipline: HKDisciplineChecks;
 }
@@ -341,7 +345,7 @@ export interface SiteVisitReportData {
   finalSiteStatus: FinalSiteStatus;
   supervisorRemarks: string;
   // Computed scores
-  complianceScore: number;
+  hkAssessmentScore: number;
   trainingCoverageScore: number;
   overallSiteHealthScore: number;
 }
@@ -558,6 +562,7 @@ export interface UniformRecord {
   requestDate: string;
   issueDate?: string;
   status: ApparelStatus;
+  withinTAT?: boolean;
 }
 
 // ── R&R Schedule ──
