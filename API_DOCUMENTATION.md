@@ -4355,6 +4355,934 @@ Processes approvals or rejections at each stage of the multi-tier review queue. 
 
 ---
 
+## 67. API Specification: Get Deep Cleaning Report Task Details (Read-Only)
+
+Retrieves the deep cleaning report task details (`TPL-INC-003`). All checklist items are pre-populated from the backend database.
+
+### 1. Endpoint: `GET /api/tasks/{taskId}`
+
+### 2. Authorization:
+* Protected Route. Headers must contain `Authorization: Bearer <token>`.
+* Accessible by Roles: `oe`, `rm`, `avp`, `bh`, `dr`.
+
+### 3. Example JSON Response (200 OK):
+```json
+{
+  "id": "TSK_DP_CLN_025",
+  "templateId": "TPL-INC-003",
+  "taskName": "Deep Cleaning Report",
+  "category": "Incident & Performance",
+  "frequency": "weekly",
+  "weightage": 5,
+  "dueDate": "2026-06-24",
+  "siteId": "SITE_003",
+  "siteName": "Wipro Hinjewadi Campus",
+  "clientName": "Wipro Technologies",
+  "status": "in_progress",
+  "assignedTo": "Ravi Shankar",
+  "formData": {
+    "branchName": "Hinjewadi Main Branch",
+    "employeeName": "Sunil Verma",
+    "employeeSignature": true,
+    "bmName": "Anoop Mehta",
+    "bmSignature": true,
+    "cleaningScore": 10,
+    "chemicalUsed": true,
+    "checklist": {
+      "1": { "status": "clean", "remarks": "" },
+      "2": { "status": "clean", "remarks": "" },
+      "3": { "status": "clean", "remarks": "" },
+      "4": { "status": "clean", "remarks": "" },
+      "5": { "status": "clean", "remarks": "" },
+      "6": { "status": "clean", "remarks": "" },
+      "7": { "status": "clean", "remarks": "" },
+      "8": { "status": "clean", "remarks": "" },
+      "9": { "status": "clean", "remarks": "" },
+      "10": { "status": "clean", "remarks": "" },
+      "11": { "status": "clean", "remarks": "" },
+      "12": { "status": "clean", "remarks": "" },
+      "13": { "status": "clean", "remarks": "" },
+      "14": { "status": "clean", "remarks": "" },
+      "15": { "status": "clean", "remarks": "" },
+      "16": { "status": "clean", "remarks": "" },
+      "17": { "status": "clean", "remarks": "" },
+      "18": { "status": "clean", "remarks": "" },
+      "19": { "status": "clean", "remarks": "" },
+      "20": { "status": "clean", "remarks": "" },
+      "21": { "status": "clean", "remarks": "" },
+      "22": { "status": "clean", "remarks": "" },
+      "23": { "status": "clean", "remarks": "" },
+      "24": { "status": "clean", "remarks": "" },
+      "25": { "status": "clean", "remarks": "" },
+      "26": { "status": "clean", "remarks": "" },
+      "27": { "status": "clean", "remarks": "" },
+      "28": { "status": "clean", "remarks": "" },
+      "29": { "status": "clean", "remarks": "" }
+    }
+  },
+  "evidenceUrls": ["https://company-s3.amazonaws.com/evidence/deep_cleaning_checklist_025.jpg"],
+  "evidenceCount": 1,
+  "oeRating": 5,
+  "oeRemarks": "Deep cleaning completed in full. Branch manager verified and signed off.",
+  "oeSubmittedDate": null,
+  "rmRating": null,
+  "rmRemarks": null,
+  "finalScore": null
+}
+```
+
+---
+
+## 68. API Specification: Save Deep Cleaning Report Task Draft
+
+Saves a partially filled Deep Cleaning Report task form as a draft.
+
+### 1. Endpoint: `PUT /api/tasks/{taskId}/draft`
+
+### 2. Authorization:
+* Protected Route. Headers must contain `Authorization: Bearer <token>`.
+* Restricted to the task `assignedTo` user (`oe` / `hrbp`).
+
+### 3. Request Body:
+
+| Field Name | Data Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| formData | Object | Yes | Form parameters including checklist responses. |
+| formData.branchName | String | No | Branch location name. |
+| formData.employeeName | String | No | Employee who completed the deep cleaning. |
+| formData.employeeSignature | Boolean | No | Employee digital signature check. |
+| formData.bmName | String | No | Branch manager name. |
+| formData.bmSignature | Boolean | No | Branch manager signature check. |
+| formData.cleaningScore | Number | No | Dynamic score (1 to 10) matching cleaned percentage. |
+| formData.chemicalUsed | Boolean | No | Check to verify chemical batch verification. |
+| formData.checklist | Object | No | Checklist item statuses. Dictionary of `"srNo"` to `{ status: "clean" | "unclean", remarks: "" }`. |
+| oeRemarks | String | No | Draft remarks. |
+| oeRating | Number | No | Self-evaluation rating. |
+
+### 4. Example JSON Payload:
+```json
+{
+  "formData": {
+    "branchName": "Hinjewadi Main Branch",
+    "employeeName": "Sunil Verma",
+    "employeeSignature": true,
+    "bmName": "Anoop Mehta",
+    "bmSignature": true,
+    "cleaningScore": 9,
+    "chemicalUsed": true,
+    "checklist": {
+      "1": { "status": "clean", "remarks": "" },
+      "2": { "status": "clean", "remarks": "" },
+      "3": { "status": "clean", "remarks": "" },
+      "4": { "status": "clean", "remarks": "" },
+      "5": { "status": "clean", "remarks": "" },
+      "6": { "status": "clean", "remarks": "" },
+      "7": { "status": "clean", "remarks": "" },
+      "8": { "status": "clean", "remarks": "" },
+      "9": { "status": "clean", "remarks": "" },
+      "10": { "status": "clean", "remarks": "" },
+      "11": { "status": "clean", "remarks": "" },
+      "12": { "status": "clean", "remarks": "" },
+      "13": { "status": "clean", "remarks": "" },
+      "14": { "status": "clean", "remarks": "" },
+      "15": { "status": "clean", "remarks": "" },
+      "16": { "status": "clean", "remarks": "" },
+      "17": { "status": "clean", "remarks": "" },
+      "18": { "status": "clean", "remarks": "" },
+      "19": { "status": "clean", "remarks": "" },
+      "20": { "status": "clean", "remarks": "" },
+      "21": { "status": "clean", "remarks": "" },
+      "22": { "status": "clean", "remarks": "" },
+      "23": { "status": "clean", "remarks": "" },
+      "24": { "status": "clean", "remarks": "" },
+      "25": { "status": "clean", "remarks": "" },
+      "26": { "status": "clean", "remarks": "" },
+      "27": { "status": "clean", "remarks": "" },
+      "28": { "status": "clean", "remarks": "" },
+      "29": { "status": "unclean", "remarks": "Name plates replacement under progress" }
+    }
+  },
+  "oeRemarks": "Draft - name plates pending replacement",
+  "oeRating": 4
+}
+```
+
+### 5. Example JSON Response (Success - 200 OK):
+```json
+{
+  "success": true,
+  "message": "Deep cleaning report task draft saved successfully.",
+  "task": { "id": "TSK_DP_CLN_025", "status": "in_progress" }
+}
+```
+
+---
+
+## 69. API Specification: Submit Deep Cleaning Report Task
+
+Submits the completed Deep Cleaning Report task for validation. Submission advances the task status to the Regional Manager (`rm`) review queue.
+
+### 1. Endpoint: `POST /api/tasks/{taskId}/submit`
+
+### 2. Authorization:
+* Protected Route. Headers must contain `Authorization: Bearer <token>`.
+* Restricted to the task `assignedTo` user.
+
+### 3. Example JSON Response (Success - 200 OK):
+```json
+{
+  "success": true,
+  "message": "Deep cleaning report task submitted successfully for validation.",
+  "task": { "id": "TSK_DP_CLN_025", "status": "oe_submitted" }
+}
+```
+
+---
+
+## 70. API Specification: Review/Approve Deep Cleaning Report Task (Multi-Tier Flow: RM → ZH → AVP → BH → DR)
+
+Processes approvals or rejections at each stage of the multi-tier review queue. The approval workflow is:
+`OE (Submit) → RM (Review) → ZH (Review) → AVP (Review) → BH (Review) → DR (Final Approval)`.
+
+### 1. Endpoint: `PUT /api/tasks/{taskId}/review`
+
+### 2. Authorization:
+* Restricted to the reviewer role corresponding to the current approval stage (`rm`, `zh`, `avp`, `bh`, `dr`).
+
+### 3. Request Body:
+
+| Field Name | Data Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| action | String | Yes | `approve` or `reject`. |
+| rating | Number | Yes | Evaluation rating (0 to 5). |
+| remarks | String | Yes (if reject) | Feedback or reason for returning the task. |
+
+### 4. Status Transitions:
+* **Approve**: 
+  * RM Approval → `rm_approved` (Advances task to ZH approval stage)
+  * ZH Approval → `zh_approved` (Advances task to AVP approval stage)
+  * AVP Approval → `avp_approved` (Advances task to BH approval stage)
+  * BH Approval → `bh_approved` (Advances task to DR approval stage)
+  * DR Approval → `approved` (Concludes the task and triggers score calculation)
+* **Reject**: Any tier → `rejected` (Returns task to OE queue for revision)
+
+### 5. Example JSON Payload (RM Approves):
+```json
+{
+  "action": "approve",
+  "rating": 5,
+  "remarks": "Checklist verified. All entries are clean except name plates remarks, verified on site."
+}
+```
+
+### 6. Example JSON Response (RM Approved):
+```json
+{
+  "success": true,
+  "message": "Deep cleaning report task approved. Advanced to ZH review.",
+  "task": { "id": "TSK_DP_CLN_025", "status": "rm_approved", "rmRating": 5, "rmReviewedDate": "2026-06-20" }
+}
+```
+
+---
+
+## 71. API Specification: Get R&R Schedule Task Details (Read-Only)
+
+Retrieves the rewards & recognition schedule task details (`TPL-PLN-001`).
+
+### 1. Endpoint: `GET /api/tasks/{taskId}`
+
+### 2. Authorization:
+* Protected Route. Headers must contain `Authorization: Bearer <token>`.
+* Accessible by Roles: `hrbp` (HRBP), `hr` (HR Team), `hr_dr` (HR Director).
+
+### 3. Example JSON Response (200 OK):
+```json
+{
+  "id": "TSK_RR_SCH_031",
+  "templateId": "TPL-PLN-001",
+  "taskName": "R&R Schedule",
+  "category": "Planning & Recognition",
+  "frequency": "monthly",
+  "weightage": 5,
+  "dueDate": "2026-06-30",
+  "siteId": "SITE_003",
+  "siteName": "Wipro Hinjewadi Campus",
+  "clientName": "Wipro Technologies",
+  "status": "in_progress",
+  "assignedTo": "Ravi Shankar",
+  "formData": {
+    "awardNomineesCount": 5,
+    "ceremonyDate": "2026-06-28"
+  },
+  "evidenceUrls": ["https://company-s3.amazonaws.com/evidence/rr_ceremony_schedule_031.pdf"],
+  "evidenceCount": 1,
+  "oeRating": 5,
+  "oeRemarks": "R&R Ceremony planned for June. Nominees selected and venue booked.",
+  "oeSubmittedDate": null,
+  "rmRating": null,
+  "rmRemarks": null,
+  "finalScore": null
+}
+```
+
+---
+
+## 72. API Specification: Save R&R Schedule Task Draft
+
+Saves a partially filled R&R Schedule task form as a draft.
+
+### 1. Endpoint: `PUT /api/tasks/{taskId}/draft`
+
+### 2. Authorization:
+* Protected Route. Headers must contain `Authorization: Bearer <token>`.
+* Restricted to the task creator or assigned user (`oe` / `hrbp` or `hr` / `hr team`).
+
+### 3. Request Body:
+
+| Field Name | Data Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| formData | Object | Yes | Form parameters. |
+| formData.awardNomineesCount | Number | No | Selected count of employees nominated for awards. |
+| formData.ceremonyDate | String | No | Planned date string for the R&R ceremony (`YYYY-MM-DD`). |
+| oeRemarks | String | No | Self-remarks or notes by the submitter. |
+| oeRating | Number | No | Self-evaluation rating (0 to 5). |
+
+### 4. Example JSON Payload:
+```json
+{
+  "formData": {
+    "awardNomineesCount": 5,
+    "ceremonyDate": "2026-06-28"
+  },
+  "oeRemarks": "Draft - waiting for supervisor confirmation on the nominee list",
+  "oeRating": 5
+}
+```
+
+### 5. Example JSON Response (Success - 200 OK):
+```json
+{
+  "success": true,
+  "message": "R&R schedule task draft saved successfully.",
+  "task": { "id": "TSK_RR_SCH_031", "status": "in_progress" }
+}
+```
+
+---
+
+## 73. API Specification: Submit R&R Schedule Task
+
+Submits the completed R&R Schedule task for validation. Submission advances the task status to the HR Director (`hr_dr`) review queue.
+
+### 1. Endpoint: `POST /api/tasks/{taskId}/submit`
+
+### 2. Authorization:
+* Protected Route. Headers must contain `Authorization: Bearer <token>`.
+* Restricted to the task creator (`oe` / `hrbp` or `hr` / `hr team`).
+
+### 3. Example JSON Response (Success - 200 OK):
+```json
+{
+  "success": true,
+  "message": "R&R schedule task submitted successfully for validation.",
+  "task": { "id": "TSK_RR_SCH_031", "status": "oe_submitted" }
+}
+```
+
+---
+
+## 74. API Specification: Review/Approve R&R Schedule Task (Two-Tier Flow: HRBP / HR Team → HR DR)
+
+Processes approval or rejection for the R&R Schedule task at the reviewer tier. The approval workflow is:
+`OE / HRBP or HR Team (Submit) → HR Director / HR DR (Final Approval)`.
+
+### 1. Endpoint: `PUT /api/tasks/{taskId}/review`
+
+### 2. Authorization:
+* Restricted to the reviewer role `hr_dr` (HR Director, mapped internally to the L2 `rm` slot in the database model).
+
+### 3. Request Body:
+
+| Field Name | Data Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| action | String | Yes | `approve` or `reject`. |
+| rating | Number | Yes | Evaluation rating (0 to 5). |
+| remarks | String | Yes (if reject) | Feedback or reason for returning the task. |
+
+### 4. Status Transitions:
+* **Approve**: 
+  * HR DR Approval → `approved` (Concludes the task and triggers score calculation since HR Director / `hr_dr` is the final approver for this task)
+* **Reject**: 
+  * HR DR Rejection → `rejected` (Returns task to creator queue (`oe` / `hrbp` or `hr` / `hr team`) for revision)
+
+### 5. Example JSON Payload (HR DR Approves):
+```json
+{
+  "action": "approve",
+  "rating": 5,
+  "remarks": "Nominees list is correct and budget/ceremony date is approved."
+}
+```
+
+### 6. Example JSON Response (HR DR Approved - Final Approval):
+```json
+{
+  "success": true,
+  "message": "R&R schedule task final approved. Task closed.",
+  "task": { "id": "TSK_RR_SCH_031", "status": "approved", "rmRating": 5, "rmReviewedDate": "2026-06-20", "finalScore": 5 }
+}
+```
+
+---
+
+## 75. API Specification: Get R&R Completion Task Details (Read-Only)
+
+Retrieves the rewards & recognition completion task details (`TPL-PLN-002`).
+
+### 1. Endpoint: `GET /api/tasks/{taskId}`
+
+### 2. Authorization:
+* Protected Route. Headers must contain `Authorization: Bearer <token>`.
+* Accessible by Roles: `hrbp` (HRBP), `hr` (HR Team), `hr_dr` (HR Director).
+
+### 3. Example JSON Response (200 OK):
+```json
+{
+  "id": "TSK_RR_CMP_032",
+  "templateId": "TPL-PLN-002",
+  "taskName": "R&R Completion",
+  "category": "Planning & Recognition",
+  "frequency": "monthly",
+  "weightage": 5,
+  "dueDate": "2026-06-30",
+  "siteId": "SITE_003",
+  "siteName": "Wipro Hinjewadi Campus",
+  "clientName": "Wipro Technologies",
+  "status": "in_progress",
+  "assignedTo": "Ravi Shankar",
+  "formData": {
+    "winnersList": "1. Rajesh Kumar (Best Guard)\n2. Sunil Patil (Best Housekeeper)\n3. Amit Singh (Special Recognition)"
+  },
+  "evidenceUrls": [
+    "https://company-s3.amazonaws.com/evidence/rr_ceremony_pic_032_1.jpg",
+    "https://company-s3.amazonaws.com/evidence/rr_ceremony_pic_032_2.jpg"
+  ],
+  "evidenceCount": 2,
+  "oeRating": 5,
+  "oeRemarks": "R&R Ceremony conducted. Certificates and gift vouchers distributed to the winners. Photos uploaded.",
+  "oeSubmittedDate": null,
+  "rmRating": null,
+  "rmRemarks": null,
+  "finalScore": null
+}
+```
+
+---
+
+## 76. API Specification: Save R&R Completion Task Draft
+
+Saves a partially filled R&R Completion task form as a draft.
+
+### 1. Endpoint: `PUT /api/tasks/{taskId}/draft`
+
+### 2. Authorization:
+* Protected Route. Headers must contain `Authorization: Bearer <token>`.
+* Restricted to the task creator or assigned user (`hrbp` or `hr` / `hr team`).
+
+### 3. Request Body:
+
+| Field Name | Data Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| formData | Object | Yes | Form parameters. |
+| formData.winnersList | String | No | List of award winners and their specific designations/reasons. |
+| oeRemarks | String | No | Self-remarks or notes by the submitter. |
+| oeRating | Number | No | Self-evaluation rating (0 to 5). |
+
+### 4. Example JSON Payload:
+```json
+{
+  "formData": {
+    "winnersList": "1. Rajesh Kumar (Best Guard)\n2. Sunil Patil (Best Housekeeper)"
+  },
+  "oeRemarks": "Draft - waiting for the third award voucher signature proof",
+  "oeRating": 5
+}
+```
+
+### 5. Example JSON Response (Success - 200 OK):
+```json
+{
+  "success": true,
+  "message": "R&R completion task draft saved successfully.",
+  "task": { "id": "TSK_RR_CMP_032", "status": "in_progress" }
+}
+```
+
+---
+
+## 77. API Specification: Submit R&R Completion Task
+
+Submits the completed R&R Completion task for validation. Submission advances the task status to the HR Director (`hr_dr`) review queue.
+
+### 1. Endpoint: `POST /api/tasks/{taskId}/submit`
+
+### 2. Authorization:
+* Protected Route. Headers must contain `Authorization: Bearer <token>`.
+* Restricted to the task creator (`hrbp` or `hr` / `hr team`).
+
+### 3. Example JSON Response (Success - 200 OK):
+```json
+{
+  "success": true,
+  "message": "R&R completion task submitted successfully for validation.",
+  "task": { "id": "TSK_RR_CMP_032", "status": "oe_submitted" }
+}
+```
+
+---
+
+## 78. API Specification: Review/Approve R&R Completion Task (Two-Tier Flow: HRBP / HR Team → HR DR)
+
+Processes approval or rejection for the R&R Completion task at the reviewer tier. The approval workflow is:
+`OE / HRBP or HR Team (Submit) → HR Director / HR DR (Final Approval)`.
+
+### 1. Endpoint: `PUT /api/tasks/{taskId}/review`
+
+### 2. Authorization:
+* Restricted to the reviewer role `hr_dr` (HR Director, mapped internally to the L2 `rm` slot in the database model).
+
+### 3. Request Body:
+
+| Field Name | Data Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| action | String | Yes | `approve` or `reject`. |
+| rating | Number | Yes | Evaluation rating (0 to 5). |
+| remarks | String | Yes (if reject) | Feedback or reason for returning the task. |
+
+### 4. Status Transitions:
+* **Approve**: 
+  * HR DR Approval → `approved` (Concludes the task and triggers score calculation since HR Director / `hr_dr` is the final approver for this task)
+* **Reject**: 
+  * HR DR Rejection → `rejected` (Returns task to creator queue (`hrbp` or `hr` / `hr team`) for revision)
+
+### 5. Example JSON Payload (HR DR Approves):
+```json
+{
+  "action": "approve",
+  "rating": 5,
+  "remarks": "Winners list is verified and ceremony photo evidence confirms successful completion."
+}
+```
+
+### 6. Example JSON Response (HR DR Approved - Final Approval):
+```json
+{
+  "success": true,
+  "message": "R&R completion task final approved. Task closed.",
+  "task": { "id": "TSK_RR_CMP_032", "status": "approved", "rmRating": 5, "rmReviewedDate": "2026-06-20", "finalScore": 5 }
+}
+```
+
+---
+
+## 79. API Specification: Get Pending Review Queue (Role-Specific)
+
+This API retrieves the list of tasks currently awaiting evaluation, rating, or sign-off by the authenticated reviewer role. It dynamically resolves the reviewer's identity, role, and geographical/portfolio scope from their authorization session to return only actionable queue items.
+
+### 1. Endpoint: `GET /api/reviews/pending`
+
+### 2. Authorization:
+* Protected Route. Headers must contain `Authorization: Bearer <token>`.
+* Accessible by Reviewer Roles: `rm`, `zh`, `avp`, `bh`, `dr`, `hr_dr`, `ph`.
+
+### 3. Query Parameters:
+| Parameter Name | Data Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| siteId | String | No | Filter pending reviews by a specific Site ID. |
+| category | String | No | Filter by task category (e.g. `Attendance Verification`, `Site Operations`). |
+
+### 4. Backend Queue Filtering Logic:
+Upon receiving the request, the backend decodes the JWT to resolve the user's `role` and `name` (or user ID), then queries the database for tasks matching the following conditions:
+
+1. **Portfolio Head (`ph`) Queue:**
+   - Task `status` is `oe_submitted` (or `submitted`).
+   - The associated template's `approvalFlow` contains `ph`.
+   - The task's `phRating` is `null`.
+2. **Regional Manager (`rm`) Queue:**
+   - Task `status` is `oe_submitted` (or `submitted`).
+   - The associated template's `approvalFlow` contains `rm`.
+   - The task's `rmRating` is `null`.
+   - The task's `site.assignedRM` matches the authenticated user's name.
+3. **Zonal Head (`zh`) Queue:**
+   - Task `status` is `rm_approved`.
+   - The associated template's `approvalFlow` contains `zh`.
+   - The task's `zhRating` is `null`.
+   - The task's `site.assignedZH` matches the authenticated user's name.
+4. **AVP Operations (`avp`) Queue:**
+   - Task `status` is `zh_approved` (or `submitted` with `rmRating` and `zhRating` defined).
+   - The associated template's `approvalFlow` contains `avp`.
+   - The task's `avpRating` is `null`.
+   - The task's `site.assignedAVP` matches the authenticated user's name.
+5. **Business Head (`bh`) Queue:**
+   - Task `status` is `avp_approved`.
+   - The associated template's `approvalFlow` contains `bh`.
+   - The task's `bhRating` is `null`.
+6. **Operations Director (`dr`) Queue:**
+   - Task `status` is `bh_approved`.
+   - The associated template's `approvalFlow` contains `dr`.
+   - The task's `drRating` is `null`.
+7. **HR Director (`hr_dr`) Queue:**
+   - Task `status` is `oe_submitted` (or `submitted`).
+   - The associated template's `approvalFlow` contains `rm` (acting as L2 HR DR review).
+   - The template `assignedRoles` includes `hrbp,hr dr`.
+   - The task's `rmRating` is `null`.
+
+### 5. Example JSON Response (200 OK - RM Reviewer):
+```json
+[
+  {
+    "id": "TSK_DP_CLN_025",
+    "templateId": "TPL-INC-003",
+    "taskName": "Deep Cleaning Report",
+    "category": "Incident & Performance",
+    "frequency": "weekly",
+    "weightage": 5,
+    "dueDate": "2026-06-24",
+    "siteId": "SITE_003",
+    "siteName": "Wipro Hinjewadi Campus",
+    "clientName": "Wipro Technologies",
+    "status": "oe_submitted",
+    "assignedTo": "Ravi Shankar",
+    "oeRating": 5,
+    "oeRemarks": "Deep cleaning completed in full. Branch manager verified and signed off.",
+    "oeSubmittedDate": "2026-06-20",
+    "evidenceUrls": ["https://company-s3.amazonaws.com/evidence/deep_cleaning_checklist_025.jpg"],
+    "evidenceCount": 1
+  }
+]
+```
+
+---
+
+## 80. API Specification: Get Completed Review History (Role-Specific)
+
+Retrieves the list of historical tasks that have already been reviewed, rated, and processed by the authenticated reviewer. This supports the "History" or "Completed" tab on the reviewer's dashboard.
+
+### 1. Endpoint: `GET /api/reviews/history`
+
+### 2. Authorization:
+* Protected Route. Headers must contain `Authorization: Bearer <token>`.
+* Accessible by Reviewer Roles: `rm`, `zh`, `avp`, `bh`, `dr`, `hr_dr`, `ph`.
+
+### 3. Query Parameters:
+| Parameter Name | Data Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| siteId | String | No | Filter history by a specific Site ID. |
+| limit | Number | No | Limit the number of records returned (default `50`). |
+| offset | Number | No | Pagination offset. |
+
+### 4. Backend Filtering Logic:
+Queries tasks where the reviewer has already submitted a rating, matching:
+- **ph**: Tasks where `phRating` is not `null`.
+- **rm**: Tasks where `rmRating` is not `null` and the site's `assignedRM` matches the user.
+- **zh**: Tasks where `zhRating` is not `null` and the site's `assignedZH` matches the user.
+- **avp**: Tasks where `avpRating` is not `null` and the site's `assignedAVP` matches the user.
+- **bh**: Tasks where `bhRating` is not `null`.
+- **dr**: Tasks where `drRating` is not `null`.
+- **hr_dr**: Tasks where `rmRating` is not `null` and the template `assignedRoles` includes `hrbp,hr dr`.
+
+### 5. Example JSON Response (200 OK - RM Reviewer):
+```json
+[
+  {
+    "id": "TSK_ATT_001",
+    "templateId": "TPL-ATT-001",
+    "taskName": "Absent Report",
+    "category": "Attendance Verification",
+    "frequency": "daily",
+    "weightage": 5,
+    "dueDate": "2026-06-19",
+    "siteId": "SITE_003",
+    "siteName": "Wipro Hinjewadi Campus",
+    "clientName": "Wipro Technologies",
+    "status": "rm_approved",
+    "assignedTo": "Ravi Shankar",
+    "oeRating": 5,
+    "oeRemarks": "Roster regularized.",
+    "oeSubmittedDate": "2026-06-19",
+    "rmRating": 5,
+    "rmRemarks": "Verified reliever details. Roster is correct.",
+    "rmReviewedDate": "2026-06-20",
+    "evidenceCount": 1
+  }
+]
+```
+
+---
+
+## 81. API Specification: Get Scheduled Training Sessions
+
+Fetches all scheduled training sessions, supporting filtering by date/month, status, site, and assigned trainer.
+
+### 1. Endpoint: `GET /api/trainings`
+
+### 2. Authorization:
+* Protected Route. Headers must contain `Authorization: Bearer <token>`.
+* Accessible by Roles: `oe`, `rm`, `zh`, `avp`, `bh`, `dr`, `th`, `trainers`.
+
+### 3. Query Parameters:
+| Parameter Name | Data Type | Required | Description |
+| :--- | :--- | :--- | :--- |
+| month | String | No | Year-Month format (e.g., `2026-06`) to filter by month. |
+| status | String | No | Filter by status (`planned`, `completed`). |
+| siteId | String | No | Filter schedules by a specific site ID. |
+| trainerName | String | No | Filter by trainer's name. |
+
+### 4. Response Structure: Array of objects with the following structure:
+| Field Name | Data Type | Description |
+| :--- | :--- | :--- |
+| id | String | Unique training session identifier. |
+| siteId | String | Target site identifier. |
+| siteName | String | Resolved name of the site. |
+| topic | String | Training topic description. |
+| trainerName | String | Assigned trainer's name. |
+| dateStr | String | Date of scheduled training (`YYYY-MM-DD`). |
+| time | String | Scheduled time (e.g., `10:00 AM`). |
+| status | String | Session status (`planned`, `completed`). |
+| targetEmployeesCount | Number | Planned count of trainees. |
+| mode | String | Mode of delivery (`online`, `offline`). |
+| actualEmployeesCount | Number | Actual attendees (populated upon completion, defaults to `null`). |
+
+### 5. Example JSON Response:
+```json
+[
+  {
+    "id": "TRN_SESS_001",
+    "siteId": "SITE_003",
+    "siteName": "Wipro Hinjewadi Campus",
+    "topic": "Fire Safety Drill & Evacuation",
+    "trainerName": "Geeta Joshi",
+    "dateStr": "2026-06-05",
+    "time": "10:00 AM",
+    "status": "completed",
+    "targetEmployeesCount": 15,
+    "mode": "offline",
+    "actualEmployeesCount": 15
+  }
+]
+```
+
+---
+
+## 82. API Specification: Schedule Training Session (Manual)
+
+Allows a Trainer, Trainer Head (TH), or authorized manager to manually schedule a training session.
+
+### 1. Endpoint: `POST /api/trainings`
+
+### 2. Authorization:
+* Protected Route. Headers must contain `Authorization: Bearer <token>`.
+* Lock restriction: Blocked if the training planner for the target month is already locked.
+
+### 3. Request Body: A JSON object with the following structure:
+| Field Name | Data Type | Required | Notes/Validation |
+| :--- | :--- | :--- | :--- |
+| siteId | String | Yes | Valid site identifier in the master database. |
+| topic | String | Yes | Description of the training topic. |
+| dateStr | String | Yes | Scheduled date of training (`YYYY-MM-DD`). Cannot be past the current month window. |
+| time | String | Yes | Scheduled time format (e.g., `10:00 AM`). |
+| trainerName | String | Yes | Name of the trainer conducting the session. |
+| targetEmployeesCount | Number | Yes | Target headcount of employees to attend. Must be > 0. |
+| mode | String | Yes | Must be `online` or `offline`. |
+
+### 4. Example JSON Payload:
+```json
+{
+  "siteId": "SITE_003",
+  "topic": "Customer Service Excellence",
+  "dateStr": "2026-06-12",
+  "time": "02:00 PM",
+  "trainerName": "Geeta Joshi",
+  "targetEmployeesCount": 20,
+  "mode": "online"
+}
+```
+
+### 5. Example JSON Response (Success):
+```json
+{
+  "id": "TRN_SESS_002",
+  "siteId": "SITE_003",
+  "siteName": "Wipro Hinjewadi Campus",
+  "topic": "Customer Service Excellence",
+  "trainerName": "Geeta Joshi",
+  "dateStr": "2026-06-12",
+  "time": "02:00 PM",
+  "status": "planned",
+  "targetEmployeesCount": 20,
+  "mode": "online",
+  "actualEmployeesCount": null
+}
+```
+
+---
+
+## 83. API Specification: Update/Reschedule Training Session
+
+Triggered when a scheduled training session is edited, dragged to a new calendar date, or rescheduled in the training planner.
+
+### 1. Endpoint: `PUT /api/trainings/{id}`
+
+### 2. Authorization:
+* Protected Route. Headers must contain `Authorization: Bearer <token>`.
+* Lock restriction: Blocked if the training planner for the target month is already locked.
+
+### 3. Request Body:
+| Field Name | Data Type | Required | Notes/Validation |
+| :--- | :--- | :--- | :--- |
+| topic | String | No | Updated training topic. |
+| dateStr | String | No | New scheduled date (`YYYY-MM-DD`). |
+| time | String | No | New scheduled time (e.g., `04:00 PM`). |
+| trainerName | String | No | Reassigned trainer's name. |
+| targetEmployeesCount | Number | No | Updated target headcount. |
+| mode | String | No | Updated mode (`online`, `offline`). |
+
+### 4. Example JSON Payload:
+```json
+{
+  "dateStr": "2026-06-18",
+  "time": "11:00 AM"
+}
+```
+
+### 5. Example JSON Response (Success):
+```json
+{
+  "id": "TRN_SESS_002",
+  "siteId": "SITE_003",
+  "siteName": "Wipro Hinjewadi Campus",
+  "topic": "Customer Service Excellence",
+  "trainerName": "Geeta Joshi",
+  "dateStr": "2026-06-18",
+  "time": "11:00 AM",
+  "status": "planned",
+  "targetEmployeesCount": 20,
+  "mode": "online",
+  "actualEmployeesCount": null
+}
+```
+
+---
+
+## 84. API Specification: Delete Scheduled Training Session
+
+Triggered when a planned training session is deleted from the planner workspace.
+
+### 1. Endpoint: `DELETE /api/trainings/{id}`
+
+### 2. Authorization:
+* Protected Route. Headers must contain `Authorization: Bearer <token>`.
+* Lock restriction: Blocked if the planner for the target month is already locked.
+
+### 3. Example JSON Response (Success):
+```json
+{
+  "success": true,
+  "message": "Training session schedule record has been deleted successfully."
+}
+```
+
+---
+
+## 85. API Specification: Submit Training Session Completion Report
+
+Submitted by the Trainer or Operations Executive on completion of the session to log actual attendance and upload evidence (such as photos, feedback, or attendance sheets).
+
+### 1. Endpoint: `POST /api/trainings/{id}/report`
+
+### 2. Authorization:
+* Protected Route. Headers must contain `Authorization: Bearer <token>`.
+* Accessible by: Assigned trainer or OE.
+
+### 3. Request Body:
+| Field Name | Data Type | Required | Notes/Validation |
+| :--- | :--- | :--- | :--- |
+| actualEmployeesCount | Number | Yes | Actual count of employees who attended the session. Must be >= 0. |
+| remarks | String | Yes | Custom completion remarks (e.g. details of topics covered, list of issues identified). |
+| evidenceUrls | Array of Strings | Yes | Uploaded file paths/images proving attendance. Minimum 1 attachment required. |
+
+### 4. Example JSON Payload:
+```json
+{
+  "actualEmployeesCount": 18,
+  "remarks": "Drill completed successfully. All guards demonstrated quick exit response times.",
+  "evidenceUrls": [
+    "https://storage.company.com/evidences/training_drill_pic_002.jpg",
+    "https://storage.company.com/evidences/training_attendance_002.pdf"
+  ]
+}
+```
+
+### 5. Example JSON Response (Success):
+```json
+{
+  "success": true,
+  "message": "Training completion report submitted successfully.",
+  "session": {
+    "id": "TRN_SESS_002",
+    "status": "completed",
+    "actualEmployeesCount": 18,
+    "remarks": "Drill completed successfully. All guards demonstrated quick exit response times.",
+    "evidenceUrls": [
+      "https://storage.company.com/evidences/training_drill_pic_002.jpg",
+      "https://storage.company.com/evidences/training_attendance_002.pdf"
+    ]
+  }
+}
+```
+
+---
+
+## 86. API Specification: Lock & Submit Monthly Training Planner
+
+Locks the training planner calendar for the target month, freezing all scheduled sessions to align them for roster and payroll calculations.
+
+### 1. Endpoint: `POST /api/trainings/lock`
+
+### 2. Authorization:
+* Protected Route. Headers must contain `Authorization: Bearer <token>`.
+* Restricted to Roles: `th`, `rm`, `avp`, `bh`, `dr`.
+
+### 3. Request Body:
+| Field Name | Data Type | Required | Notes/Validation |
+| :--- | :--- | :--- | :--- |
+| monthKey | String | Yes | Target month identifier (e.g. `2026-06`). |
+| isLocked | Boolean | Yes | `true` to freeze, `false` to unfreeze. |
+
+### 4. Policy Rules:
+* Training calendars for the subsequent month must be locked and submitted before the **26th** of the current month.
+
+### 5. Example JSON Payload:
+```json
+{
+  "monthKey": "2026-06",
+  "isLocked": true
+}
+```
+
+### 6. Example JSON Response (Success):
+```json
+{
+  "success": true,
+  "monthKey": "2026-06",
+  "isLocked": true,
+  "message": "Monthly training planner has been locked successfully."
+}
+```
+
+---
+
 ## Scoring Policy Reference (Applied on Final DR Approval for All Tasks)
 
 When the final approver (DR) approves a task, the `finalScore` is computed based on the active scoring policy:

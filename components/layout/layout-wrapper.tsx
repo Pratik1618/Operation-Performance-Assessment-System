@@ -1,15 +1,39 @@
 'use client'
 
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 import { Sidebar } from './sidebar'
 import { Header } from './header'
+import { useOCRMS } from '@/lib/context/ocrms-context'
+import { Loader2 } from 'lucide-react'
 
 export function LayoutWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
+  const router = useRouter()
+  const { isAuthenticated, isLoadingAuth } = useOCRMS()
+
   const isLoginPage = pathname === '/login'
+
+  useEffect(() => {
+    if (!isLoadingAuth && !isAuthenticated && !isLoginPage) {
+      router.push('/login')
+    }
+  }, [isLoadingAuth, isAuthenticated, isLoginPage, router])
+
+  if (isLoadingAuth) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-background">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    )
+  }
 
   if (isLoginPage) {
     return <main className="min-h-screen bg-background">{children}</main>
+  }
+
+  if (!isAuthenticated) {
+    return null
   }
 
   return (

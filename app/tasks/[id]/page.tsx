@@ -73,6 +73,38 @@ const isSameWeek = (date1Str: string, date2Str: string) => {
   return getStartOfWeek(d1) === getStartOfWeek(d2);
 };
 
+const DEEP_CLEANING_ITEMS = [
+  "All Area Cobweb Removing",
+  "All Signage cleaning",
+  "Inside and out side all glass cleaning",
+  "All Chairs Dusting and cleaning",
+  "Under drawer cleaning",
+  "Drawer back side cleaning",
+  "Under table cleaning properly",
+  "Clean plant area",
+  "All table cleaning and removing stains",
+  "TV dusting",
+  "AC Grill Dusting",
+  "All Fan Outside cleaning",
+  "All wall cleaning and stains removing",
+  "All doors cleaning",
+  "All Pantry Chairs Washing properly",
+  "Pantry table cleaning properly",
+  "Pantry all cupboards cleaning",
+  "Store HK material properly",
+  "Under electric pannel dusting",
+  "Washrooms All Fixtures cleaning properly",
+  "Washroom wall cleaning and stain removing",
+  "Washroom Exhaust fan cleaning",
+  "Washroom Drainage cover cleaning properly",
+  "Bank Soraounding area cleaning",
+  "DG area cleaning",
+  "ATM Area cleaning from TOP to Bottom",
+  "Stairs Cleaning and washing",
+  "Branch Name Board cleaning",
+  "Name Plates cleaning"
+]
+
 export default function TaskDetailPage() {
   const params = useParams()
   const router = useRouter()
@@ -249,6 +281,22 @@ export default function TaskDetailPage() {
         initialFormData.materialDelivered = initialFormData.materialDelivered !== undefined ? initialFormData.materialDelivered : true
         initialFormData.materialCondition = initialFormData.materialCondition || 'Good'
         initialFormData.receivedInFull = initialFormData.materialDelivered === true && initialFormData.materialCondition === 'Good'
+      }
+      if (template.id === 'TPL-INC-003') {
+        initialFormData.branchName = initialFormData.branchName || ''
+        initialFormData.employeeName = initialFormData.employeeName || ''
+        initialFormData.employeeSignature = initialFormData.employeeSignature !== undefined ? initialFormData.employeeSignature : false
+        initialFormData.bmName = initialFormData.bmName || ''
+        initialFormData.bmSignature = initialFormData.bmSignature !== undefined ? initialFormData.bmSignature : false
+        initialFormData.cleaningScore = initialFormData.cleaningScore !== undefined ? initialFormData.cleaningScore : 10
+        initialFormData.chemicalUsed = initialFormData.chemicalUsed !== undefined ? initialFormData.chemicalUsed : false
+        if (!initialFormData.checklist) {
+          const checklistObj: Record<string, { status: string; remarks: string }> = {}
+          for (let i = 1; i <= 29; i++) {
+            checklistObj[String(i)] = { status: 'clean', remarks: '' }
+          }
+          initialFormData.checklist = checklistObj
+        }
       }
       setFormData(initialFormData)
       setRemarks(task.oeRemarks || task.remarks || '')
@@ -771,6 +819,42 @@ export default function TaskDetailPage() {
           const ss = formData.regularizationsEvidence?.[row.id];
           if (!ss) {
             toast.error('Validation Error', { description: `Please upload screenshot evidence for employee: ${row.employeeName}` })
+            return
+          }
+        }
+      }
+    }
+
+    if (template.id === 'TPL-INC-003') {
+      if (!formData.branchName || formData.branchName.trim() === '') {
+        toast.error('Validation Error', { description: 'Please enter the Branch Name.' })
+        return
+      }
+      if (!formData.employeeName || formData.employeeName.trim() === '') {
+        toast.error('Validation Error', { description: 'Please enter the Employee Name.' })
+        return
+      }
+      if (!formData.employeeSignature) {
+        toast.error('Validation Error', { description: 'Employee signature verification is required.' })
+        return
+      }
+      if (!formData.bmName || formData.bmName.trim() === '') {
+        toast.error('Validation Error', { description: 'Please enter the Branch Manager (BM) Name.' })
+        return
+      }
+      if (!formData.bmSignature) {
+        toast.error('Validation Error', { description: 'Branch Manager (BM) signature verification is required.' })
+        return
+      }
+      if (!formData.chemicalUsed) {
+        toast.error('Validation Error', { description: 'Please verify that the chemical cleaner batch was checked.' })
+        return
+      }
+      if (formData.checklist) {
+        for (let i = 1; i <= 29; i++) {
+          const item = formData.checklist[String(i)]
+          if (!item || !item.status) {
+            toast.error('Validation Error', { description: `Please select Clean/UnClean status for item ${i}.` })
             return
           }
         }
@@ -2185,6 +2269,259 @@ export default function TaskDetailPage() {
                           </button>
                         )
                       })}
+                    </div>
+                  </div>
+                </div>
+              ) : template.id === 'TPL-INC-003' ? (
+                <div className="space-y-6 animate-in fade-in duration-200">
+                  {/* Banner Header */}
+                  <div className="bg-gradient-to-r from-slate-900 to-indigo-950 text-white rounded-2xl p-5 border border-indigo-900/40 shadow-soft">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                      <div>
+                        <h2 className="text-[10px] font-extrabold tracking-widest text-indigo-400 uppercase">I SMART FACITECH PVT LTD</h2>
+                        <h1 className="text-base font-black tracking-tight mt-0.5">Deep Cleaning Checklist</h1>
+                      </div>
+                      <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[10px] sm:text-right border-t sm:border-t-0 sm:border-l border-indigo-800/45 pt-3 sm:pt-0 sm:pl-4">
+                        <div>
+                          <span className="text-slate-400 font-bold block uppercase text-[8px] tracking-wider">Site Name</span>
+                          <span className="font-extrabold text-white">{task.siteName}</span>
+                        </div>
+                        <div>
+                          <span className="text-slate-400 font-bold block uppercase text-[8px] tracking-wider">Date</span>
+                          <span className="font-extrabold text-white">{task.dueDate || new Date().toLocaleDateString('en-IN')}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Branch Input */}
+                  <div className="space-y-1.5 max-w-sm">
+                    <Label htmlFor="branchName" className="text-xs font-bold text-slate-700">
+                      Branch Name <span className="text-red-500">*</span>
+                    </Label>
+                    <Input
+                      type="text"
+                      id="branchName"
+                      disabled={!isEditable}
+                      value={formData.branchName || ''}
+                      onChange={(e) => handleInputChange('branchName', e.target.value)}
+                      placeholder="Enter branch location name..."
+                      required
+                      className="h-10 rounded-xl"
+                    />
+                  </div>
+
+                  {/* Checklist Table */}
+                  <div className="space-y-3">
+                    <Label className="text-xs font-bold text-slate-700 block">Checklist Items (29 Particulars) *</Label>
+                    <div className="border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-soft">
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse text-xs">
+                          <thead>
+                            <tr className="bg-slate-50 border-b border-slate-200 font-bold text-slate-500 text-[10px]">
+                              <th className="p-3 w-12 text-center">Sr No</th>
+                              <th className="p-3 w-1/2">Particulars</th>
+                              <th className="p-3 w-32 text-center">Status</th>
+                              <th className="p-3 w-1/3">Remarks</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-100 font-semibold text-slate-700">
+                            {DEEP_CLEANING_ITEMS.map((item, idx) => {
+                              const srNo = String(idx + 1)
+                              const itemVal = formData.checklist?.[srNo] || { status: 'clean', remarks: '' }
+                              return (
+                                <tr key={srNo} className="hover:bg-slate-50/30">
+                                  <td className="p-3 text-center text-slate-400 font-mono font-bold">{srNo}</td>
+                                  <td className="p-3 font-semibold text-slate-800 text-xs">{item}</td>
+                                  <td className="p-3 text-center">
+                                    <div className="flex justify-center rounded-lg border border-slate-200 p-0.5 bg-slate-50 w-max mx-auto">
+                                      <button
+                                        type="button"
+                                        disabled={!isEditable}
+                                        onClick={() => {
+                                          const cl = { ...(formData.checklist || {}) }
+                                          cl[srNo] = { ...itemVal, status: 'clean' }
+                                          handleInputChange('checklist', cl)
+                                          
+                                          // Recalculate suggested rating based on clean count
+                                          let cleanCount = 0
+                                          for (let i = 1; i <= 29; i++) {
+                                            const s = i === idx + 1 ? 'clean' : (cl[String(i)]?.status || 'clean')
+                                            if (s === 'clean') cleanCount++
+                                          }
+                                          const suggestedScore = Math.max(1, Math.round((cleanCount / 29) * 10))
+                                          handleInputChange('cleaningScore', suggestedScore)
+                                        }}
+                                        className={`px-3 py-1 text-[10px] font-extrabold rounded transition-all cursor-pointer border-0 ${
+                                          itemVal.status === 'clean'
+                                            ? 'bg-white text-emerald-700 shadow-sm'
+                                            : 'bg-transparent text-slate-400 hover:text-slate-600'
+                                        }`}
+                                      >
+                                        Clean
+                                      </button>
+                                      <button
+                                        type="button"
+                                        disabled={!isEditable}
+                                        onClick={() => {
+                                          const cl = { ...(formData.checklist || {}) }
+                                          cl[srNo] = { ...itemVal, status: 'unclean' }
+                                          handleInputChange('checklist', cl)
+                                          
+                                          // Recalculate suggested rating based on clean count
+                                          let cleanCount = 0
+                                          for (let i = 1; i <= 29; i++) {
+                                            const s = i === idx + 1 ? 'unclean' : (cl[String(i)]?.status || 'clean')
+                                            if (s === 'clean') cleanCount++
+                                          }
+                                          const suggestedScore = Math.max(1, Math.round((cleanCount / 29) * 10))
+                                          handleInputChange('cleaningScore', suggestedScore)
+                                        }}
+                                        className={`px-3 py-1 text-[10px] font-extrabold rounded transition-all cursor-pointer border-0 ${
+                                          itemVal.status === 'unclean'
+                                            ? 'bg-white text-rose-700 shadow-sm'
+                                            : 'bg-transparent text-slate-400 hover:text-slate-600'
+                                        }`}
+                                      >
+                                        UnClean
+                                      </button>
+                                    </div>
+                                  </td>
+                                  <td className="p-3">
+                                    <Input
+                                      type="text"
+                                      disabled={!isEditable}
+                                      value={itemVal.remarks || ''}
+                                      onChange={(e) => {
+                                        const cl = { ...(formData.checklist || {}) }
+                                        cl[srNo] = { ...itemVal, remarks: e.target.value }
+                                        handleInputChange('checklist', cl)
+                                      }}
+                                      placeholder="Add remarks (optional)"
+                                      className="h-8 rounded-lg text-xs"
+                                    />
+                                  </td>
+                                </tr>
+                              )
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Cleanliness Rating Slider & Chemical Verification */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 border border-slate-200 rounded-2xl p-5 shadow-soft">
+                    {/* Cleanliness Rating Box */}
+                    <div className="space-y-2">
+                      <Label htmlFor="cleaningScore" className="text-xs font-bold text-slate-700 block">
+                        Cleanliness Rating (1 to 10) *
+                      </Label>
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="range"
+                          id="cleaningScore"
+                          min="1"
+                          max="10"
+                          disabled={!isEditable}
+                          value={formData.cleaningScore || 10}
+                          onChange={(e) => handleInputChange('cleaningScore', Number(e.target.value))}
+                          className="flex-1 accent-indigo-650 h-1.5 bg-slate-200 rounded-lg cursor-pointer disabled:opacity-60"
+                        />
+                        <span className="h-10 w-12 flex items-center justify-center font-black text-sm text-indigo-700 bg-indigo-50 border border-indigo-150 rounded-xl">
+                          {formData.cleaningScore || 10}
+                        </span>
+                      </div>
+                      <p className="text-[10px] text-muted-foreground font-semibold mt-1">Suggested score is dynamically computed from cleanliness status.</p>
+                    </div>
+
+                    {/* Chemical Cleaner Verification */}
+                    <div className="space-y-2 flex flex-col justify-center">
+                      <Label className="text-xs font-bold text-slate-700">Chemical Cleaner Verification *</Label>
+                      <div className="flex items-center gap-2.5 py-1">
+                        <input
+                          type="checkbox"
+                          id="chemicalUsed"
+                          disabled={!isEditable}
+                          checked={formData.chemicalUsed || false}
+                          onChange={(e) => handleInputChange('chemicalUsed', e.target.checked)}
+                          className="h-4.5 w-4.5 rounded border-slate-300 text-indigo-650 focus:ring-indigo-500 cursor-pointer"
+                        />
+                        <label htmlFor="chemicalUsed" className="text-xs font-bold text-slate-600 cursor-pointer select-none">
+                          Chemical Cleaner Batch Verified (R2 / R5 / Taski) *
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Signatures Panel */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t pt-5">
+                    {/* Employee Side */}
+                    <div className="bg-slate-50/50 border border-slate-200 rounded-2xl p-4 space-y-3.5">
+                      <p className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-0.5">EMPLOYEE SIGN-OFF</p>
+                      
+                      <div className="space-y-1.5">
+                        <Label htmlFor="employeeName" className="text-[11px] font-bold text-slate-600">Employee Name *</Label>
+                        <Input
+                          type="text"
+                          id="employeeName"
+                          disabled={!isEditable}
+                          value={formData.employeeName || ''}
+                          onChange={(e) => handleInputChange('employeeName', e.target.value)}
+                          placeholder="Enter employee's full name..."
+                          required
+                          className="h-9 rounded-xl text-xs"
+                        />
+                      </div>
+                      
+                      <div className="flex items-center gap-2 py-0.5">
+                        <input
+                          type="checkbox"
+                          id="employeeSignature"
+                          disabled={!isEditable}
+                          checked={formData.employeeSignature || false}
+                          onChange={(e) => handleInputChange('employeeSignature', e.target.checked)}
+                          className="h-4 w-4 rounded border-slate-300 text-indigo-650 cursor-pointer"
+                          required
+                        />
+                        <label htmlFor="employeeSignature" className="text-[11px] font-bold text-slate-600 cursor-pointer select-none">
+                          Verify Digitally Signed & Acknowledged *
+                        </label>
+                      </div>
+                    </div>
+
+                    {/* BM Side */}
+                    <div className="bg-slate-50/50 border border-slate-200 rounded-2xl p-4 space-y-3.5">
+                      <p className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-0.5">BRANCH MANAGER SIGN-OFF</p>
+                      
+                      <div className="space-y-1.5">
+                        <Label htmlFor="bmName" className="text-[11px] font-bold text-slate-600">Branch Manager (BM) Name *</Label>
+                        <Input
+                          type="text"
+                          id="bmName"
+                          disabled={!isEditable}
+                          value={formData.bmName || ''}
+                          onChange={(e) => handleInputChange('bmName', e.target.value)}
+                          placeholder="Enter branch manager's name..."
+                          required
+                          className="h-9 rounded-xl text-xs"
+                        />
+                      </div>
+                      
+                      <div className="flex items-center gap-2 py-0.5">
+                        <input
+                          type="checkbox"
+                          id="bmSignature"
+                          disabled={!isEditable}
+                          checked={formData.bmSignature || false}
+                          onChange={(e) => handleInputChange('bmSignature', e.target.checked)}
+                          className="h-4 w-4 rounded border-slate-300 text-indigo-650 cursor-pointer"
+                          required
+                        />
+                        <label htmlFor="bmSignature" className="text-[11px] font-bold text-slate-600 cursor-pointer select-none">
+                          Verify Branch Manager Approved & Signed *
+                        </label>
+                      </div>
                     </div>
                   </div>
                 </div>

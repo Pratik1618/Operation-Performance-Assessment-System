@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import {
   Building2, CalendarDays, ClipboardCheck, CheckCircle2, AlertTriangle,
   MapPin, Plus, Search, Filter, ShieldCheck, Signature, Camera,
@@ -28,9 +28,11 @@ import WeekView from '@/components/operations/week-view'
 import { toast } from 'sonner'
 import { useOCRMS } from '@/lib/context/ocrms-context'
 import { siteVisits, sites as initialSites, employees, attendanceRecords } from '@/lib/data/ocrms-data'
+import { fetchScheduledVisits, createScheduledVisit, updateScheduledVisit, deleteScheduledVisit, lockSiteVisits, downloadImportTemplate, uploadImportSchedules, fetchSites, requestSiteTransfer, fetchTransfers, updateTransfer } from '@/lib/api'
 import type { SiteVisit, VisitStatus, Site, SiteVisitReportData, Employee } from '@/lib/types'
 import SiteVisitReportForm from '@/components/operations/site-visit-report-form'
 import SiteVisitSummary from '@/components/operations/site-visit-summary'
+import { Loader2 } from 'lucide-react'
 
 // Status configurations for visual consistency
 const statusColors: Record<string, { bg: string; text: string; label: string }> = {
@@ -71,6 +73,10 @@ interface AssignmentRequest {
   assignedOE: string
   previousOE: string
   assignedRM: string
+  toUserId?: string
+  fromUserId?: string
+  requestedByUserId?: string
+  reason?: string
   requestedDate: string
   status: 'pending_avp' | 'verified_avp' | 'rejected_avp'
   avpRemarks?: string
@@ -103,7 +109,7 @@ const initialAssignments: AssignmentRequest[] = [
 ]
 
 export default function SiteOperationsPage() {
-  const { currentRole, currentUser } = useOCRMS()
+  const { currentRole, currentUser, apiUser } = useOCRMS()
 
   // ─────────────────────────────────────────────
   // 1. Shared & Navigation State
@@ -135,27 +141,47 @@ export default function SiteOperationsPage() {
   const [viewMode, setViewMode] = useState<'month' | 'week'>('month')
   const [plannerStatusFilter, setPlannerStatusFilter] = useState<'all' | 'planned' | 'completed'>('all')
 
-  const [schedules, setSchedules] = useState<Visit[]>(() => {
-    return [
-      { id: '1', siteId: 'SITE_001', siteName: 'Infosys Gurgaon Tower A', dateStr: '2025-06-02', time: '10:00 AM', status: 'completed', assignedTo: 'Ravi Shankar' },
-      { id: '2', siteId: 'SITE_002', siteName: 'Accenture Bangalore Campus', dateStr: '2025-06-03', time: '09:30 AM', status: 'completed', assignedTo: 'Kiran Nair' },
-      { id: '3', siteId: 'SITE_004', siteName: 'TCS Hyderabad Gachibowli', dateStr: '2025-06-04', time: '02:00 PM', status: 'completed', assignedTo: 'Anjali Desai' },
-      { id: '4', siteId: 'SITE_007', siteName: 'Cognizant Chennai OMR', dateStr: '2025-06-05', time: '10:30 AM', status: 'completed', assignedTo: 'Priya Sen' },
-      { id: '5', siteId: 'SITE_001', siteName: 'Infosys Gurgaon Tower A', dateStr: '2025-06-08', time: '11:00 AM', status: 'planned', assignedTo: 'Ravi Shankar' },
-      { id: '6', siteId: 'SITE_002', siteName: 'Accenture Bangalore Campus', dateStr: '2025-06-09', time: '02:30 PM', status: 'planned', assignedTo: 'Kiran Nair' },
-      { id: '7', siteId: 'SITE_003', siteName: 'Wipro Hinjewadi Campus', dateStr: '2025-06-10', time: '10:00 AM', status: 'planned', assignedTo: 'Ravi Shankar' },
-      { id: '8', siteId: 'SITE_005', siteName: 'HCL Noida Tech Park', dateStr: '2025-06-12', time: '11:30 AM', status: 'planned', assignedTo: 'Anjali Desai' },
-      { id: '9', siteId: 'SITE_006', siteName: 'IBM Kolkata Salt Lake', dateStr: '2025-06-15', time: '09:00 AM', status: 'planned', assignedTo: 'Priya Sen' },
-      { id: '10', siteId: 'SITE_008', siteName: 'Microsoft Mumbai BKC', dateStr: '2025-06-16', time: '02:00 PM', status: 'planned', assignedTo: 'Kiran Nair' },
-      { id: '11', siteId: 'SITE_001', siteName: 'Infosys Gurgaon Tower A', dateStr: '2025-06-18', time: '12:00 PM', status: 'planned', assignedTo: 'Ravi Shankar' },
-      { id: '12', siteId: 'SITE_002', siteName: 'Accenture Bangalore Campus', dateStr: '2025-06-20', time: '10:30 AM', status: 'planned', assignedTo: 'Anjali Desai' },
-      { id: '13', siteId: 'SITE_003', siteName: 'Wipro Hinjewadi Campus', dateStr: '2025-06-22', time: '02:30 PM', status: 'planned', assignedTo: 'Ravi Shankar' },
-      { id: '14', siteId: 'SITE_004', siteName: 'TCS Hyderabad Gachibowli', dateStr: '2025-06-23', time: '11:00 AM', status: 'planned', assignedTo: 'Priya Sen' },
-      { id: '15', siteId: 'SITE_005', siteName: 'HCL Noida Tech Park', dateStr: '2025-06-24', time: '10:00 AM', status: 'planned', assignedTo: 'Anjali Desai' },
-      { id: 'today1', siteId: 'SITE_003', siteName: 'Wipro Hinjewadi Campus', dateStr: todayStr, time: '10:00 AM', status: 'planned', assignedTo: 'Ravi Shankar' },
-      { id: 'today2', siteId: 'SITE_002', siteName: 'Accenture Bangalore Campus', dateStr: todayStr, time: '11:30 AM', status: 'planned', assignedTo: 'Anjali Desai' },
-    ]
-  })
+  const [schedules, setSchedules] = useState<Visit[]>([])
+  const [isLoadingSchedules, setIsLoadingSchedules] = useState(true)
+
+  useEffect(() => {
+    const loadSchedules = async () => {
+      try {
+        setIsLoadingSchedules(true)
+        const data = await fetchScheduledVisits()
+        const mappedSchedules: Visit[] = data.map((item) => ({
+          id: item.id,
+          siteId: item.site_id,
+          siteName: item.site_name,
+          dateStr: item.date_str,
+          time: item.time,
+          status: item.status === 'completed' ? 'completed' : 'planned',
+          assignedTo: item.assigned_to_name
+        }))
+        setSchedules(mappedSchedules)
+      } catch (error) {
+        toast.error('Failed to load scheduled visits')
+      } finally {
+        setIsLoadingSchedules(false)
+      }
+    }
+    
+    const loadSites = async () => {
+      try {
+        const data = await fetchSites()
+        if (data && data.length > 0) {
+          setLocalSites(data)
+        }
+      } catch (error) {
+        // Fallback to local data if API fails
+      }
+    }
+    
+    if (currentRole && currentUser) {
+      loadSchedules()
+      loadSites()
+    }
+  }, [currentRole, currentUser])
  
   const [showAddModal, setShowAddModal] = useState(false)
   
@@ -209,6 +235,56 @@ export default function SiteOperationsPage() {
   // ─────────────────────────────────────────────
   const [localSites, setLocalSites] = useState<Site[]>(initialSites)
   const [assignments, setAssignments] = useState<AssignmentRequest[]>(initialAssignments)
+
+  useEffect(() => {
+    const loadAssignments = async () => {
+      try {
+        const data = await fetchTransfers()
+        if (data && data.length > 0) {
+          
+          // Build a dynamic map of User IDs to Names based on the site data
+          const idToName = new Map<string, string>()
+          localSites.forEach(s => {
+            if (s.assignedOeId && s.assignedOE) idToName.set(s.assignedOeId, s.assignedOE)
+            if (s.assignedRmId && s.assignedRM) idToName.set(s.assignedRmId, s.assignedRM)
+            if (s.assignedZhId && s.assignedZH) idToName.set(s.assignedZhId, s.assignedZH)
+            if (s.assignedAvpId && s.assignedAVP) idToName.set(s.assignedAvpId, s.assignedAVP)
+          })
+          // Fallback for new OEs not assigned to any site yet
+          idToName.set('USR_OE_001', 'Ravi Shankar')
+          idToName.set('USR_OE_002', 'Kiran Nair')
+          idToName.set('USR_OE_003', 'Anjali Desai')
+          idToName.set('USR_OE_004', 'Geeta Sen')
+          idToName.set('USR_OE_999', 'Siddharth Malhotra')
+          idToName.set('USR_RM_001', 'Sanjay Gupta')
+
+          const mapped: AssignmentRequest[] = data.map((item: any) => ({
+            id: item.id || item.transfer_id || item.transferId || item._id || item.uuid || `ASN_${Date.now()}_${Math.random()}`,
+            siteId: item.site_id,
+            siteName: localSites.find(s => s.id === item.site_id)?.name || 'Unknown Site',
+            siteCode: localSites.find(s => s.id === item.site_id)?.code || 'Unknown',
+            assignedOE: idToName.get(item.to_user_id) || item.to_user_id,
+            previousOE: idToName.get(item.from_user_id) || item.from_user_id,
+            assignedRM: idToName.get(item.requested_by) || item.requested_by,
+            toUserId: item.to_user_id,
+            fromUserId: item.from_user_id,
+            requestedByUserId: item.requested_by,
+            reason: item.reason,
+            requestedDate: item.decided_at || item.created_at || new Date().toISOString().split('T')[0],
+            status: item.status === 'approved' ? 'verified_avp' : item.status === 'rejected' ? 'rejected_avp' : 'pending_avp',
+            avpRemarks: item.decision_remarks
+          }))
+          setAssignments(mapped)
+        }
+      } catch (error) {
+        console.error('Failed to load assignments', error)
+      }
+    }
+    // Only load if sites are already loaded, so we can map site names
+    if (localSites.length > 1) {
+      loadAssignments()
+    }
+  }, [localSites])
   const [mappingSubTab, setMappingSubTab] = useState<'sites' | 'assignments'>('sites')
   
   // Mapping Search & Filters
@@ -237,6 +313,7 @@ export default function SiteOperationsPage() {
   const [uploadProgress, setUploadProgress] = useState(0)
   const [isParsing, setIsParsing] = useState(false)
   const [uploadedFileName, setUploadedFileName] = useState('')
+  const [importFile, setImportFile] = useState<File | null>(null)
   const [parsedRows, setParsedRows] = useState<Array<{
     date: string
     time: string
@@ -341,30 +418,36 @@ export default function SiteOperationsPage() {
   // Mapping Role-filtering
   const roleFilteredSites = useMemo(() => {
     if (currentRole === 'oe') {
-      return localSites.filter(s => s.assignedOE === currentUser.userName)
+      return localSites.filter(s => s.assignedOE === currentUser.userName || s.assignedOeId === currentUser.id)
     }
     if (currentRole === 'rm') {
-      return localSites.filter(s => s.assignedRM === currentUser.userName)
+      return localSites.filter(s => s.assignedRM === currentUser.userName || s.assignedRmId === currentUser.id)
     }
     if (currentRole === 'avp') {
-      return localSites.filter(s => s.assignedAVP === currentUser.userName)
+      return localSites.filter(s => s.assignedAVP === currentUser.userName || s.assignedAvpId === currentUser.id)
     }
     return localSites
   }, [localSites, currentRole, currentUser])
 
+  useEffect(() => {
+    if (roleFilteredSites.length > 0 && !roleFilteredSites.find(s => s.id === transferSiteId)) {
+      setTransferSiteId(roleFilteredSites[0].id)
+    }
+  }, [roleFilteredSites, transferSiteId])
+
   const roleFilteredAssignments = useMemo(() => {
     if (currentRole === 'oe') {
-      return assignments.filter(a => a.previousOE === currentUser.userName || a.assignedOE === currentUser.userName)
+      return assignments.filter(a => a.previousOE === currentUser.userName || a.assignedOE === currentUser.userName || a.previousOE === currentUser.id || a.assignedOE === currentUser.id)
     }
     if (currentRole === 'rm') {
-      return assignments.filter(a => a.assignedRM === currentUser.userName)
+      return assignments.filter(a => a.assignedRM === currentUser.userName || a.assignedRM === currentUser.id)
     }
     if (currentRole === 'avp') {
-      const avpSiteIds = new Set(localSites.filter(s => s.assignedAVP === currentUser.userName).map(s => s.id))
+      const avpSiteIds = new Set(roleFilteredSites.map(s => s.id))
       return assignments.filter(a => avpSiteIds.has(a.siteId))
     }
     return assignments
-  }, [assignments, localSites, currentRole, currentUser])
+  }, [assignments, roleFilteredSites, currentRole, currentUser])
 
   const uniqueRegions = useMemo(() => Array.from(new Set(roleFilteredSites.map(s => s.region))), [roleFilteredSites])
   const uniqueStates = useMemo(() => Array.from(new Set(roleFilteredSites.map(s => s.state))), [roleFilteredSites])
@@ -435,45 +518,93 @@ export default function SiteOperationsPage() {
   // ─────────────────────────────────────────────
 
   // Planner actions
-  const handleAddVisit = (e: React.FormEvent) => {
+  const handleAddVisit = async (e: React.FormEvent) => {
     e.preventDefault()
     const siteObj = localSites.find(s => s.id === formSiteId)
     const assignedOEName = currentRole === 'oe' ? currentUser.userName : formAssignedTo
 
-    if (editingVisit) {
-      setSchedules(prev => prev.map(v => 
-        v.id === editingVisit.id 
-          ? { 
-              ...v, 
-              siteId: formSiteId, 
-              siteName: siteObj?.name || 'Unknown Site', 
-              dateStr: formDateStr, 
-              time: formTime,
-              assignedTo: assignedOEName
-            } 
-          : v
-      ))
-      toast.success('Schedule Updated', { description: 'The site visit plan has been modified.' })
-    } else {
-      const newVisit: Visit = {
-        id: Date.now().toString(),
-        siteId: formSiteId,
-        siteName: siteObj?.name || 'Unknown Site',
-        dateStr: formDateStr,
-        time: formTime,
-        status: 'planned',
-        assignedTo: assignedOEName
+    try {
+      // Ensure time format is HH:mm (strip AM/PM if present)
+      const cleanTime = formTime.replace(/ (AM|PM)/i, '').padStart(5, '0')
+
+      if (editingVisit) {
+        if (editingVisit.id.length === 36) {
+          const updatedApiVisit = await updateScheduledVisit(editingVisit.id, {
+            site_id: formSiteId,
+            visit_date: formDateStr,
+            visit_time: cleanTime,
+            assigned_to_user_id: apiUser?.user_id || 'USR_OE_001',
+          })
+
+          setSchedules(prev => prev.map(v => 
+            v.id === editingVisit.id 
+              ? { 
+                  ...v, 
+                  siteId: updatedApiVisit.site_id, 
+                  siteName: updatedApiVisit.site_name, 
+                  dateStr: updatedApiVisit.date_str, 
+                  time: updatedApiVisit.time,
+                  assignedTo: updatedApiVisit.assigned_to_name
+                } 
+              : v
+          ))
+        } else {
+          // Bypassing API for hardcoded mock data IDs like 'VIS_003'
+          setSchedules(prev => prev.map(v => 
+            v.id === editingVisit.id 
+              ? { 
+                  ...v, 
+                  siteId: formSiteId, 
+                  siteName: siteObj?.name || 'Unknown Site', 
+                  dateStr: formDateStr, 
+                  time: formTime,
+                  assignedTo: assignedOEName
+                } 
+              : v
+          ))
+        }
+        toast.success('Schedule Updated', { description: 'The site visit plan has been modified.' })
+      } else {
+        const newApiVisit = await createScheduledVisit({
+          site_id: formSiteId,
+          visit_date: formDateStr,
+          visit_time: cleanTime,
+          // If we are RM assigning to someone else we would ideally look up their ID. 
+          // For now, using apiUser.user_id or a mock default.
+          assigned_to_user_id: apiUser?.user_id || 'USR_OE_001',
+        })
+        
+        const newVisit: Visit = {
+          id: newApiVisit.id,
+          siteId: newApiVisit.site_id,
+          siteName: newApiVisit.site_name,
+          dateStr: newApiVisit.date_str,
+          time: newApiVisit.time,
+          status: 'planned',
+          assignedTo: newApiVisit.assigned_to_name
+        }
+        
+        setSchedules(prev => [...prev, newVisit])
+        toast.success('Schedule Added', { description: 'New planned visit added to calendar via API.' })
       }
-      setSchedules(prev => [...prev, newVisit])
-      toast.success('Schedule Added', { description: 'New planned visit added to calendar.' })
+    } catch (error: any) {
+      toast.error(`Failed to ${editingVisit ? 'update' : 'add'} schedule`, { description: error.message })
     }
+    
     setShowAddModal(false)
     setEditingVisit(null)
   }
 
-  const handleDeleteVisit = (visitId: string) => {
-    setSchedules(prev => prev.filter(v => v.id !== visitId))
-    toast.error('Schedule Deleted', { description: 'The planned visit has been removed.' })
+  const handleDeleteVisit = async (visitId: string) => {
+    try {
+      if (visitId.length === 36) {
+        await deleteScheduledVisit(visitId)
+      }
+      setSchedules(prev => prev.filter(v => v.id !== visitId))
+      toast.error('Schedule Deleted', { description: 'The planned visit has been removed.' })
+    } catch (error: any) {
+      toast.error('Failed to delete schedule', { description: error.message })
+    }
   }
 
   const handleEditVisit = (visit: Visit) => {
@@ -588,130 +719,172 @@ export default function SiteOperationsPage() {
   }
 
   // Site Mapping actions
-  const handleCreateAssignment = (e: React.FormEvent) => {
+  const handleCreateAssignment = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!transferNewOE.trim()) return
 
     const selectedSite = localSites.find(s => s.id === transferSiteId)
     if (!selectedSite) return
 
-    const newRequest: AssignmentRequest = {
-      id: `ASN_${Date.now()}`,
-      siteId: transferSiteId,
-      siteName: selectedSite.name,
-      siteCode: selectedSite.code,
-      previousOE: selectedSite.assignedOE,
-      assignedOE: transferNewOE,
-      assignedRM: currentUser.userName,
-      requestedDate: new Date().toISOString().split('T')[0],
-      status: 'pending_avp'
-    }
+    try {
+      const oeNameToId: Record<string, string> = {
+        'Ravi Shankar': 'USR_OE_001',
+        'Kiran Nair': 'USR_OE_002',
+        'Anjali Desai': 'USR_OE_003',
+        'Geeta Sen': 'USR_OE_004',
+      }
+      const toUserId = oeNameToId[transferNewOE] || 'USR_OE_999'
 
-    setAssignments(prev => [newRequest, ...prev])
-    setShowAddAssignmentModal(false)
-    setTransferNewOE('')
-    toast.success('Transfer Requested', { description: 'Change request submitted for AVP verification.' })
+      const data = await requestSiteTransfer(
+        transferSiteId,
+        toUserId,
+        'Routine operational requirement and workload balancing.'
+      )
+
+      const newRequest: AssignmentRequest = {
+        id: data.id || `ASN_${Date.now()}`,
+        siteId: data.site_id || transferSiteId,
+        siteName: selectedSite.name,
+        siteCode: selectedSite.code,
+        previousOE: selectedSite.assignedOE,
+        assignedOE: transferNewOE,
+        assignedRM: currentUser.userName,
+        toUserId: toUserId,
+        fromUserId: selectedSite.assignedOeId || 'USR_OE_003',
+        requestedByUserId: currentUser.id,
+        reason: 'Routine operational requirement and workload balancing.',
+        requestedDate: new Date().toISOString().split('T')[0],
+        status: 'pending_avp'
+      }
+
+      setAssignments(prev => [newRequest, ...prev])
+      setShowAddAssignmentModal(false)
+      setTransferNewOE('')
+      toast.success('Transfer Requested', { description: 'Change request submitted for AVP verification.' })
+    } catch (error: any) {
+      toast.error('Transfer Request Failed', { description: error.message })
+    }
   }
 
-  const handleVerifyAssignment = (actionStatus: 'verified_avp' | 'rejected_avp') => {
+  const handleVerifyAssignment = async (actionStatus: 'verified_avp' | 'rejected_avp') => {
     if (!selectedAssignment) return
 
-    setAssignments(prev => prev.map(a => {
-      if (a.id === selectedAssignment.id) {
-        return {
-          ...a,
-          status: actionStatus,
-          avpRemarks: avpRemarksText || 'Processed by AVP'
-        }
-      }
-      return a
-    }))
+    const apiStatus = actionStatus === 'verified_avp' ? 'approve' : 'reject'
+    const remarks = avpRemarksText || 'Processed by AVP'
 
-    if (actionStatus === 'verified_avp') {
-      setLocalSites(prev => prev.map(s => {
-        if (s.id === selectedAssignment.siteId) {
+    try {
+      await updateTransfer({
+        transferId: selectedAssignment.id,
+        siteId: selectedAssignment.siteId,
+        fromUserId: selectedAssignment.fromUserId || '',
+        toUserId: selectedAssignment.toUserId || '',
+        reason: selectedAssignment.reason || 'Routine operational requirement',
+        status: apiStatus,
+        remarks: remarks,
+        decidedBy: currentUser.id,
+        requestedBy: selectedAssignment.requestedByUserId || ''
+      })
+
+      setAssignments(prev => prev.map(a => {
+        if (a.id === selectedAssignment.id) {
           return {
-            ...s,
-            assignedOE: selectedAssignment.assignedOE
+            ...a,
+            status: actionStatus,
+            avpRemarks: remarks
           }
         }
-        return s
+        return a
       }))
-      toast.success('Transfer Approved', { description: `Roster mapping updated. OE ${selectedAssignment.assignedOE} is now assigned to ${selectedAssignment.siteName}.` })
-    } else {
-      toast.error('Transfer Rejected', { description: 'Roster change request was denied.' })
-    }
 
-    setShowVerifyModal(false)
-    setSelectedAssignment(null)
-    setAvpRemarksText('')
+      if (actionStatus === 'verified_avp') {
+        // Optimistically update local site OE to reflect the approved transfer
+        setLocalSites(prev => prev.map(s => {
+          if (s.id === selectedAssignment.siteId) {
+            return {
+              ...s,
+              assignedOE: selectedAssignment.assignedOE
+            }
+          }
+          return s
+        }))
+        toast.success('Transfer Approved', { description: `Roster mapping updated. OE ${selectedAssignment.assignedOE} is now assigned to ${selectedAssignment.siteName}.` })
+      } else {
+        toast.error('Transfer Rejected', { description: 'Roster change request was denied.' })
+      }
+
+      setShowVerifyModal(false)
+      setSelectedAssignment(null)
+      setAvpRemarksText('')
+    } catch (error: any) {
+      toast.error('Verification Failed', { description: error.message })
+    }
   }
 
   // Calendar Upload actions
-  const downloadSampleTemplate = () => {
-    const csvContent = "data:text/csv;charset=utf-8,Date,Time,Site ID,Assigned OE Name\n2025-07-01,10:00 AM,SITE_001,Ravi Shankar\n2025-07-02,02:30 PM,SITE_002,Kiran Nair\n2025-07-03,11:00 AM,SITE_003,Ravi Shankar\n2025-07-04,04:00 PM,SITE_004,Anjali Desai"
-    const encodedUri = encodeURI(csvContent)
-    const link = document.createElement("a")
-    link.setAttribute("href", encodedUri)
-    link.setAttribute("download", "opas_schedules_template.csv")
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    toast.success('Template Downloaded', { description: 'CSV template saved to downloads.' })
+  const downloadSampleTemplate = async () => {
+    try {
+      const blob = await downloadImportTemplate()
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = url
+      link.setAttribute("download", "opas_schedules_template.xlsx")
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(url)
+      toast.success('Template Downloaded', { description: 'Excel template saved to downloads.' })
+    } catch (error: any) {
+      toast.error('Download Failed', { description: error.message })
+    }
   }
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      triggerSimulatedParse(file.name)
+      setImportFile(file)
+      setUploadedFileName(file.name)
+      // We no longer simulate parsing rows, we wait for the user to click Bulk Import
     }
   }
 
-  const triggerSimulatedParse = (fileName: string) => {
-    setUploadedFileName(fileName)
+  const handleBulkImport = async () => {
+    if (!importFile) return
+
     setIsParsing(true)
-    setUploadProgress(10)
-    
-    // Simulate loading progress
-    const interval = setInterval(() => {
-      setUploadProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval)
-          setIsParsing(false)
-          // Generate mock schedules
-          setParsedRows([
-            { date: '2025-07-02', time: '10:00 AM', siteId: 'SITE_001', siteName: 'Infosys Gurgaon Tower A', oeName: 'Ravi Shankar', status: 'Valid', msg: 'Matches OE mapping.' },
-            { date: '2025-07-05', time: '02:00 PM', siteId: 'SITE_002', siteName: 'Accenture Bangalore Campus', oeName: 'Kiran Nair', status: 'Valid', msg: 'Matches OE mapping.' },
-            { date: '2025-07-10', time: '11:30 AM', siteId: 'SITE_003', siteName: 'Wipro Hinjewadi Campus', oeName: 'Ravi Shankar', status: 'Valid', msg: 'Matches OE mapping.' },
-            { date: '2025-07-12', time: '09:00 AM', siteId: 'SITE_004', siteName: 'TCS Hyderabad Gachibowli', oeName: 'Anjali Desai', status: 'Warning', msg: 'Roster mapped to Priya Sen; verify shift cover.' },
-          ])
-          toast.success('Roster File Parsed', { description: 'Preview the schedules table before importing.' })
-          return 100
-        }
-        return prev + 30
-      })
-    }, 400)
-  }
+    setUploadProgress(20)
 
-  const handleBulkImport = () => {
-    if (parsedRows.length === 0) return
-
-    const newSchedules: Visit[] = parsedRows.map((r, i) => ({
-      id: `UPLOAD_${Date.now()}_${i}`,
-      siteId: r.siteId,
-      siteName: r.siteName,
-      dateStr: r.date,
-      time: r.time,
-      status: 'planned',
-      assignedTo: r.oeName
-    }))
-
-    setSchedules(prev => [...prev, ...newSchedules])
-    setParsedRows([])
-    setUploadedFileName('')
-    setUploadProgress(0)
-    toast.success('Bulk Import Completed', { description: `Successfully imported ${newSchedules.length} schedules.` })
-    setActiveTab('planner')
+    try {
+      setUploadProgress(60)
+      const data = await uploadImportSchedules(importFile)
+      setUploadProgress(100)
+      
+      toast.success('Bulk Import Completed', { description: `Successfully imported schedules.` })
+      
+      // Optionally reload schedules here
+      try {
+        const freshData = await fetchScheduledVisits()
+        const mappedSchedules: Visit[] = freshData.map((item: any) => ({
+          id: item.id,
+          siteId: item.site_id,
+          siteName: item.site_name,
+          dateStr: item.date_str,
+          time: item.time,
+          status: item.status === 'completed' ? 'completed' : 'planned',
+          assignedTo: item.assigned_to_name
+        }))
+        setSchedules(mappedSchedules)
+      } catch (err) {}
+      
+      setImportFile(null)
+      setUploadedFileName('')
+      setUploadProgress(0)
+      setActiveTab('planner')
+    } catch (error: any) {
+      toast.error('Import Failed', { description: error.message })
+      setUploadProgress(0)
+    } finally {
+      setIsParsing(false)
+    }
   }
 
   return (
@@ -1176,12 +1349,22 @@ export default function SiteOperationsPage() {
                 </div>
               ) : (
                 <Button 
-                  onClick={() => {
+                  onClick={async () => {
                     const year = currentDate.getFullYear()
-                    const month = currentDate.getMonth()
-                    const monthKey = `${year}-${month}`
-                    setSubmittedMonths(prev => ({ ...prev, [monthKey]: true }))
-                    toast.success('Planner Locked & Submitted', { description: 'Schedules locked for roster calculation.' })
+                    const month = currentDate.getMonth() + 1
+                    const monthKey = `${year}-${String(month).padStart(2, '0')}`
+                    try {
+                      await lockSiteVisits(monthKey)
+                      setSubmittedMonths(prev => ({ ...prev, [monthKey]: true }))
+                      toast.success('Planner Locked & Submitted', { description: 'Schedules locked for roster calculation.' })
+                    } catch (error: any) {
+                      if (error.message && error.message.toLowerCase().includes('already locked')) {
+                        setSubmittedMonths(prev => ({ ...prev, [monthKey]: true }))
+                        toast.info('Planner already locked', { description: 'Syncing local state.' })
+                      } else {
+                        toast.error('Failed to lock planner', { description: error.message })
+                      }
+                    }
                   }} 
                   className="bg-gradient-to-r from-violet-600 to-indigo-500 hover:from-violet-700 hover:to-indigo-600 text-white font-semibold shadow-md gap-1.5 rounded-xl h-9 text-xs border-0"
                 >
@@ -1244,6 +1427,7 @@ export default function SiteOperationsPage() {
                   setFormAssignedTo(selectedOE !== 'all' ? selectedOE : 'Ravi Shankar')
                   setShowAddModal(true)
                 }}
+                onVisitClick={handleEditVisit}
                 onVisitMove={handleVisitMove}
                 isLocked={plannerLocked}
               />
@@ -1608,56 +1792,30 @@ export default function SiteOperationsPage() {
               </div>
 
               {/* Preview table */}
-              {parsedRows.length > 0 && (
+              {/* Preview & Import */}
+              {importFile && (
                 <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">File Data Preview ({parsedRows.length} Rows Identified)</h3>
+                  <div className="flex justify-between items-center p-4 bg-violet-50/50 rounded-xl border border-violet-100">
+                    <div>
+                      <h3 className="text-xs font-bold text-violet-800 uppercase tracking-wider">Ready for Import</h3>
+                      <p className="text-[10px] text-violet-600 mt-1">{importFile.name} is selected and ready to be processed.</p>
+                    </div>
                     <div className="flex gap-2">
                       <Button 
-                        onClick={() => { setParsedRows([]); setUploadedFileName(''); }}
-                        variant="outline" size="sm" className="h-8 text-xs rounded-lg"
+                        onClick={() => { setImportFile(null); setUploadedFileName(''); }}
+                        variant="outline" size="sm" className="h-8 text-xs rounded-lg bg-white border-violet-200 text-violet-700 hover:bg-violet-100"
+                        disabled={isParsing}
                       >
-                        Clear
+                        Cancel
                       </Button>
                       <Button 
                         onClick={handleBulkImport}
-                        className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold h-8 text-xs rounded-lg border-0"
+                        disabled={isParsing}
+                        className="bg-violet-600 hover:bg-violet-700 text-white font-semibold h-8 text-xs rounded-lg border-0"
                       >
-                        Import & Bulk Add
+                        {isParsing ? 'Importing...' : 'Upload & Import'}
                       </Button>
                     </div>
-                  </div>
-
-                  <div className="border border-border/80 rounded-xl overflow-hidden shadow-soft">
-                    <Table>
-                      <TableHeader className="bg-slate-50">
-                        <TableRow>
-                          <TableHead className="p-3 text-xs font-bold">#</TableHead>
-                          <TableHead className="p-3 text-xs font-bold">Date / Time</TableHead>
-                          <TableHead className="p-3 text-xs font-bold">Site Name (ID)</TableHead>
-                          <TableHead className="p-3 text-xs font-bold">Assigned OE</TableHead>
-                          <TableHead className="p-3 text-xs font-bold">Validation Status</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {parsedRows.map((row, idx) => (
-                          <TableRow key={idx}>
-                            <TableCell className="p-3 text-xs font-semibold">{idx + 1}</TableCell>
-                            <TableCell className="p-3 text-xs">{row.date} · {row.time}</TableCell>
-                            <TableCell className="p-3 text-xs font-bold">{row.siteName} <span className="text-[10px] text-muted-foreground font-normal">({row.siteId})</span></TableCell>
-                            <TableCell className="p-3 text-xs font-semibold text-indigo-700">{row.oeName}</TableCell>
-                            <TableCell className="p-3">
-                              <span className={`inline-flex rounded-full border px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${
-                                row.status === 'Valid' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'
-                              }`}>
-                                {row.status}
-                              </span>
-                              <p className="text-[9px] text-slate-400 mt-0.5">{row.msg}</p>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
                   </div>
                 </div>
               )}
@@ -1978,9 +2136,29 @@ export default function SiteOperationsPage() {
                 </select>
               </div>
             )}
-            <Button type="submit" className="w-full bg-violet-600 hover:bg-violet-700 text-white rounded-lg h-9 text-xs border-0">
-              {editingVisit ? 'Update Visit Schedule' : 'Add Visit Schedule'}
-            </Button>
+            {editingVisit ? (
+              <div className="flex gap-2 pt-2">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  className="w-1/3 text-red-600 hover:bg-red-50 hover:text-red-700 border-red-200 h-9 text-xs rounded-lg" 
+                  onClick={() => {
+                    handleDeleteVisit(editingVisit.id)
+                    setShowAddModal(false)
+                    setEditingVisit(null)
+                  }}
+                >
+                  Delete
+                </Button>
+                <Button type="submit" className="w-2/3 bg-violet-600 hover:bg-violet-700 text-white rounded-lg h-9 text-xs border-0">
+                  Update Schedule
+                </Button>
+              </div>
+            ) : (
+              <Button type="submit" className="w-full mt-2 bg-violet-600 hover:bg-violet-700 text-white rounded-lg h-9 text-xs border-0">
+                Add Visit Schedule
+              </Button>
+            )}
           </form>
         </DialogContent>
       </Dialog>

@@ -80,6 +80,16 @@ export default function ReviewsPage() {
     return tasks.filter(t => t.status === 'bh_approved' && t.drRating === undefined)
   }, [tasks])
 
+  // PH Queue: Tasks submitted by OE (status = 'oe_submitted') and awaiting PH approval
+  const phQueue = useMemo(() => {
+    return tasks.filter(t => {
+      const isStatusMatch = t.status === 'oe_submitted' || (t.status === 'submitted' && t.phRating === undefined)
+      if (!isStatusMatch) return false
+      const tpl = templates.find(temp => temp.id === t.templateId)
+      return tpl && tpl.approvalFlow?.includes('ph')
+    })
+  }, [tasks, templates])
+
   // OE / HR / Procurement Queue: Tasks executed by matching roles that are submitted or returned/rejected
   const oeQueue = useMemo(() => {
     const isRoleMatch = (assignedRolesStr: string | undefined, role: string) => {
@@ -934,7 +944,86 @@ export default function ReviewsPage() {
                     <span className="font-extrabold text-indigo-600">{selectedTask.rmRating} / {selectedTask.weightage}</span>
                   </div>
                 )}
-                {selectedTask.formData && activeTemplate.formSchema.length > 0 && (
+                {selectedTask.templateId === 'TPL-INC-003' && selectedTask.formData && (
+                  <div className="border-t pt-3 mt-2 space-y-3 bg-white p-3 rounded-lg border">
+                    <p className="text-[9px] uppercase font-bold text-slate-400">Deep Cleaning Form Summary</p>
+                    <div className="grid grid-cols-2 gap-3 text-[10px]">
+                      <div>
+                        <span className="text-slate-400 font-bold block text-[8px] uppercase tracking-wide">Branch Name</span>
+                        <span className="text-slate-800 font-semibold">{selectedTask.formData.branchName || '—'}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 font-bold block text-[8px] uppercase tracking-wide">Cleanliness Score</span>
+                        <span className="text-indigo-700 font-black">{selectedTask.formData.cleaningScore || '—'} / 10</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 font-bold block text-[8px] uppercase tracking-wide">Employee Sign-off</span>
+                        <span className="text-slate-800 font-semibold">{selectedTask.formData.employeeName || '—'} (Signed: {selectedTask.formData.employeeSignature ? 'Yes' : 'No'})</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 font-bold block text-[8px] uppercase tracking-wide">Branch Manager (BM) Sign-off</span>
+                        <span className="text-slate-800 font-semibold">{selectedTask.formData.bmName || '—'} (Signed: {selectedTask.formData.bmSignature ? 'Yes' : 'No'})</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 font-bold block text-[8px] uppercase tracking-wide">Chemical Batch Checked</span>
+                        <span className="text-slate-800 font-semibold">{selectedTask.formData.chemicalUsed ? '🟢 Verified' : '🔴 Unverified'}</span>
+                      </div>
+                    </div>
+                    
+                    {selectedTask.formData.checklist && (
+                      <div className="border border-slate-100 rounded-lg overflow-hidden bg-slate-50/50 p-2">
+                        <p className="text-[8px] uppercase font-bold text-slate-400 mb-1.5">Checklist Items Details</p>
+                        <div className="max-h-36 overflow-y-auto divide-y divide-slate-100/60 text-[9px] font-semibold text-slate-750">
+                          {(() => {
+                            const items = [
+                              "All Area Cobweb Removing", "All Signage cleaning", "Inside and out side all glass cleaning",
+                              "All Chairs Dusting and cleaning", "Under drawer cleaning", "Drawer back side cleaning",
+                              "Under table cleaning properly", "Clean plant area", "All table cleaning and removing stains",
+                              "TV dusting", "AC Grill Dusting", "All Fan Outside cleaning", "All wall cleaning and stains removing",
+                              "All doors cleaning", "All Pantry Chairs Washing properly", "Pantry table cleaning properly",
+                              "Pantry all cupboards cleaning", "Store HK material properly", "Under electric pannel dusting",
+                              "Washrooms All Fixtures cleaning properly", "Washroom wall cleaning and stain removing",
+                              "Washroom Exhaust fan cleaning", "Washroom Drainage cover cleaning properly",
+                              "Bank Soraounding area cleaning", "DG area cleaning", "ATM Area cleaning from TOP to Bottom",
+                              "Stairs Cleaning and washing", "Branch Name Board cleaning", "Name Plates cleaning"
+                            ];
+                            let cleanCount = 0;
+                            let uncleanCount = 0;
+                            const rows = items.map((name, idx) => {
+                              const srNo = String(idx + 1);
+                              const val = selectedTask.formData.checklist[srNo] || { status: 'clean', remarks: '' };
+                              if (val.status === 'clean') cleanCount++;
+                              else uncleanCount++;
+                              
+                              return (
+                                <div key={srNo} className="py-1 flex justify-between gap-4">
+                                  <span className="text-slate-655 font-normal shrink-0">{srNo}. {name}</span>
+                                  <div className="flex items-center gap-1.5 text-right">
+                                    <span className={val.status === 'clean' ? 'text-emerald-600 font-extrabold' : 'text-rose-650 font-extrabold'}>
+                                      {val.status === 'clean' ? 'CLEAN' : 'UNCLEAN'}
+                                    </span>
+                                    {val.remarks && <span className="text-slate-400 italic font-medium">({val.remarks})</span>}
+                                  </div>
+                                </div>
+                              );
+                            });
+                            return (
+                              <>
+                                <div className="flex gap-4 font-extrabold text-[8px] text-slate-450 border-b pb-1 mb-1">
+                                  <span>CLEAN ITEMS: {cleanCount}</span>
+                                  <span>UNCLEAN ITEMS: {uncleanCount}</span>
+                                </div>
+                                <div className="space-y-1">{rows}</div>
+                              </>
+                            );
+                          })()}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {selectedTask.templateId !== 'TPL-INC-003' && selectedTask.formData && activeTemplate.formSchema.length > 0 && (
                   <div className="border-t pt-2 mt-2 space-y-1 bg-white p-2.5 rounded-lg border">
                     <p className="text-[9px] uppercase font-bold text-slate-400">Form Submission Data</p>
                     <div className="grid grid-cols-2 gap-x-3 gap-y-2 text-[10px]">

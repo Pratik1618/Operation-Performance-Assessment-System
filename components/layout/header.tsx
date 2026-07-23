@@ -44,11 +44,13 @@ const roleLabelMap: Record<UserRole, string> = {
 
 export function Header() {
   const router = useRouter()
-  const { currentRole, setCurrentRole } = useOCRMS()
+  const { currentRole, setCurrentRole, setIsAuthenticated, apiUser } = useOCRMS()
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false)
 
-  const activeUserData = roleUserMap[currentRole]
+  const activeUserData = (apiUser && apiUser.role === currentRole)
+    ? { name: apiUser.name, designation: apiUser.designation, email: apiUser.email }
+    : roleUserMap[currentRole]
 
   const [localNotifications, setLocalNotifications] = useState([
     {
@@ -129,17 +131,9 @@ export function Header() {
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1.5 rounded-xl border border-indigo-100 bg-indigo-50/70 px-2.5 py-1.5 shadow-sm">
             <span className="text-[9px] font-bold text-indigo-700 uppercase tracking-wider hidden md:inline">Role:</span>
-            <select
-              value={currentRole}
-              onChange={(e) => handleRoleChange(e.target.value as UserRole)}
-              className="bg-transparent text-[11px] font-bold text-indigo-800 outline-none border-none cursor-pointer pr-1 focus:ring-0 focus:outline-none"
-            >
-              {roleConfigs.map((rc) => (
-                <option key={rc.role} value={rc.role} className="text-foreground bg-white">
-                  {roleLabelMap[rc.role]}
-                </option>
-              ))}
-            </select>
+            <span className="text-[11px] font-bold text-indigo-800 pr-1">
+              {roleLabelMap[currentRole]}
+            </span>
           </div>
 
           <button className="rounded-xl border border-border/60 bg-white/75 hover:bg-white p-2 text-muted-foreground hover:text-foreground shadow-soft transition-all hover:shadow-medium hover:border-primary/40">
@@ -253,6 +247,7 @@ export function Header() {
                 <button
                   onClick={() => {
                     setIsProfileOpen(false)
+                    setIsAuthenticated(false)
                     toast.success('Logged out successfully')
                     router.push('/login')
                   }}

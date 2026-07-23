@@ -36,9 +36,13 @@ export interface Site {
   state: string;
   zone: string;
   assignedOE: string;
+  assignedOeId?: string;
   assignedRM: string;
+  assignedRmId?: string;
   assignedZH?: string;
+  assignedZhId?: string;
   assignedAVP: string;
+  assignedAvpId?: string;
   status: 'active' | 'inactive';
   employeeCount: number;
   address: string;
@@ -138,7 +142,7 @@ export interface ActivityTemplate {
   weightage: number;
   evidenceTypes: ('image' | 'pdf' | 'excel' | 'video' | 'audio' | 'signature')[];
   formSchema: FormFieldSchema[];
-  approvalFlow: ('oe' | 'rm' | 'zh' | 'avp' | 'bh' | 'dr')[];
+  approvalFlow: ('oe' | 'ph' | 'rm' | 'zh' | 'avp' | 'bh' | 'dr')[];
   active: boolean;
   assignedRoles?: string;
   approvalFlowText?: string;

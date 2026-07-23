@@ -3,9 +3,11 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'
 import type { UserRole, OperationalTask, ActivityTemplate } from '@/lib/types'
 import { operationalTasks, activityTemplates, sites, recomputeScores } from '@/lib/data/ocrms-data'
+import type { ApiUser } from '@/lib/api'
 
 // ── Role Configuration ──
 export interface RoleConfig {
+  id?: string
   role: UserRole
   label: string
   userName: string
@@ -14,19 +16,19 @@ export interface RoleConfig {
 }
 
 export const roleConfigs: RoleConfig[] = [
-  { role: 'oe', label: 'Operation Executive', userName: 'Ravi Shankar', code: 'OE-001', designation: 'Operation Executive' },
-  { role: 'rm', label: 'Regional Manager', userName: 'Suresh Kumar', code: 'RM-001', designation: 'Regional Manager' },
-  { role: 'zh', label: 'Zonal Head', userName: 'Nitin Gadkari', code: 'ZH-001', designation: 'Zonal Head' },
-  { role: 'avp', label: 'AVP Operations', userName: 'Venkat Raman', code: 'AVP-001', designation: 'AVP Operations' },
-  { role: 'bh', label: 'Business Head', userName: 'Priya Saxena', code: 'BH-001', designation: 'Business Head' },
-  { role: 'hr', label: 'HR Team', userName: 'Neha Verma', code: 'HR-001', designation: 'HR Manager' },
-  { role: 'procurement', label: 'Procurement Team', userName: 'Amit Sharma', code: 'PROC-001', designation: 'Procurement Head' },
-  { role: 'dr', label: 'Operation Director', userName: 'Rajesh Khanna', code: 'DR-001', designation: 'Operation Director' },
-  { role: 'th', label: 'Trainer Head', userName: 'Vikram Sen', code: 'TH-001', designation: 'Trainer Head' },
-  { role: 'trainers', label: 'Trainers', userName: 'Geeta Joshi', code: 'TRN-001', designation: 'Trainer' },
-  { role: 'commerical', label: 'Commercial Team', userName: 'Anil Mehta', code: 'COMM-001', designation: 'Commercial Team' },
-  { role: 'hod', label: 'Back Office HOD', userName: 'Sanjay Gupta', code: 'HOD-001', designation: 'Back Office HOD' },
-  { role: 'hr_dr', label: 'HR Director', userName: 'Meenakshi Sharma', code: 'HRDR-001', designation: 'HR Director' },
+  { id: 'USR_OE_001', role: 'oe', label: 'Operation Executive', userName: 'Ravi Shankar', code: 'OE-001', designation: 'Operation Executive' },
+  { id: 'USR_RM_001', role: 'rm', label: 'Regional Manager', userName: 'Suresh Kumar', code: 'RM-001', designation: 'Regional Manager' },
+  { id: 'USR_ZH_001', role: 'zh', label: 'Zonal Head', userName: 'Nitin Gadkari', code: 'ZH-001', designation: 'Zonal Head' },
+  { id: 'USR_AVP_001', role: 'avp', label: 'AVP Operations', userName: 'Venkat Raman', code: 'AVP-001', designation: 'AVP Operations' },
+  { id: 'USR_BH_001', role: 'bh', label: 'Business Head', userName: 'Priya Saxena', code: 'BH-001', designation: 'Business Head' },
+  { id: 'USR_HR_001', role: 'hr', label: 'HR Team', userName: 'Neha Verma', code: 'HR-001', designation: 'HR Manager' },
+  { id: 'USR_PROC_001', role: 'procurement', label: 'Procurement Team', userName: 'Amit Sharma', code: 'PROC-001', designation: 'Procurement Head' },
+  { id: 'USR_DR_001', role: 'dr', label: 'Operation Director', userName: 'Rajesh Khanna', code: 'DR-001', designation: 'Operation Director' },
+  { id: 'USR_TH_001', role: 'th', label: 'Trainer Head', userName: 'Vikram Sen', code: 'TH-001', designation: 'Trainer Head' },
+  { id: 'USR_TRN_001', role: 'trainers', label: 'Trainers', userName: 'Geeta Joshi', code: 'TRN-001', designation: 'Trainer' },
+  { id: 'USR_COMM_001', role: 'commerical', label: 'Commercial Team', userName: 'Anil Mehta', code: 'COMM-001', designation: 'Commercial Team' },
+  { id: 'USR_HOD_001', role: 'hod', label: 'Back Office HOD', userName: 'Sanjay Gupta', code: 'HOD-001', designation: 'Back Office HOD' },
+  { id: 'USR_HRDR_001', role: 'hr_dr', label: 'HR Director', userName: 'Meenakshi Sharma', code: 'HRDR-001', designation: 'HR Director' },
 ]
 
 export type ScoringPolicy = 'avp_only' | 'average' | 'weighted';
@@ -39,6 +41,15 @@ interface OCRMSContextType {
   sidebarCollapsed: boolean
   setSidebarCollapsed: (collapsed: boolean) => void
   
+  // Auth State
+  isAuthenticated: boolean
+  setIsAuthenticated: (auth: boolean) => void
+  isLoadingAuth: boolean
+  accessToken: string | null
+  setAccessToken: (token: string | null) => void
+  apiUser: ApiUser | null
+  setApiUser: (user: ApiUser | null) => void
+
   // Live State
   tasks: OperationalTask[]
   setTasks: React.Dispatch<React.SetStateAction<OperationalTask[]>>
@@ -58,13 +69,87 @@ const OCRMSContext = createContext<OCRMSContextType | undefined>(undefined)
 
 // ── Provider ──
 export function OCRMSProvider({ children }: { children: ReactNode }) {
-  const [currentRole, setCurrentRole] = useState<UserRole>('oe')
+  const [currentRole, setCurrentRoleState] = useState<UserRole>('oe')
+  const [isAuthenticated, setIsAuthenticatedState] = useState(false)
+  const [isLoadingAuth, setIsLoadingAuth] = useState(true)
+  const [accessToken, setAccessTokenState] = useState<string | null>(null)
+  const [apiUser, setApiUserState] = useState<ApiUser | null>(null)
+
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [tasks, setTasks] = useState<OperationalTask[]>(operationalTasks)
   const [templates, setTemplates] = useState<ActivityTemplate[]>(activityTemplates)
   const [scoringPolicy, setScoringPolicyState] = useState<ScoringPolicy>('avp_only')
   
-  const currentUser = roleConfigs.find(r => r.role === currentRole) || roleConfigs[0]
+  // Use API user if available AND role matches, otherwise fallback to mock config to allow role switching
+  const currentUser: RoleConfig = (apiUser && apiUser.role === currentRole) ? {
+    id: apiUser.user_id,
+    role: apiUser.role as UserRole,
+    label: roleConfigs.find(r => r.role === apiUser.role)?.label || apiUser.role,
+    userName: apiUser.name,
+    code: apiUser.code,
+    designation: apiUser.designation
+  } : (roleConfigs.find(r => r.role === currentRole) || roleConfigs[0])
+
+  useEffect(() => {
+    // Hydrate auth state from localStorage on client side
+    const storedAuth = localStorage.getItem('opas_authenticated')
+    const storedRole = localStorage.getItem('opas_role') as UserRole | null
+    const storedToken = localStorage.getItem('opas_token')
+    const storedUser = localStorage.getItem('opas_user')
+
+    if (storedAuth === 'true') {
+      setIsAuthenticatedState(true)
+    }
+    if (storedRole && roleConfigs.some(r => r.role === storedRole)) {
+      setCurrentRoleState(storedRole)
+    }
+    if (storedToken) {
+      setAccessTokenState(storedToken)
+    }
+    if (storedUser) {
+      try {
+        setApiUserState(JSON.parse(storedUser))
+      } catch (e) {}
+    }
+    setIsLoadingAuth(false)
+  }, [])
+
+  const setCurrentRole = (role: UserRole) => {
+    setCurrentRoleState(role)
+    localStorage.setItem('opas_role', role)
+  }
+
+  const setIsAuthenticated = (auth: boolean) => {
+    setIsAuthenticatedState(auth)
+    if (auth) {
+      localStorage.setItem('opas_authenticated', 'true')
+    } else {
+      localStorage.removeItem('opas_authenticated')
+      localStorage.removeItem('opas_token')
+      localStorage.removeItem('opas_user')
+      setAccessTokenState(null)
+      setApiUserState(null)
+    }
+  }
+
+  const setAccessToken = (token: string | null) => {
+    setAccessTokenState(token)
+    if (token) {
+      localStorage.setItem('opas_token', token)
+    } else {
+      localStorage.removeItem('opas_token')
+    }
+  }
+
+  const setApiUser = (user: ApiUser | null) => {
+    setApiUserState(user)
+    if (user) {
+      localStorage.setItem('opas_user', JSON.stringify(user))
+      setCurrentRole(user.role as UserRole)
+    } else {
+      localStorage.removeItem('opas_user')
+    }
+  }
 
   // Recompute scores on policy change
   const setScoringPolicy = (policy: ScoringPolicy) => {
@@ -168,6 +253,13 @@ export function OCRMSProvider({ children }: { children: ReactNode }) {
       currentRole,
       setCurrentRole,
       currentUser,
+      isAuthenticated,
+      setIsAuthenticated,
+      isLoadingAuth,
+      accessToken,
+      setAccessToken,
+      apiUser,
+      setApiUser,
       sidebarCollapsed,
       setSidebarCollapsed,
       tasks,

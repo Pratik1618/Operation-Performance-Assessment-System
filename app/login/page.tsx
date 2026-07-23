@@ -3,6 +3,8 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useOCRMS } from '@/lib/context/ocrms-context'
+import { loginApi } from '@/lib/api'
+import type { UserRole } from '@/lib/types'
 import { Lock, Mail, Shield, Sparkles, ArrowRight } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -10,25 +12,35 @@ import { toast } from 'sonner'
 
 export default function LoginPage() {
   const router = useRouter()
-  const { setCurrentRole } = useOCRMS()
+  const { setCurrentRole, setIsAuthenticated, setAccessToken, setApiUser } = useOCRMS()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
 
-    setTimeout(() => {
-      // Default fallback simulated role (e.g. 'oe' or keeping the current active role)
-      // Since actual authentication token handles roles in production
-      setCurrentRole('oe')
+    try {
+      const data = await loginApi(email, password)
+      
+      const roleToSet = data.user.role as UserRole || 'oe'
+      setCurrentRole(roleToSet)
+      setAccessToken(data.access_token)
+      setApiUser(data.user)
+      setIsAuthenticated(true)
+      
       toast.success('Successfully Authenticated', {
-        description: `Logged in as ${email || 'user@opas.com'}`,
+        description: `Logged in as ${data.user.name}`,
       })
-      setIsSubmitting(false)
       router.push('/')
-    }, 800)
+    } catch (error: any) {
+      toast.error('Authentication Failed', {
+        description: error.message || 'An error occurred during login.',
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (

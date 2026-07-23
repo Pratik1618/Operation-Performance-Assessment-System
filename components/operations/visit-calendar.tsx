@@ -32,6 +32,7 @@ interface VisitCalendarProps {
   selectedSite: string
   onDateClick: (dateStr: string) => void
   onVisitMove?: (visitId: string, newDateStr: string) => void
+  onVisitClick?: (visit: CalendarVisit) => void
   isLocked: boolean
 }
 
@@ -43,6 +44,7 @@ export default function VisitCalendar({
   selectedSite,
   onDateClick,
   onVisitMove,
+  onVisitClick,
   isLocked
 }: VisitCalendarProps) {
   const [draggedVisit, setDraggedVisit] = useState<CalendarVisit | null>(null)
@@ -277,11 +279,17 @@ export default function VisitCalendar({
                       draggable={!isLocked}
                       onDragStart={(e) => handleVisitDragStart(e, v, cell.dateStr)}
                       onDragEnd={handleDragEnd}
+                      onClick={(e) => {
+                        if (onVisitClick) {
+                          e.stopPropagation()
+                          onVisitClick(v)
+                        }
+                      }}
                       className={`text-[8px] font-semibold p-1.5 rounded-md truncate flex items-start gap-1 group/visit transition-all ${
                         v.status === 'completed' 
                           ? 'bg-emerald-100/80 text-emerald-900 border-l-2 border-l-emerald-600' 
                           : 'bg-blue-100/80 text-blue-900 border-l-2 border-l-blue-600'
-                      } ${!isLocked ? 'cursor-move hover:shadow-md hover:scale-105' : ''} ${draggedVisit?.id === v.id ? 'opacity-50 scale-95' : ''}`}
+                      } ${!isLocked ? 'cursor-move hover:shadow-md hover:scale-105' : ''} ${draggedVisit?.id === v.id ? 'opacity-50 scale-95' : ''} ${onVisitClick ? 'cursor-pointer' : ''}`}
                       title={`${v.siteName} (${v.time})${v.assignedTo ? ` - Assigned to ${v.assignedTo}` : ''}${!isLocked ? ' - Drag to reschedule' : ''}`}
                     >
                       {!isLocked && (

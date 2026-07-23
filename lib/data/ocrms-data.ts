@@ -20,14 +20,14 @@ export const clients: Client[] = [
 
 // ── Sites ──
 export const sites: Site[] = [
-  { id: 'SITE_003', code: 'WIPRO-PUN-01', name: 'Wipro Hinjewadi Campus', client: 'Wipro Technologies', clientId: 'CLT_002', region: 'West', state: 'Maharashtra', zone: 'Pune', assignedOE: 'Ravi Shankar', assignedRM: 'Suresh Kumar', assignedZH: 'Nitin Gadkari', assignedAVP: 'Venkat Raman', status: 'active', employeeCount: 38, address: 'Hinjewadi Phase 2, Pune' },
+  { id: 'PIC-05-240001-00001', code: 'WIPRO-PUN-01', name: 'Wipro Hinjewadi Campus', client: 'Wipro Technologies', clientId: 'CLT_002', region: 'West', state: 'Maharashtra', zone: 'Pune', assignedOE: 'Ravi Shankar', assignedRM: 'Suresh Kumar', assignedZH: 'Nitin Gadkari', assignedAVP: 'Venkat Raman', status: 'active', employeeCount: 38, address: 'Hinjewadi Phase 2, Pune' },
 ];
 
 // ── Employees ──
 export const employees: Employee[] = [
-  { id: 'EMP1001', name: 'Ramesh Yadav', code: 'EMP1001', siteId: 'SITE_003', designation: 'Security Guard', shift: 'First', joiningDate: '2023-01-15', status: 'active' },
-  { id: 'EMP1002', name: 'Suresh Babu', code: 'EMP1002', siteId: 'SITE_003', designation: 'Security Supervisor', shift: 'First', joiningDate: '2022-11-01', status: 'active' },
-  { id: 'EMP1003', name: 'Anita Desai', code: 'EMP1003', siteId: 'SITE_003', designation: 'Housekeeper', shift: 'Second', joiningDate: '2024-03-10', status: 'active' },
+  { id: 'EMP1001', name: 'Ramesh Yadav', code: 'EMP1001', siteId: 'PIC-05-240001-00001', designation: 'Security Guard', shift: 'First', joiningDate: '2023-01-15', status: 'active' },
+  { id: 'EMP1002', name: 'Suresh Babu', code: 'EMP1002', siteId: 'PIC-05-240001-00001', designation: 'Security Supervisor', shift: 'First', joiningDate: '2022-11-01', status: 'active' },
+  { id: 'EMP1003', name: 'Anita Desai', code: 'EMP1003', siteId: 'PIC-05-240001-00001', designation: 'Housekeeper', shift: 'Second', joiningDate: '2024-03-10', status: 'active' },
   { id: 'EMP1004', name: 'Vikram Singh', code: 'EMP1004', siteId: 'SITE_003', designation: 'Security Guard', shift: 'Third', joiningDate: '2024-01-20', status: 'inactive' },
   { id: 'EMP1005', name: 'Pooja Sharma', code: 'EMP1005', siteId: 'SITE_003', designation: 'Facility Manager', shift: 'General', joiningDate: '2021-06-05', status: 'active' },
   { id: 'EMP1006', name: 'Karan Patel', code: 'EMP1006', siteId: 'SITE_003', designation: 'Housekeeper', shift: 'First', joiningDate: '2023-08-12', status: 'active' },
@@ -344,10 +344,10 @@ export const activityTemplates: ActivityTemplate[] = [
       { id: 'sizeNeeded', label: 'Uniform Sizes Required', type: 'select', required: true, options: ['S', 'M', 'L', 'XL', 'XXL'] },
       { id: 'qty', label: 'Quantity Requested', type: 'number', required: true }
     ],
-    approvalFlow: ['oe', 'ph', 'avp', 'bh', 'dr'],
+    approvalFlow: ['oe', 'ph', 'avp', 'bh'],
     active: true,
     assignedRoles: 'oe,ph',
-    approvalFlowText: 'OE → PH → AVP → BH → DR'
+    approvalFlowText: 'OE → PH → AVP → BH'
   },
   {
     id: 'TPL-PRO-004',
@@ -362,10 +362,10 @@ export const activityTemplates: ActivityTemplate[] = [
       { id: 'shoeSize', label: 'Shoe Sizes Required', type: 'select', required: true, options: ['6', '7', '8', '9', '10', '11'] },
       { id: 'qty', label: 'Quantity Requested', type: 'number', required: true }
     ],
-    approvalFlow: ['oe', 'ph', 'avp', 'bh', 'dr'],
+    approvalFlow: ['oe', 'ph', 'avp', 'bh'],
     active: true,
     assignedRoles: 'oe,ph',
-    approvalFlowText: 'OE → PH → AVP → BH → DR'
+    approvalFlowText: 'OE → PH → AVP → BH'
   },
   {
     id: 'TPL-PRO-006',
@@ -381,10 +381,10 @@ export const activityTemplates: ActivityTemplate[] = [
       { id: 'totalIssued', label: 'Total Uniform Issued', type: 'number', required: true },
       { id: 'remaining', label: 'Remaining to Issue', type: 'number', required: true }
     ],
-    approvalFlow: ['oe', 'ph', 'avp', 'bh', 'dr'],
+    approvalFlow: ['oe', 'ph', 'avp', 'bh'],
     active: true,
     assignedRoles: 'oe,ph',
-    approvalFlowText: 'OE → PH → AVP → BH → DR'
+    approvalFlowText: 'OE → PH → AVP → BH'
   },
   {
     id: 'TPL-PRO-007',
@@ -400,10 +400,10 @@ export const activityTemplates: ActivityTemplate[] = [
       { id: 'totalIssued', label: 'Total Shoes Issued', type: 'number', required: true },
       { id: 'remaining', label: 'Remaining to Issue', type: 'number', required: true }
     ],
-    approvalFlow: ['oe', 'ph', 'avp', 'bh', 'dr'],
+    approvalFlow: ['oe', 'ph', 'avp', 'bh'],
     active: true,
     assignedRoles: 'oe,ph',
-    approvalFlowText: 'OE → PH → AVP → BH → DR'
+    approvalFlowText: 'OE → PH → AVP → BH'
   },
 
   // 5. Employee Relations
@@ -499,10 +499,10 @@ export const activityTemplates: ActivityTemplate[] = [
       { id: 'cleaningScore', label: 'Cleanliness Rating (1-10)', type: 'number', required: true },
       { id: 'chemicalUsed', label: 'Chemical Cleaner Batch Verified', type: 'checkbox', required: true }
     ],
-    approvalFlow: ['oe', 'rm'],
+    approvalFlow: ['oe', 'rm', 'zh', 'avp', 'bh', 'dr'],
     active: true,
     assignedRoles: 'oe,hrbp',
-    approvalFlowText: 'OE → RM → AVP → BH; HRBP → HR DR'
+    approvalFlowText: 'OE → RM → ZH → AVP → BH → DR'
   },
   {
     id: 'TPL-INC-004',
